@@ -86,8 +86,9 @@ def cmd_dashboard(args):
     url = f"http://{host}:{port}/"
     if not args.no_open:
         webbrowser.open(url)
-    print(f"Token Dashboard listening on {url}")
+    print(f"Token Dashboard listening on {url}  (Ctrl+C to stop)")
     run(host, port, db, _projects(args))
+    print("Token Dashboard stopped.")
 
 
 def main():

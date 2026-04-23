@@ -20,13 +20,31 @@ A local dashboard that reads the JSONL transcripts Claude Code writes to `~/.cla
 
 ## Prerequisites
 
-- **Python 3.8 or newer** — already installed on macOS and most Linux. On Windows: `winget install Python.Python.3.12` or download from python.org.
-- **Claude Code** — installed and with at least one session run. The dashboard reads those sessions. If you just installed Claude Code and haven't used it yet, run at least one prompt first.
+- **Claude Code** — installed and with at least one session run. If you just installed Claude Code and haven't used it yet, run at least one prompt first.
 - **A web browser.** Any modern one.
-
-No `pip install`. No Node.js. No build step.
+- **Python 3.11+** — already on macOS and most Linux. On Windows: `winget install Python.Python.3.12`.
+- **[uv](https://docs.astral.sh/uv/getting-started/installation/)** — recommended but not required. If you don't have it, see the *Without uv* section below.
 
 ## Quickstart
+
+### One-liner, no install (recommended)
+
+```bash
+uvx --from git+https://github.com/nateherkai/token-dashboard token-dashboard dashboard
+```
+
+No cloning, no venv setup. `uvx` fetches, isolates, and runs in one step. Stop with `Ctrl+C`.
+
+### Install once, run from anywhere
+
+```bash
+uv tool install git+https://github.com/nateherkai/token-dashboard
+token-dashboard dashboard
+```
+
+After the first install, `token-dashboard` is a global command — no need to be in any particular directory.
+
+### Without uv
 
 ```bash
 git clone https://github.com/nateherkai/token-dashboard.git
@@ -34,14 +52,17 @@ cd token-dashboard
 python3 cli.py dashboard
 ```
 
-> On Windows, if `python3` isn't on your PATH, substitute `py -3` for `python3` in every command below.
+> On Windows, substitute `py -3` for `python3`.
 
-The command:
-1. Scans `~/.claude/projects/` (first run can take 20–60 seconds on a heavy user's machine).
-2. Starts a local server at http://127.0.0.1:8080.
-3. Opens your default browser to that URL.
+---
 
-Leave it running; it re-scans every 30 seconds and pushes updates live. Stop with `Ctrl+C`.
+All three options:
+
+1. Scan `~/.claude/projects/` on startup (first run can take 20–60 s on a heavy machine).
+2. Start a local server at <http://127.0.0.1:8080>.
+3. Open your default browser to that URL.
+
+Leave it running; it re-scans every 30 seconds and pushes updates live. Stop with `Ctrl+C`, click the ⏻ button in the top bar, or just close the browser tab — the server auto-shuts 30 s after the last tab disconnects.
 
 ## Where the data comes from
 
@@ -74,18 +95,20 @@ Pricing lives in [`pricing.json`](pricing.json). Edit it directly if model price
 ## CLI reference
 
 ```bash
-python3 cli.py scan          # populate / refresh the local DB, then exit
-python3 cli.py today         # today's totals (terminal)
-python3 cli.py stats         # all-time totals (terminal)
-python3 cli.py tips          # active suggestions (terminal)
-python3 cli.py dashboard     # scan + serve the UI at http://localhost:8080
+token-dashboard scan          # populate / refresh the local DB, then exit
+token-dashboard today         # today's totals (terminal)
+token-dashboard stats         # all-time totals (terminal)
+token-dashboard tips          # active suggestions (terminal)
+token-dashboard dashboard     # scan + serve the UI at http://localhost:8080
 
 # dashboard flags
-python3 cli.py dashboard --no-open   # don't auto-open the browser
-python3 cli.py dashboard --no-scan   # skip the initial scan (use cached DB only)
+token-dashboard dashboard --no-open   # don't auto-open the browser
+token-dashboard dashboard --no-scan   # skip the initial scan (use cached DB only)
 ```
 
-Change the port: `PORT=9000 python3 cli.py dashboard`.
+Change the port: `PORT=9000 token-dashboard dashboard`.
+
+> **Without uv:** replace `token-dashboard` with `python3 cli.py` in every command above.
 
 ## The 7 tabs
 
@@ -121,9 +144,9 @@ Nothing leaves your machine. No telemetry. No remote calls for your data. The br
 
 ## Tech stack
 
-Python 3 (stdlib only) for the CLI, scanner, and HTTP server. SQLite for the local cache. Vanilla JS + ECharts for the UI, no build step. Dark theme, hash-based router, server-sent events for live refresh.
+Python 3.11+ (no runtime dependencies) for the CLI, scanner, and HTTP server. SQLite for the local cache. Vanilla JS + ECharts for the UI, no build step. Dark theme, hash-based router, server-sent events for live refresh.
 
-Data flow: `cli.py` → `token_dashboard/scanner.py` → SQLite DB; `token_dashboard/server.py` exposes `/api/*` JSON routes and serves `web/`.
+Data flow: `token_dashboard/cli.py` → `token_dashboard/scanner.py` → SQLite DB; `token_dashboard/server.py` exposes `/api/*` JSON routes and serves `web/`.
 
 ## Further reading
 
@@ -134,7 +157,7 @@ Data flow: `cli.py` → `token_dashboard/scanner.py` → SQLite DB; `token_dashb
 
 ## Contributing
 
-See [`CONTRIBUTING.md`](CONTRIBUTING.md). Short version: fork, `python3 -m unittest discover tests` before opening a PR, keep it stdlib-only.
+See [`CONTRIBUTING.md`](CONTRIBUTING.md). Short version: fork, `uv run pytest` before opening a PR, keep runtime dependencies at zero.
 
 ## License
 

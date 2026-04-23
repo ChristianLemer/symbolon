@@ -162,6 +162,10 @@ button:hover, select:hover { border-color: var(--border-2); }
 button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
 button.primary:hover { background: #5BA8FF; }
 button.ghost { background: transparent; color: var(--muted); }
+button.danger { background: transparent; color: var(--bad); border-color: var(--bad); }
+button.danger:hover { background: rgba(229,72,77,0.1); }
+button.danger:disabled { opacity: 0.4; cursor: not-allowed; }
+.topbar button.danger { padding: 4px 8px; font-size: 13px; border-radius: 6px; }
 
 /* tip rows */
 .tip {

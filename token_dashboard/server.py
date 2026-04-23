@@ -4,7 +4,10 @@ from __future__ import annotations
 import http.server
 import json
 import mimetypes
+import os
 import queue
+import signal
+import sys
 import threading
 import time
 from pathlib import Path
@@ -30,6 +33,7 @@ WEB_ROOT = Path(__file__).resolve().parent.parent / "web"
 PRICING_JSON = Path(__file__).resolve().parent.parent / "pricing.json"
 
 EVENTS: queue.Queue[dict] = queue.Queue()
+_heartbeat: dict = {"at": None}  # None = no client has connected yet
 
 MAX_POST_BYTES = 1_000_000  # 1 MB — we only accept tiny JSON bodies (plan, tip key)
 MAX_LIMIT = 1000
@@ -77,7 +81,7 @@ def build_handler(db_path: str, projects_dir: str):
     pricing = load_pricing(PRICING_JSON)
 
     class H(http.server.BaseHTTPRequestHandler):
-        def log_message(self, fmt, *args):
+        def log_message(self, format, *args):  # noqa: A002
             pass
 
         def do_HEAD(self):
@@ -189,10 +193,40 @@ def build_handler(db_path: str, projects_dir: str):
             if url.path == "/api/tips/dismiss":
                 dismiss_tip(db_path, body.get("key", ""))
                 return _send_json(self, {"ok": True})
+            if url.path == "/api/heartbeat":
+                _heartbeat["at"] = time.time()
+                return _send_json(self, {"ok": True})
+            if url.path == "/api/quit":
+                # Source IP is set by the kernel and unforgeable, unlike the
+                # Host header. Prevents remote kill when HOST=0.0.0.0.
+                if self.client_address[0] not in ("127.0.0.1", "::1"):
+                    return _send_error(self, 403, "quit only allowed from localhost")
+                _send_json(self, {"ok": True})
+                def _shutdown():
+                    time.sleep(0.1)
+                    os.kill(os.getpid(), signal.SIGINT)
+                threading.Thread(target=_shutdown, daemon=True).start()
+                return
             self.send_response(404)
             self.end_headers()
 
     return H
+
+
+def _watchdog(timeout: float = 30.0, interval: float = 5.0):
+    """Shut down if no heartbeat has arrived within `timeout` seconds.
+
+    Waits until the first heartbeat before starting the countdown, so the
+    server stays up indefinitely if no browser ever connects (e.g. --no-open).
+    """
+    while _heartbeat["at"] is None:
+        time.sleep(interval)
+    while True:
+        time.sleep(interval)
+        if time.time() - _heartbeat["at"] > timeout:
+            print("\nToken Dashboard: no client detected, shutting down…")
+            os.kill(os.getpid(), signal.SIGINT)
+            return
 
 
 def _scan_loop(db_path: str, projects_dir: str, interval: float = 30.0):
@@ -206,8 +240,27 @@ def _scan_loop(db_path: str, projects_dir: str, interval: float = 30.0):
         time.sleep(interval)
 
 
+class _Server(http.server.ThreadingHTTPServer):
+    def handle_error(self, request, client_address):
+        if isinstance(sys.exc_info()[1], (BrokenPipeError, ConnectionResetError)):
+            return
+        super().handle_error(request, client_address)
+
+
 def run(host: str, port: int, db_path: str, projects_dir: str):
+    # When spawned as a background job by bash (`cmd &`, `nohup cmd &`),
+    # SIGINT is inherited as SIG_IGN — `os.kill(getpid(), SIGINT)` from
+    # /api/quit would then be silently dropped. Force the default handler
+    # so KeyboardInterrupt fires regardless of how we were launched.
+    signal.signal(signal.SIGINT, signal.default_int_handler)
+
     threading.Thread(target=_scan_loop, args=(db_path, projects_dir), daemon=True).start()
+    threading.Thread(target=_watchdog, daemon=True).start()
     H = build_handler(db_path, projects_dir)
-    httpd = http.server.ThreadingHTTPServer((host, port), H)
-    httpd.serve_forever()
+    httpd = _Server((host, port), H)
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        print("\nToken Dashboard stopping…")
+    finally:
+        httpd.shutdown()

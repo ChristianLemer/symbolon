@@ -75,6 +75,12 @@ class ServerTests(unittest.TestCase):
             self.assertEqual(resp.status, 200)
             self.assertEqual(resp.read(), b"")
 
+    # Note: /api/quit's source-IP guard is not unit-tested here.
+    # Testing it would require a request from a non-loopback interface,
+    # which depends on the host's network setup. The check is one line
+    # against an OS-provided address (self.client_address[0]) — the kernel
+    # is the source of truth and trusting it is the canonical pattern.
+
 
 if __name__ == "__main__":
     unittest.main()

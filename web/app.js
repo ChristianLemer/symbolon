@@ -52,8 +52,41 @@ function buildTopbar() {
     <div class="spacer"></div>
     <span class="pill" id="plan-pill">api</span>
     <span class="pill muted" title="Cmd/Ctrl+B blurs sensitive text">⌘B blur</span>
+    <button id="quit-btn" class="danger" title="Stop the server">⏻</button>
   `;
   document.body.prepend(wrap);
+
+  let quitArmed = false;
+  let quitTimer = null;
+  document.getElementById('quit-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('quit-btn');
+    if (!quitArmed) {
+      quitArmed = true;
+      btn.textContent = '⏻ confirm?';
+      quitTimer = setTimeout(() => {
+        quitArmed = false;
+        btn.textContent = '⏻';
+      }, 3000);
+      return;
+    }
+    clearTimeout(quitTimer);
+    btn.disabled = true;
+    btn.textContent = '…';
+    try {
+      await fetch('/api/quit', { method: 'POST' });
+    } catch { /* server closed before response */ }
+    const msg = document.createElement('div');
+    msg.style.cssText = 'display:grid;place-items:center;height:100vh;color:#8B98A6;font-family:system-ui;font-size:14px';
+    document.body.innerHTML = '';
+    document.body.appendChild(msg);
+    let t = 3;
+    const tick = () => {
+      msg.textContent = `Server stopped — closing in ${t}…`;
+      if (t-- > 0) setTimeout(tick, 1000);
+      else { window.close(); msg.textContent = 'Server stopped — you can close this tab.'; }
+    };
+    tick();
+  });
 }
 
 function setActiveTab(routeKey) {
@@ -123,6 +156,11 @@ async function boot() {
       document.body.classList.toggle('privacy-on');
     }
   });
+
+  // Heartbeat — keeps the server alive; absence triggers auto-shutdown after 30s
+  const _hb = () => fetch('/api/heartbeat', { method: 'POST' }).catch(() => {});
+  _hb();
+  setInterval(_hb, 10000);
 
   // SSE diff stream
   try {

@@ -39,6 +39,7 @@ export default async function (root) {
 
       <h3>Privacy</h3>
       <p class="muted">Press <code>Cmd/Ctrl + B</code> anywhere to blur prompt text and other sensitive content for screenshots.</p>
+
     </div>`;
 
   $('#save').addEventListener('click', async () => {
@@ -49,4 +50,5 @@ export default async function (root) {
     $('#msg').textContent = 'Saved.';
     $('#msg').style.color = 'var(--good)';
   });
+
 }
