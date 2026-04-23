@@ -12,18 +12,15 @@ Sizes are in chars; token estimate is chars // 4 (the same approximation
 """
 from __future__ import annotations
 
+import re
 import time
 from pathlib import Path
-from typing import Dict, Optional
 
 _DEFAULT_ROOTS = [
     Path.home() / ".claude" / "skills",
     Path.home() / ".claude" / "scheduled-tasks",
     Path.home() / ".claude" / "plugins",
 ]
-
-
-import re
 
 _VERSION_RE = re.compile(r"^\d+\.\d+")
 _STRUCTURE_NAMES = {"skills", "plugins", "marketplaces", "cache", ".claude"}
@@ -67,14 +64,14 @@ def _slugs_for(skill_md: Path) -> list[str]:
     return sorted(slugs)
 
 
-def scan_catalog(roots=None) -> Dict[str, dict]:
+def scan_catalog(roots=None) -> dict[str, dict]:
     """Return {slug: {path, chars, tokens}} for every SKILL.md found.
 
     When a slug resolves to multiple files (nested `skills/skills/`), keep the
     entry with the shallowest path — that's the canonical install.
     """
     roots = roots or _DEFAULT_ROOTS
-    catalog: Dict[str, dict] = {}
+    catalog: dict[str, dict] = {}
     for root in roots:
         if not root.is_dir():
             continue
@@ -95,7 +92,7 @@ _cache: dict = {"at": 0.0, "data": {}}
 _TTL_SECONDS = 60.0
 
 
-def cached_catalog() -> Dict[str, dict]:
+def cached_catalog() -> dict[str, dict]:
     """scan_catalog() with a simple in-process TTL cache."""
     now = time.time()
     if now - _cache["at"] > _TTL_SECONDS:
@@ -104,7 +101,7 @@ def cached_catalog() -> Dict[str, dict]:
     return _cache["data"]
 
 
-def tokens_for(slug: str, catalog: Optional[Dict[str, dict]] = None) -> Optional[int]:
+def tokens_for(slug: str, catalog: dict[str, dict] | None = None) -> int | None:
     cat = catalog if catalog is not None else cached_catalog()
     info = cat.get(slug)
     return info["tokens"] if info else None

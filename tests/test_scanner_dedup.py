@@ -5,17 +5,17 @@ own JSONL line with a distinct top-level `uuid` but identical `message.id`.
 Only the final snapshot matches the actual billing. Summing all snapshots
 over-counts input/output/cache tokens.
 """
-import os
 import sqlite3
 import tempfile
 import unittest
+from pathlib import Path
 
 from token_dashboard.db import init_db
 from token_dashboard.scanner import scan_dir
 
 
-def _write_jsonl(path: str, lines):
-    with open(path, "w", encoding="utf-8") as f:
+def _write_jsonl(path, lines):
+    with Path(path).open("w", encoding="utf-8") as f:
         for obj in lines:
             import json as _json
             f.write(_json.dumps(obj) + "\n")
@@ -48,15 +48,15 @@ def _streaming_partial(uuid: str, msg_id: str, session: str, ts: str, output_tok
 
 class StreamingDedupTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.mkdtemp()
-        self.db = os.path.join(self.tmp, "t.db")
-        self.proj_root = os.path.join(self.tmp, "projects")
-        self.proj_dir = os.path.join(self.proj_root, "C--work-sample")
-        os.makedirs(self.proj_dir)
+        self.tmp = Path(tempfile.mkdtemp())
+        self.db = self.tmp / "t.db"
+        self.proj_root = self.tmp / "projects"
+        self.proj_dir = self.proj_root / "C--work-sample"
+        self.proj_dir.mkdir(parents=True, exist_ok=True)
         init_db(self.db)
 
     def _jsonl_path(self):
-        return os.path.join(self.proj_dir, "s1.jsonl")
+        return self.proj_dir / "s1.jsonl"
 
     def test_within_file_streaming_dupes_collapse_to_final(self):
         user = {
@@ -74,7 +74,7 @@ class StreamingDedupTests(unittest.TestCase):
         with sqlite3.connect(self.db) as c:
             c.row_factory = sqlite3.Row
             rows = c.execute(
-                "SELECT uuid, input_tokens, output_tokens, cache_read_tokens, cache_create_1h_tokens "
+                "SELECT uuid, input_tokens, output_tokens, cache_read_tokens, cache_create_1h_tokens "  # noqa: E501
                 "FROM messages WHERE type='assistant'"
             ).fetchall()
 
@@ -103,8 +103,8 @@ class StreamingDedupTests(unittest.TestCase):
 
         # Append the final snapshot.
         import json as _json
-        with open(self._jsonl_path(), "a", encoding="utf-8") as f:
-            final = _streaming_partial("r3", "msg_Y", "s1", "2026-04-10T00:00:03Z", output_tokens=303)
+        with self._jsonl_path().open("a", encoding="utf-8") as f:
+            final = _streaming_partial("r3", "msg_Y", "s1", "2026-04-10T00:00:03Z", output_tokens=303)  # noqa: E501
             f.write(_json.dumps(final) + "\n")
 
         scan_dir(self.proj_root, self.db)

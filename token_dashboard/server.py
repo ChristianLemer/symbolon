@@ -8,23 +8,28 @@ import queue
 import threading
 import time
 from pathlib import Path
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import parse_qs, urlparse
 
 from .db import (
-    overview_totals, expensive_prompts, project_summary,
-    tool_token_breakdown, recent_sessions, session_turns,
-    daily_token_breakdown, model_breakdown, skill_breakdown,
+    daily_token_breakdown,
+    expensive_prompts,
+    model_breakdown,
+    overview_totals,
+    project_summary,
+    recent_sessions,
+    session_turns,
+    skill_breakdown,
+    tool_token_breakdown,
 )
-from .pricing import load_pricing, cost_for, get_plan, set_plan
-from .tips import all_tips, dismiss_tip
+from .pricing import cost_for, get_plan, load_pricing, set_plan
 from .scanner import scan_dir
 from .skills import cached_catalog
-
+from .tips import all_tips, dismiss_tip
 
 WEB_ROOT = Path(__file__).resolve().parent.parent / "web"
 PRICING_JSON = Path(__file__).resolve().parent.parent / "pricing.json"
 
-EVENTS: "queue.Queue[dict]" = queue.Queue()
+EVENTS: queue.Queue[dict] = queue.Queue()
 
 MAX_POST_BYTES = 1_000_000  # 1 MB — we only accept tiny JSON bodies (plan, tip key)
 MAX_LIMIT = 1000

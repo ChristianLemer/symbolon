@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Optional, Union
+from typing import Union
 
 from .db import connect
 
@@ -12,7 +12,7 @@ def load_pricing(path: Union[str, Path]) -> dict:
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
-def _tier_from_name(model: str) -> Optional[str]:
+def _tier_from_name(model: str) -> str | None:
     m = (model or "").lower()
     for tier in ("opus", "sonnet", "haiku"):
         if tier in m:

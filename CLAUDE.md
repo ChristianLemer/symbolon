@@ -6,7 +6,7 @@ Guidance for Claude Code when working in this repository.
 
 **Token Dashboard** — a local dashboard for tracking Claude Code token usage, costs, and session history. Reads the JSONL transcripts Claude Code writes to `~/.claude/projects/` and turns them into per-prompt cost analytics, tool/file heatmaps, subagent attribution, cache analytics, project comparisons, and a rule-based tips engine.
 
-Inspired by [phuryn/claude-usage](https://github.com/phuryn/claude-usage) but diverges in UI (vanilla JS + ECharts, dark theme, hash router, SSE refresh) and scope (expensive-prompt drill-down, skills view, tips engine, streaming-snapshot dedup). See `docs/inspiration.md` for the original's feature set and known limitations.
+Forked from [nateherkai/token-dashboard](https://github.com/nateherkai/token-dashboard) — a substantial reimplementation inspired by [phuryn/claude-usage](https://github.com/phuryn/claude-usage). The upstream diverges from claude-usage in UI (vanilla JS + ECharts, dark theme, hash router, SSE refresh) and scope (expensive-prompt drill-down, skills view, tips engine, streaming-snapshot dedup). This fork adds uv tooling, graceful shutdown, monthly cost projection, security hardening, and CI. See `docs/inspiration.md` for the lineage.
 
 ## Status
 
@@ -25,7 +25,7 @@ Claude Code writes one JSONL file per session to `~/.claude/projects/<project-sl
 ## Conventions
 
 - **Fully local.** No telemetry, no remote calls for user data. Tests run offline.
-- **Stdlib only.** No `pip install`. If a new feature needs a third-party library, argue for it first — we're willing to pay ergonomics cost to keep install friction at zero.
+- **Migrating to uv.** The project is moving from bare `python3` invocations to a `uv`-managed setup (pyproject.toml, ruff, ty, pytest). New work should follow the uv conventions; old `python3 -m unittest` invocations still work during the transition. The no-third-party-runtime-dependency constraint stays — uv is a dev/tooling dependency only.
 - **SQLite parameter binding always.** Any f-string in a SQL statement must interpolate only internal, caller-controlled values (column names, placeholder lists). User-reachable values go through `?`.
 - **Small files with clear responsibilities.** If a file grows past ~400 lines or accretes three distinct concerns, split it.
 - **Streaming-snapshot dedup.** When adding scanner logic that joins the `messages` table, remember `(session_id, message_id)` is the dedup key, not `uuid`. See `scanner._evict_prior_snapshots` and the migration note in `db._migrate_add_message_id`.
@@ -38,10 +38,17 @@ Env vars: `PORT` (default 8080), `HOST` (default 127.0.0.1), `CLAUDE_PROJECTS_DI
 
 See `docs/KNOWN_LIMITATIONS.md`. Current summary: Skills `tokens_per_call` is populated only for skills installed under the three scanned roots (`~/.claude/skills/`, `~/.claude/scheduled-tasks/`, `~/.claude/plugins/`); project-local skills and subagent-dispatched skills show invocation counts but blank token counts.
 
+## Tooling
+
+When working with Python, invoke the relevant `/astral:<skill>` for uv, ty, and ruff. For project-level conventions (pyproject.toml setup, pytest migration, linting config), invoke `/trailofbits:modern-python`.
+
 ## Verifying changes
 
 ```bash
-python3 -m unittest discover tests        # all tests
-python3 cli.py dashboard --no-open        # start the server
-curl http://127.0.0.1:8080/api/overview   # sanity-check an endpoint
+uv run pytest                                      # all tests
+uv run token-dashboard dashboard --no-open         # start the server
+curl http://127.0.0.1:8080/api/overview            # sanity-check an endpoint
+uv run ruff check .                                # lint
+uv run ty check                                    # type-check
+# Legacy (still works during transition): python3 cli.py dashboard --no-open
 ```

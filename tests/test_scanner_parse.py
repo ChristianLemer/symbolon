@@ -1,13 +1,14 @@
 import json
-import os
 import unittest
+from pathlib import Path
+
 from token_dashboard.scanner import parse_record
 
-FIXTURES = os.path.join(os.path.dirname(__file__), "fixtures")
+FIXTURES = Path(__file__).parent / "fixtures"
 
 
 def _load(name):
-    with open(os.path.join(FIXTURES, name)) as f:
+    with (FIXTURES / name).open() as f:
         return json.load(f)
 
 
@@ -48,7 +49,7 @@ class SidechainTests(unittest.TestCase):
         rec = {
             "type": "assistant", "uuid": "u", "sessionId": "s",
             "timestamp": "t", "isSidechain": True, "agentId": "agent-explore-1",
-            "message": {"model": "claude-sonnet-4-6", "usage": {"input_tokens": 1, "output_tokens": 1}},
+            "message": {"model": "claude-sonnet-4-6", "usage": {"input_tokens": 1, "output_tokens": 1}},  # noqa: E501
         }
         msg, _ = parse_record(rec, project_slug="p")
         self.assertEqual(msg["is_sidechain"], 1)
@@ -59,7 +60,7 @@ class SidechainTests(unittest.TestCase):
             "type": "user", "uuid": "u2", "sessionId": "s",
             "timestamp": "t", "isSidechain": False,
             "message": {"role": "user", "content": [
-                {"type": "tool_result", "tool_use_id": "tu1", "content": "x" * 4000, "is_error": False}
+                {"type": "tool_result", "tool_use_id": "tu1", "content": "x" * 4000, "is_error": False}  # noqa: E501
             ]},
         }
         msg, tools = parse_record(rec, project_slug="p")

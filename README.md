@@ -8,6 +8,8 @@ A local dashboard that reads the JSONL transcripts Claude Code writes to `~/.cla
 
 ![Overview tab — per-project, per-model, top tools, recent sessions](docs/images/dashboard-overview-bottom.jpg)
 
+> **Lineage** — This fork builds on [nateherkai/token-dashboard](https://github.com/nateherkai/token-dashboard), itself a substantial reimplementation inspired by [phuryn/claude-usage](https://github.com/phuryn/claude-usage). What I add on top: `uv` tooling + ruff/ty config, graceful shutdown UX (Ctrl+C / ⏻ button / browser-close watchdog), a "Today" range with honest monthly cost projection, source-IP guard on `/api/quit`, and a GitHub Actions CI. See [`docs/inspiration.md`](docs/inspiration.md) for the original feature set.
+
 ## What this is useful for
 
 - Seeing which of your prompts are expensive (surprise: they usually involve large tool results).

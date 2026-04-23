@@ -3,22 +3,23 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from pathlib import Path
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = Path(__file__).resolve().parent.parent
 
 
 class CliTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.mkdtemp()
-        self.proj = os.path.join(self.tmp, "projects")
-        os.makedirs(os.path.join(self.proj, "demo"))
-        with open(os.path.join(self.proj, "demo", "s.jsonl"), "w", encoding="utf-8") as f:
+        self.tmp = Path(tempfile.mkdtemp())
+        self.proj = self.tmp / "projects"
+        (self.proj / "demo").mkdir(parents=True, exist_ok=True)
+        with (self.proj / "demo" / "s.jsonl").open("w", encoding="utf-8") as f:
             f.write('{"type":"user","uuid":"u1","sessionId":"s1","timestamp":"2026-04-19T00:00:00Z","isSidechain":false,"message":{"role":"user","content":"hi"}}\n')
             f.write('{"type":"assistant","uuid":"a1","parentUuid":"u1","sessionId":"s1","timestamp":"2026-04-19T00:00:01Z","isSidechain":false,"message":{"model":"claude-haiku-4-5","usage":{"input_tokens":1,"output_tokens":1}}}\n')
-        self.db = os.path.join(self.tmp, "t.db")
+        self.db = self.tmp / "t.db"
 
     def _run(self, *args):
-        env = {**os.environ, "TOKEN_DASHBOARD_DB": self.db}
+        env = {**os.environ, "TOKEN_DASHBOARD_DB": str(self.db)}
         return subprocess.run(
             [sys.executable, "cli.py", *args],
             cwd=ROOT, env=env, capture_output=True, text=True,

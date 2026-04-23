@@ -4,28 +4,34 @@ from __future__ import annotations
 import json
 import time
 from pathlib import Path
-from typing import List, Optional, Tuple, Union
+from typing import Union
 
 from .db import connect
-
 
 INSERT_MSG = """
 INSERT OR REPLACE INTO messages (
   uuid, parent_uuid, session_id, project_slug, cwd, git_branch, cc_version, entrypoint,
   type, is_sidechain, agent_id, timestamp, model, stop_reason, prompt_id, message_id,
-  input_tokens, output_tokens, cache_read_tokens, cache_create_5m_tokens, cache_create_1h_tokens,
+  input_tokens, output_tokens, cache_read_tokens,
+  cache_create_5m_tokens, cache_create_1h_tokens,
   prompt_text, prompt_chars, tool_calls_json
 ) VALUES (
   :uuid, :parent_uuid, :session_id, :project_slug, :cwd, :git_branch, :cc_version, :entrypoint,
   :type, :is_sidechain, :agent_id, :timestamp, :model, :stop_reason, :prompt_id, :message_id,
-  :input_tokens, :output_tokens, :cache_read_tokens, :cache_create_5m_tokens, :cache_create_1h_tokens,
+  :input_tokens, :output_tokens, :cache_read_tokens,
+  :cache_create_5m_tokens, :cache_create_1h_tokens,
   :prompt_text, :prompt_chars, :tool_calls_json
 )
 """
 
 INSERT_TOOL = """
-INSERT INTO tool_calls (message_uuid, session_id, project_slug, tool_name, target, result_tokens, is_error, timestamp)
-VALUES (:message_uuid, :session_id, :project_slug, :tool_name, :target, :result_tokens, :is_error, :timestamp)
+INSERT INTO tool_calls (
+  message_uuid, session_id, project_slug,
+  tool_name, target, result_tokens, is_error, timestamp
+) VALUES (
+  :message_uuid, :session_id, :project_slug,
+  :tool_name, :target, :result_tokens, :is_error, :timestamp
+)
 """
 
 
@@ -55,20 +61,22 @@ def _usage(rec: dict) -> dict:
     }
 
 
-def _prompt_text(rec: dict) -> Tuple[Optional[str], Optional[int]]:
+def _prompt_text(rec: dict) -> tuple[str | None, int | None]:
     if rec.get("type") != "user":
         return None, None
     content = (rec.get("message") or {}).get("content")
     if isinstance(content, str):
         return content, len(content)
     if isinstance(content, list):
-        parts = [b.get("text", "") for b in content if isinstance(b, dict) and b.get("type") == "text"]
+        parts = [
+            b.get("text", "") for b in content if isinstance(b, dict) and b.get("type") == "text"
+        ]
         text = "".join(parts) if parts else None
         return text, (len(text) if text else None)
     return None, None
 
 
-def _target(name: str, inp: dict) -> Optional[str]:
+def _target(name: str, inp: dict) -> str | None:
     field = _TARGET_FIELDS.get(name)
     if field and isinstance(inp, dict):
         v = inp.get(field)
@@ -77,7 +85,7 @@ def _target(name: str, inp: dict) -> Optional[str]:
     return None
 
 
-def _extract_tools(rec: dict) -> List[dict]:
+def _extract_tools(rec: dict) -> list[dict]:
     out = []
     content = (rec.get("message") or {}).get("content")
     if not isinstance(content, list):
@@ -97,7 +105,7 @@ def _extract_tools(rec: dict) -> List[dict]:
     return out
 
 
-def _extract_results(rec: dict) -> List[dict]:
+def _extract_results(rec: dict) -> list[dict]:
     out = []
     content = (rec.get("message") or {}).get("content")
     if not isinstance(content, list):
@@ -122,7 +130,7 @@ def _extract_results(rec: dict) -> List[dict]:
     return out
 
 
-def parse_record(rec: dict, project_slug: str) -> Tuple[dict, List[dict]]:
+def parse_record(rec: dict, project_slug: str) -> tuple[dict, list[dict]]:
     """Return (message_row, [tool_call_rows])."""
     msg_obj = rec.get("message") or {}
     text, chars = _prompt_text(rec)
@@ -152,7 +160,8 @@ def parse_record(rec: dict, project_slug: str) -> Tuple[dict, List[dict]]:
     tools.extend(_extract_results(rec))
     if tools:
         msg["tool_calls_json"] = json.dumps(
-            [{"name": t["tool_name"], "target": t["target"]} for t in tools if t["tool_name"] != "_tool_result"]
+            [{"name": t["tool_name"], "target": t["target"]} for t in tools
+             if t["tool_name"] != "_tool_result"]
         )
     for t in tools:
         t["message_uuid"] = msg["uuid"]
@@ -194,7 +203,7 @@ def scan_file(path: Path, project_slug: str, conn, start_byte: int = 0) -> dict:
     """
     msgs = tools = 0
     end_offset = start_byte
-    with open(path, "rb") as fb:
+    with path.open("rb") as fb:
         if start_byte:
             fb.seek(start_byte)
         while True:
@@ -267,7 +276,8 @@ def scan_dir(projects_root: Union[str, Path], db_path: Union[str, Path]) -> dict
             # st_size) so a partial line mid-flush is retried on the next
             # scan instead of being skipped over.
             conn.execute(
-                "INSERT OR REPLACE INTO files (path, mtime, bytes_read, scanned_at) VALUES (?, ?, ?, ?)",
+                "INSERT OR REPLACE INTO files"
+                " (path, mtime, bytes_read, scanned_at) VALUES (?, ?, ?, ?)",
                 (str(p), stat.st_mtime, sub["end_offset"], time.time()),
             )
             totals["messages"] += sub["messages"]

@@ -2,8 +2,7 @@
 from __future__ import annotations
 
 import time
-from datetime import datetime, timedelta
-from typing import List, Optional
+from datetime import UTC, datetime, timedelta
 
 from .db import connect
 
@@ -34,8 +33,8 @@ def dismiss_tip(db_path, key: str) -> None:
         c.commit()
 
 
-def cache_discipline_tips(db_path, today_iso: Optional[str] = None) -> List[dict]:
-    today_iso = today_iso or datetime.utcnow().isoformat()
+def cache_discipline_tips(db_path, today_iso: str | None = None) -> list[dict]:
+    today_iso = today_iso or datetime.now(UTC).isoformat()
     since = _iso_days_ago(today_iso, 7)
     sql = """
       SELECT project_slug,
@@ -59,14 +58,18 @@ def cache_discipline_tips(db_path, today_iso: Optional[str] = None) -> List[dict
                     "key": key,
                     "category": "cache",
                     "title": f"Low cache hit rate in {row['project_slug']}",
-                    "body": f"Cache hit rate is {hit*100:.0f}% over the last 7 days. Sessions that restart context frequently rebuild cache. Consider longer-lived sessions or fewer context resets.",
+                    "body": (
+                        f"Cache hit rate is {hit*100:.0f}% over the last 7 days. "
+                        "Sessions that restart context frequently rebuild cache. "
+                        "Consider longer-lived sessions or fewer context resets."
+                    ),
                     "scope": row["project_slug"],
                 })
     return out
 
 
-def repeated_target_tips(db_path, today_iso: Optional[str] = None) -> List[dict]:
-    today_iso = today_iso or datetime.utcnow().isoformat()
+def repeated_target_tips(db_path, today_iso: str | None = None) -> list[dict]:
+    today_iso = today_iso or datetime.now(UTC).isoformat()
     since = _iso_days_ago(today_iso, 7)
     out = []
     with connect(db_path) as c:
@@ -83,7 +86,11 @@ def repeated_target_tips(db_path, today_iso: Optional[str] = None) -> List[dict]
             out.append({
                 "key": key, "category": "repeat-file",
                 "title": f"{row['target']} read {row['n']} times",
-                "body": f"This file was opened {row['n']} times across {row['sessions']} sessions in the past 7 days. A summary in CLAUDE.md or one read per session would avoid repeats.",
+                "body": (
+                    f"This file was opened {row['n']} times across {row['sessions']} sessions "
+                    "in the past 7 days. A summary in CLAUDE.md or one read per session "
+                    "would avoid repeats."
+                ),
                 "scope": row["target"],
             })
         for row in c.execute("""
@@ -99,14 +106,17 @@ def repeated_target_tips(db_path, today_iso: Optional[str] = None) -> List[dict]
             out.append({
                 "key": key, "category": "repeat-bash",
                 "title": f"`{row['target']}` ran {row['n']} times",
-                "body": f"This bash command ran {row['n']} times in the past 7 days. Consider a watch flag or shell alias.",
+                "body": (
+                    f"This bash command ran {row['n']} times in the past 7 days. "
+                    "Consider a watch flag or shell alias."
+                ),
                 "scope": row["target"],
             })
     return out
 
 
-def right_size_tips(db_path, today_iso: Optional[str] = None) -> List[dict]:
-    today_iso = today_iso or datetime.utcnow().isoformat()
+def right_size_tips(db_path, today_iso: str | None = None) -> list[dict]:
+    today_iso = today_iso or datetime.now(UTC).isoformat()
     since = _iso_days_ago(today_iso, 7)
     sql = """
       SELECT COUNT(*) AS n,
@@ -132,13 +142,16 @@ def right_size_tips(db_path, today_iso: Optional[str] = None) -> List[dict]:
     return [{
         "key": key, "category": "right-size",
         "title": f"{row['n']} short Opus turns might fit on Sonnet",
-        "body": f"Opus turns under 500 output tokens cost ~${api_opus:.2f} in the last 7 days. Sonnet would have cost ~${api_sonnet:.2f} (savings ~${savings:.2f}).",
+        "body": (
+            f"Opus turns under 500 output tokens cost ~${api_opus:.2f} in the last 7 days. "
+            f"Sonnet would have cost ~${api_sonnet:.2f} (savings ~${savings:.2f})."
+        ),
         "scope": "opus-short-turns-7d",
     }]
 
 
-def outlier_tips(db_path, today_iso: Optional[str] = None) -> List[dict]:
-    today_iso = today_iso or datetime.utcnow().isoformat()
+def outlier_tips(db_path, today_iso: str | None = None) -> list[dict]:
+    today_iso = today_iso or datetime.now(UTC).isoformat()
     since = _iso_days_ago(today_iso, 7)
     out = []
     with connect(db_path) as c:
@@ -153,7 +166,10 @@ def outlier_tips(db_path, today_iso: Optional[str] = None) -> List[dict]:
                 out.append({
                     "key": key, "category": "tool-bloat",
                     "title": f"{big['n']} tool results over 50k tokens this week",
-                    "body": f"Average size is {int(big['avg_t']):,} tokens. Pipe long Bash output to head/tail and ask for narrower file reads.",
+                    "body": (
+                        f"Average size is {int(big['avg_t']):,} tokens. "
+                        "Pipe long Bash output to head/tail and ask for narrower file reads."
+                    ),
                     "scope": "result-50k+",
                 })
         for row in c.execute("""
@@ -171,13 +187,17 @@ def outlier_tips(db_path, today_iso: Optional[str] = None) -> List[dict]:
                 out.append({
                     "key": key, "category": "subagent-outlier",
                     "title": f"Subagent {row['agent_id']} has cost outliers",
-                    "body": f"Largest invocation used {int(row['max_t']):,} tokens vs mean {int(row['mean_t']):,}. Worth checking what those did differently.",
+                    "body": (
+                        f"Largest invocation used {int(row['max_t']):,} tokens "
+                        f"vs mean {int(row['mean_t']):,}. "
+                        "Worth checking what those did differently."
+                    ),
                     "scope": row["agent_id"],
                 })
     return out
 
 
-def all_tips(db_path, today_iso: Optional[str] = None) -> List[dict]:
+def all_tips(db_path, today_iso: str | None = None) -> list[dict]:
     return [
         *cache_discipline_tips(db_path, today_iso),
         *repeated_target_tips(db_path, today_iso),

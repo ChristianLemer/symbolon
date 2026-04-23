@@ -1,12 +1,12 @@
 import http.server
 import json
-import os
 import socket
 import sqlite3
 import tempfile
 import threading
 import unittest
 import urllib.request
+from pathlib import Path
 
 from token_dashboard.db import init_db
 from token_dashboard.server import build_handler
@@ -22,15 +22,15 @@ def _free_port():
 
 class ServerTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.mkdtemp()
-        self.db = os.path.join(self.tmp, "t.db")
+        self.tmp = Path(tempfile.mkdtemp())
+        self.db = self.tmp / "t.db"
         init_db(self.db)
         with sqlite3.connect(self.db) as c:
-            c.execute("INSERT INTO messages (uuid, parent_uuid, session_id, project_slug, type, timestamp, model, input_tokens, output_tokens, cache_read_tokens, cache_create_5m_tokens, cache_create_1h_tokens, prompt_text, prompt_chars) VALUES ('u',NULL,'s','p','user','2026-04-19T00:00:00Z',NULL,0,0,0,0,0,'hi',2)")
-            c.execute("INSERT INTO messages (uuid, parent_uuid, session_id, project_slug, type, timestamp, model, input_tokens, output_tokens, cache_read_tokens, cache_create_5m_tokens, cache_create_1h_tokens) VALUES ('a','u','s','p','assistant','2026-04-19T00:00:01Z','claude-haiku-4-5',1,1,0,0,0)")
+            c.execute("INSERT INTO messages (uuid, parent_uuid, session_id, project_slug, type, timestamp, model, input_tokens, output_tokens, cache_read_tokens, cache_create_5m_tokens, cache_create_1h_tokens, prompt_text, prompt_chars) VALUES ('u',NULL,'s','p','user','2026-04-19T00:00:00Z',NULL,0,0,0,0,0,'hi',2)")  # noqa: E501
+            c.execute("INSERT INTO messages (uuid, parent_uuid, session_id, project_slug, type, timestamp, model, input_tokens, output_tokens, cache_read_tokens, cache_create_5m_tokens, cache_create_1h_tokens) VALUES ('a','u','s','p','assistant','2026-04-19T00:00:01Z','claude-haiku-4-5',1,1,0,0,0)")  # noqa: E501
             c.commit()
         self.port = _free_port()
-        H = build_handler(self.db, projects_dir="/nonexistent")
+        H = build_handler(str(self.db), projects_dir="/nonexistent")
         self.httpd = http.server.HTTPServer(("127.0.0.1", self.port), H)
         threading.Thread(target=self.httpd.serve_forever, daemon=True).start()
 

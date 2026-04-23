@@ -1,12 +1,11 @@
 """SQLite schema, connection, and shared query helpers."""
 from __future__ import annotations
 
-import os
 import re
 import sqlite3
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Optional, Union
+from typing import Union
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS files (
@@ -124,9 +123,11 @@ def connect(path: Union[str, Path]):
 def _range_clause(since, until, col: str = "timestamp"):
     where, args = [], []
     if since:
-        where.append(f"{col} >= ?"); args.append(since)
+        where.append(f"{col} >= ?")
+        args.append(since)
     if until:
-        where.append(f"{col} < ?"); args.append(until)
+        where.append(f"{col} < ?")
+        args.append(until)
     return ((" AND " + " AND ".join(where)) if where else "", args)
 
 
@@ -135,7 +136,7 @@ def _encode_slug(path: str) -> str:
     return re.sub(r"[:\\/ ]", "-", path)
 
 
-def _walk_to_root(cwd: str, slug: str) -> Optional[str]:
+def _walk_to_root(cwd: str, slug: str) -> str | None:
     """If any ancestor of cwd encodes to slug, return that ancestor's basename."""
     if not cwd or not slug:
         return None
@@ -150,7 +151,7 @@ def _walk_to_root(cwd: str, slug: str) -> Optional[str]:
     return None
 
 
-def project_name_for(cwd: Optional[str], fallback_slug: str) -> str:
+def project_name_for(cwd: str | None, fallback_slug: str) -> str:
     """Pretty project name from a single cwd + slug (best-effort).
 
     For the multi-cwd case, prefer `best_project_name`.
@@ -214,7 +215,8 @@ def expensive_prompts(db_path, limit: int = 50, sort: str = "tokens") -> list:
              u.prompt_text, u.prompt_chars,
              a.uuid AS assistant_uuid, a.model,
              COALESCE(a.input_tokens,0)+COALESCE(a.output_tokens,0)
-               +COALESCE(a.cache_create_5m_tokens,0)+COALESCE(a.cache_create_1h_tokens,0) AS billable_tokens,
+               +COALESCE(a.cache_create_5m_tokens,0)
+               +COALESCE(a.cache_create_1h_tokens,0) AS billable_tokens,
              COALESCE(a.cache_read_tokens,0) AS cache_read_tokens
         FROM messages u
         JOIN messages a ON a.parent_uuid = u.uuid AND a.type='assistant'
@@ -370,7 +372,8 @@ def model_breakdown(db_path, since=None, until=None) -> list:
         FROM messages
        WHERE type = 'assistant' {rng}
        GROUP BY model
-       ORDER BY (input_tokens + output_tokens + cache_create_5m_tokens + cache_create_1h_tokens) DESC
+       ORDER BY (input_tokens + output_tokens
+                 + cache_create_5m_tokens + cache_create_1h_tokens) DESC
     """
     with connect(db_path) as c:
         return [dict(r) for r in c.execute(sql, args)]

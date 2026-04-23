@@ -12,6 +12,7 @@ import sqlite3
 import tempfile
 import time
 import unittest
+from pathlib import Path
 
 from token_dashboard.db import init_db
 from token_dashboard.scanner import scan_dir
@@ -45,23 +46,23 @@ def _user_record() -> dict:
     }
 
 
-def _write_jsonl(path: str, records) -> None:
-    with open(path, "w", encoding="utf-8") as f:
+def _write_jsonl(path, records) -> None:
+    with Path(path).open("w", encoding="utf-8") as f:
         for r in records:
             f.write(json.dumps(r) + "\n")
 
 
 class RescanIdempotencyTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.mkdtemp()
-        self.db = os.path.join(self.tmp, "t.db")
-        self.proj_root = os.path.join(self.tmp, "projects")
-        self.proj_dir = os.path.join(self.proj_root, "C--work-sample")
-        os.makedirs(self.proj_dir)
+        self.tmp = Path(tempfile.mkdtemp())
+        self.db = self.tmp / "t.db"
+        self.proj_root = self.tmp / "projects"
+        self.proj_dir = self.proj_root / "C--work-sample"
+        self.proj_dir.mkdir(parents=True, exist_ok=True)
         init_db(self.db)
 
-    def _jsonl_path(self) -> str:
-        return os.path.join(self.proj_dir, "s1.jsonl")
+    def _jsonl_path(self) -> Path:
+        return self.proj_dir / "s1.jsonl"
 
     def _count_tools(self) -> int:
         with sqlite3.connect(self.db) as c:
@@ -82,7 +83,7 @@ class RescanIdempotencyTests(unittest.TestCase):
             _assistant_with_tool_use("a2", "msg_B", "2026-04-10T00:00:02Z", 20)
         )
         half = len(partial_b) // 2
-        with open(path, "w", encoding="utf-8") as f:
+        with path.open("w", encoding="utf-8") as f:
             f.write(json.dumps(_user_record()) + "\n")
             f.write(json.dumps(rec_a) + "\n")
             f.write(partial_b[:half])  # truncated, no "\n"
@@ -100,7 +101,7 @@ class RescanIdempotencyTests(unittest.TestCase):
 
         # Scan 2: complete record B's line + append a brand-new record C.
         rec_c = _assistant_with_tool_use("a3", "msg_C", "2026-04-10T00:00:03Z", 30)
-        with open(path, "a", encoding="utf-8") as f:
+        with path.open("a", encoding="utf-8") as f:
             f.write(partial_b[half:] + "\n")
             f.write(json.dumps(rec_c) + "\n")
         future = time.time() + 10

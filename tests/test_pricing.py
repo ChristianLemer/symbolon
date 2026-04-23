@@ -1,9 +1,9 @@
-import os
 import unittest
+from pathlib import Path
 
-from token_dashboard.pricing import load_pricing, cost_for, format_for_user
+from token_dashboard.pricing import cost_for, format_for_user, load_pricing
 
-PRICING = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "pricing.json"))
+PRICING = Path(__file__).resolve().parent.parent / "pricing.json"
 
 
 class CostTests(unittest.TestCase):
