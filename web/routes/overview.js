@@ -2,10 +2,11 @@ import { api, fmt, state } from '/web/app.js';
 import { barChart, donutChart, groupedBarChart, stackedBarChart } from '/web/charts.js';
 
 const RANGES = [
-  { key: '7d',  label: '7d',  days: 7 },
-  { key: '30d', label: '30d', days: 30 },
-  { key: '90d', label: '90d', days: 90 },
-  { key: 'all', label: 'All', days: null },
+  { key: 'today', label: 'Today', days: null, today: true },
+  { key: '7d',    label: '7d',    days: 7 },
+  { key: '30d',   label: '30d',   days: 30 },
+  { key: '90d',   label: '90d',   days: 90 },
+  { key: 'all',   label: 'All',   days: null },
 ];
 
 function readRange() {
@@ -21,6 +22,10 @@ function writeRange(key) {
 }
 
 function sinceIso(range) {
+  if (range.today) {
+    const n = new Date();
+    return new Date(n.getFullYear(), n.getMonth(), n.getDate()).toISOString();
+  }
   if (!range.days) return null;
   return new Date(Date.now() - range.days * 86400 * 1000).toISOString();
 }
@@ -47,6 +52,19 @@ export default async function (root) {
     (totals.cache_create_5m_tokens || 0) +
     (totals.cache_create_1h_tokens || 0);
 
+  function monthlyRate(cost) {
+    if (range.today) {
+      const now = new Date();
+      const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const fracOfDay = (now - startOfDay) / 86400000;
+      if (fracOfDay < 0.05) return null;  // before ~01:12, projection is meaningless
+      return (cost || 0) / fracOfDay * 30;
+    }
+    if (!range.days) return null;
+    return (cost || 0) / range.days * 30;
+  }
+  const monthly = monthlyRate(totals.cost_usd);
+
   const kpi = (label, compactVal, fullVal, cls = '') => `
     <div class="card kpi ${cls}">
       <div class="label">${label}</div>
@@ -61,12 +79,12 @@ export default async function (root) {
   root.innerHTML = `
     <div class="flex" style="margin-bottom:14px">
       <h2 style="margin:0;font-size:16px;letter-spacing:-0.01em">Overview</h2>
-      <span class="muted" style="font-size:12px">${range.days ? `last ${range.days} days` : 'all time'}</span>
+      <span class="muted" style="font-size:12px">${range.today ? 'today' : range.days ? `last ${range.days} days` : 'all time'}</span>
       <div class="spacer"></div>
       ${rangeTabs}
     </div>
 
-    <div class="row cols-7">
+    <div class="row cols-8">
       ${kpi('Sessions',     fmt.int(totals.sessions),       fmt.int(totals.sessions))}
       ${kpi('Turns',        fmt.int(totals.turns),          fmt.int(totals.turns))}
       ${kpi('Input',        fmt.compact(totals.input_tokens),       fmt.int(totals.input_tokens) + ' tokens')}
@@ -77,6 +95,11 @@ export default async function (root) {
         <div class="label">Est. cost</div>
         <div class="value" title="${fmt.usd(totals.cost_usd)}">${fmt.usd(totals.cost_usd)}</div>
         ${planSubtitle()}
+      </div>
+      <div class="card kpi">
+        <div class="label">Est. $/mo</div>
+        <div class="value" title="${monthly !== null ? fmt.usd(monthly) + '/mo' : 'n/a'}">${monthly !== null ? fmt.usd(monthly) : '—'}</div>
+        <div class="sub">${range.today ? "today's pace × 30" : range.days ? `×${(30/range.days).toFixed(1)} (${range.days}d rate)` : 'all time'}</div>
       </div>
     </div>
 
