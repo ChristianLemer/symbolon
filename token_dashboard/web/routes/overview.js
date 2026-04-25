@@ -18,7 +18,7 @@ function readRange() {
 
 function writeRange(key) {
   const base = (location.hash.replace(/^#/, '').split('?')[0]) || '/overview';
-  location.hash = '#' + base + '?range=' + encodeURIComponent(key);
+  location.hash = `#${base}?range=${encodeURIComponent(key)}`;
 }
 
 async function sinceIso(range) {
@@ -35,7 +35,7 @@ async function sinceIso(range) {
 
 function withSince(url, since) {
   if (!since) return url;
-  return url + (url.includes('?') ? '&' : '?') + 'since=' + encodeURIComponent(since);
+  return `${url}${url.includes('?') ? '&' : '?'}since=${encodeURIComponent(since)}`;
 }
 
 export default async function (root) {
@@ -58,10 +58,8 @@ export default async function (root) {
 
   function monthlyRate(cost) {
     if (range.today) {
-      const now = new Date();
-      const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      const fracOfDay = (now - startOfDay) / 86400000;
-      if (fracOfDay < 0.05) return null;  // before ~01:12, projection is meaningless
+      const fracOfDay = (Date.now() - Date.parse(todayMeta.since)) / 86400000;
+      if (fracOfDay < 0.05) return null;  // first ~72 min of the cutoff window
       return (cost || 0) / fracOfDay * 30;
     }
     if (!range.days) return null;
@@ -83,7 +81,7 @@ export default async function (root) {
   root.innerHTML = `
     <div class="flex" style="margin-bottom:14px">
       <h2 style="margin:0;font-size:16px;letter-spacing:-0.01em">Overview</h2>
-      <span class="muted" style="font-size:12px">${range.today ? `today · since ${String(todayMeta.day_starts_at_hour).padStart(2, '0')}:00` : range.days ? `last ${range.days} days` : 'all time'}</span>
+      <span class="muted" style="font-size:12px">${range.today ? `since ${String(todayMeta.day_starts_at_hour).padStart(2, '0')}:00` : range.days ? `last ${range.days} days` : 'all time'}</span>
       <div class="spacer"></div>
       ${rangeTabs}
     </div>
@@ -91,10 +89,10 @@ export default async function (root) {
     <div class="row cols-8">
       ${kpi('Sessions',     fmt.int(totals.sessions),       fmt.int(totals.sessions))}
       ${kpi('Turns',        fmt.int(totals.turns),          fmt.int(totals.turns))}
-      ${kpi('Input',        fmt.compact(totals.input_tokens),       fmt.int(totals.input_tokens) + ' tokens')}
-      ${kpi('Output',       fmt.compact(totals.output_tokens),      fmt.int(totals.output_tokens) + ' tokens')}
-      ${kpi('Cache read',   fmt.compact(totals.cache_read_tokens),  fmt.int(totals.cache_read_tokens) + ' tokens')}
-      ${kpi('Cache create', fmt.compact(cacheCreate),               fmt.int(cacheCreate) + ' tokens')}
+      ${kpi('Input',        fmt.compact(totals.input_tokens),       `${fmt.int(totals.input_tokens)} tokens`)}
+      ${kpi('Output',       fmt.compact(totals.output_tokens),      `${fmt.int(totals.output_tokens)} tokens`)}
+      ${kpi('Cache read',   fmt.compact(totals.cache_read_tokens),  `${fmt.int(totals.cache_read_tokens)} tokens`)}
+      ${kpi('Cache create', fmt.compact(cacheCreate),               `${fmt.int(cacheCreate)} tokens`)}
       <div class="card kpi cost">
         <div class="label">Est. cost</div>
         <div class="value" title="${fmt.usd(totals.cost_usd)}">${fmt.usd(totals.cost_usd)}</div>
@@ -102,7 +100,7 @@ export default async function (root) {
       </div>
       <div class="card kpi">
         <div class="label">Est. $/mo</div>
-        <div class="value" title="${monthly !== null ? fmt.usd(monthly) + '/mo' : 'n/a'}">${monthly !== null ? fmt.usd(monthly) : '—'}</div>
+        <div class="value" title="${monthly !== null ? `${fmt.usd(monthly)}/mo` : 'n/a'}">${monthly !== null ? fmt.usd(monthly) : '—'}</div>
         <div class="sub">${range.today ? "today's pace × 30" : range.days ? `×${(30/range.days).toFixed(1)} (${range.days}d rate)` : 'all time'}</div>
       </div>
     </div>
@@ -198,7 +196,7 @@ export default async function (root) {
   groupedBarChart(document.getElementById('ch-projects'), {
     categories: topProjects.map(p => {
       const name = p.project_name || p.project_slug;
-      return name.length > 20 ? name.slice(0, 19) + '…' : name;
+      return name.length > 20 ? `${name.slice(0, 19)}…` : name;
     }),
     series: [
       { name: 'input',  values: topProjects.map(p => p.input_tokens  || 0), color: '#4A9EFF' },
@@ -217,7 +215,7 @@ export default async function (root) {
 
 function planSubtitle() {
   if (!state.pricing || state.plan === 'api') return '';
-  const p = state.pricing.plans[state.plan];
-  if (!p || !p.monthly) return '';
+  const p = state.pricing.plans?.[state.plan];
+  if (!p?.monthly) return '';
   return `<div class="sub">pay $${p.monthly}/mo on ${fmt.htmlSafe(p.label)}</div>`;
 }

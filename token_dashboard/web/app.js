@@ -7,10 +7,10 @@ const COMPACT = new Intl.NumberFormat('en', { notation: 'compact', maximumFracti
 export const fmt = {
   int:   n => (n ?? 0).toLocaleString(),
   compact: n => COMPACT.format(n ?? 0),
-  usd:   n => n == null ? '—' : '$' + Number(n).toFixed(2),
-  usd4:  n => n == null ? '—' : '$' + Number(n).toFixed(4),
-  pct:   n => n == null ? '—' : (n * 100).toFixed(0) + '%',
-  short: (s, n=80) => s == null ? '' : (s.length > n ? s.slice(0, n - 1) + '…' : s),
+  usd:   n => n == null ? '—' : `$${Number(n).toFixed(2)}`,
+  usd4:  n => n == null ? '—' : `$${Number(n).toFixed(4)}`,
+  pct:   n => n == null ? '—' : `${(n * 100).toFixed(0)}%`,
+  short: (s, n=80) => s == null ? '' : (s.length > n ? `${s.slice(0, n - 1)}…` : s),
   htmlSafe: s => (s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),
   modelClass: m => {
     const s = (m || '').toLowerCase();
@@ -46,6 +46,7 @@ function buildTopbar() {
   wrap.className = 'topbar';
   wrap.innerHTML = `
     <div class="brand">Token Dashboard</div>
+    <span class="scope-tag" title="Claude Desktop, claude.ai web, and direct API calls are not tracked here. Cross-check with console.anthropic.com for the full picture.">Claude Code only</span>
     <nav>
       ${Object.keys(ROUTES).map(p => `<a href="#${p}" data-route="${p}">${p.slice(1)}</a>`).join('')}
     </nav>
@@ -90,7 +91,9 @@ function buildTopbar() {
 }
 
 function setActiveTab(routeKey) {
-  $$('header.topbar nav a').forEach(a => a.classList.toggle('active', a.dataset.route === routeKey));
+  $$('header.topbar nav a').forEach(a => {
+    a.classList.toggle('active', a.dataset.route === routeKey);
+  });
 }
 
 async function render() {

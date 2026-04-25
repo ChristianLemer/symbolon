@@ -28,6 +28,12 @@ html, body {
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
+/* utility — declared early so component rules with higher specificity override cleanly */
+.muted { color: var(--muted); }
+.flex { display: flex; align-items: center; gap: 8px; }
+.spacer { flex: 1; }
+hr.divider { border: 0; border-top: 1px solid var(--border); margin: 16px 0; }
+
 /* topbar */
 header.topbar {
   display: flex; align-items: center; gap: 16px;
@@ -36,6 +42,18 @@ header.topbar {
   background: linear-gradient(180deg, var(--panel) 0%, var(--bg) 100%);
   position: sticky; top: 0; z-index: 10;
   backdrop-filter: saturate(180%) blur(8px);
+}
+.topbar .scope-tag {
+  font-size: 11px;
+  color: var(--muted);
+  padding: 2px 8px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  margin-left: 8px;
+  font-family: var(--mono);
+  cursor: help;
+  white-space: nowrap;
 }
 .topbar .brand {
   font-weight: 600; letter-spacing: -0.01em; font-size: 14px;
@@ -234,12 +252,6 @@ body.privacy-on .blur-sensitive { filter: blur(6px); }
 .modal h2 { margin: 0 0 8px; }
 .modal p { color: var(--muted); margin: 0 0 16px; }
 .modal .actions { display: flex; gap: 8px; align-items: center; margin-top: 16px; }
-
-/* utility */
-.muted { color: var(--muted); }
-.flex { display: flex; align-items: center; gap: 8px; }
-.spacer { flex: 1; }
-hr.divider { border: 0; border-top: 1px solid var(--border); margin: 16px 0; }
 
 /* glossary */
 .glossary summary {

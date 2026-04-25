@@ -15,8 +15,8 @@ Working codebase. 68 Python unit tests (`python3 -m unittest discover tests`). S
 ## Architecture
 
 - `cli.py` → `token_dashboard/scanner.py` → `~/.claude/token-dashboard.db` (SQLite)
-- `token_dashboard/server.py` exposes JSON APIs (`/api/*`) + SSE stream (`/api/stream`) + static frontend (`web/`)
-- `web/` is vanilla JS, no build step — hash router + ECharts
+- `token_dashboard/server.py` exposes JSON APIs (`/api/*`) + SSE stream (`/api/stream`) + static frontend (`token_dashboard/web/`)
+- `token_dashboard/web/` is vanilla JS, no build step — hash router + ECharts
 
 ## Data source
 

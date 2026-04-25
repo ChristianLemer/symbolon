@@ -30,8 +30,8 @@ from .skills import cached_catalog
 from .tips import all_tips, dismiss_tip
 from .util import today_range_local
 
-WEB_ROOT = Path(__file__).resolve().parent.parent / "web"
-PRICING_JSON = Path(__file__).resolve().parent.parent / "pricing.json"
+WEB_ROOT = Path(__file__).resolve().parent / "web"
+PRICING_JSON = Path(__file__).resolve().parent / "pricing.json"
 
 EVENTS: queue.Queue[dict] = queue.Queue()
 _heartbeat: dict = {"at": None}  # None = no client has connected yet

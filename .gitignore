@@ -9,3 +9,6 @@ node_modules/
 .superpowers/
 .claude/
 docs/superpowers/
+
+# Playwright MCP browser session artifacts
+.playwright-mcp/
