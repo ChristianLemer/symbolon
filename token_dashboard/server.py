@@ -28,6 +28,7 @@ from .pricing import cost_for, get_plan, load_pricing, set_plan
 from .scanner import scan_dir
 from .skills import cached_catalog
 from .tips import all_tips, dismiss_tip
+from .util import today_range_local
 
 WEB_ROOT = Path(__file__).resolve().parent.parent / "web"
 PRICING_JSON = Path(__file__).resolve().parent.parent / "pricing.json"
@@ -153,6 +154,15 @@ def build_handler(db_path: str, projects_dir: str):
             if path == "/api/scan":
                 n = scan_dir(projects_dir, db_path)
                 return _send_json(self, n)
+            if path == "/api/today/range":
+                from .util import DEFAULT_DAY_STARTS_AT_HOUR
+                since, until, day = today_range_local()
+                return _send_json(self, {
+                    "since": since,
+                    "until": until,
+                    "day": day,
+                    "day_starts_at_hour": DEFAULT_DAY_STARTS_AT_HOUR,
+                })
             if path == "/api/stream":
                 self.send_response(200)
                 self.send_header("Content-Type", "text/event-stream")

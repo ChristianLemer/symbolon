@@ -75,6 +75,20 @@ class ServerTests(unittest.TestCase):
             self.assertEqual(resp.status, 200)
             self.assertEqual(resp.read(), b"")
 
+    def test_today_range_endpoint(self):
+        body = json.loads(self._get("/api/today/range"))
+        self.assertIn("since", body)
+        self.assertIn("until", body)
+        self.assertIn("day", body)
+        self.assertIn("day_starts_at_hour", body)
+        self.assertIsInstance(body["day_starts_at_hour"], int)
+        # Values are ISO-parseable timestamps in UTC
+        from datetime import datetime as _dt
+        s = _dt.fromisoformat(body["since"])
+        u = _dt.fromisoformat(body["until"])
+        self.assertEqual((u - s).total_seconds(), 86400)
+        self.assertRegex(body["day"], r"^\d{4}-\d{2}-\d{2}$")
+
     # Note: /api/quit's source-IP guard is not unit-tested here.
     # Testing it would require a request from a non-loopback interface,
     # which depends on the host's network setup. The check is one line

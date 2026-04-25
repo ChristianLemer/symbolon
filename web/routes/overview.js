@@ -21,10 +21,13 @@ function writeRange(key) {
   location.hash = '#' + base + '?range=' + encodeURIComponent(key);
 }
 
-function sinceIso(range) {
+async function sinceIso(range) {
   if (range.today) {
-    const n = new Date();
-    return new Date(n.getFullYear(), n.getMonth(), n.getDate()).toISOString();
+    // Server is the canonical source for the "today" boundary — see
+    // token_dashboard/util.py::today_range_local. Defaults to a 4 a.m.
+    // local cutoff so late-night sessions count toward yesterday.
+    const r = await api('/api/today/range');
+    return r.since;
   }
   if (!range.days) return null;
   return new Date(Date.now() - range.days * 86400 * 1000).toISOString();
@@ -37,7 +40,7 @@ function withSince(url, since) {
 
 export default async function (root) {
   const range = readRange();
-  const since = sinceIso(range);
+  const since = await sinceIso(range);
 
   const [totals, projects, sessions, tools, daily, byModel] = await Promise.all([
     api(withSince('/api/overview', since)),

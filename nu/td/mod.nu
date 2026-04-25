@@ -140,10 +140,11 @@ export def overview [
   http get (url "/api/overview" {since: $since, until: $until})
 }
 
-# Today's totals (since start of local day).
+# Today's totals — uses the server's canonical "today" range (default
+# 4 a.m. local cutoff so late-night sessions count toward yesterday).
 export def today []: nothing -> record {
-  let start = ((date now) | format date "%Y-%m-%dT00:00:00")
-  http get (url "/api/overview" {since: $start})
+  let r = (http get (url "/api/today/range"))
+  http get (url "/api/overview" {since: $r.since, until: $r.until})
 }
 
 # Most expensive prompts. Sort by `tokens` (default) or `recent`.

@@ -4,12 +4,12 @@ from __future__ import annotations
 import argparse
 import os
 import webbrowser
-from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 from .db import default_db_path, init_db, overview_totals
 from .scanner import scan_dir
 from .tips import all_tips
+from .util import today_range_local
 
 
 def _db_path(args) -> str:
@@ -22,13 +22,6 @@ def _projects(args) -> str:
         or os.environ.get("CLAUDE_PROJECTS_DIR")
         or str(Path.home() / ".claude" / "projects")
     )
-
-
-def _today_range():
-    now = datetime.now(UTC)
-    start = datetime(now.year, now.month, now.day, tzinfo=UTC).isoformat()
-    end = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0).isoformat()
-    return start, end
 
 
 def cmd_scan(args):
@@ -44,9 +37,9 @@ def cmd_scan(args):
 def cmd_today(args):
     db = _db_path(args)
     init_db(db)
-    s, e = _today_range()
+    s, e, day = today_range_local()
     t = overview_totals(db, since=s, until=e)
-    print("Token Dashboard — today")
+    print(f"Token Dashboard — {day}")
     print(f"  sessions: {t['sessions']}    turns: {t['turns']}")
     print(f"  input:    {t['input_tokens']:>12,}    output: {t['output_tokens']:>12,}")
     cache_cr = t["cache_create_5m_tokens"] + t["cache_create_1h_tokens"]
