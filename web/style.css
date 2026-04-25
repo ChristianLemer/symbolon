@@ -170,6 +170,35 @@ button.danger:hover { background: rgba(229,72,77,0.1); }
 button.danger:disabled { opacity: 0.4; cursor: not-allowed; }
 .topbar button.danger { padding: 4px 8px; font-size: 13px; border-radius: 6px; }
 
+/* offline state */
+.topbar .pill.offline-pill { color: var(--bad); border-color: var(--bad); }
+body.offline main#app { opacity: 0.5; pointer-events: none; filter: grayscale(0.3); }
+.offline-banner {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--panel);
+  border: 1px solid var(--bad);
+  border-radius: 8px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  max-width: 640px;
+  font-size: 13px;
+}
+.offline-banner code {
+  background: var(--panel-2);
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
 /* tip rows */
 .tip {
   border: 1px solid var(--border); border-radius: 8px;

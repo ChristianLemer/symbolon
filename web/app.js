@@ -157,8 +157,64 @@ async function boot() {
     }
   });
 
-  // Heartbeat — keeps the server alive; absence triggers auto-shutdown after 30s
-  const _hb = () => fetch('/api/heartbeat', { method: 'POST' }).catch(() => {});
+  // Heartbeat — keeps the server alive; absence triggers auto-shutdown after 30s.
+  // Also drives offline detection: two consecutive failures flip the UI into
+  // an "offline" state with a reconnect prompt.
+  let serverOffline = false;
+  let hbFailures = 0;
+  let banner = null;
+
+  const setOffline = (off) => {
+    if (off === serverOffline) return;
+    serverOffline = off;
+    document.body.classList.toggle('offline', off);
+    const pill = $('#plan-pill');
+    if (off) {
+      pill.textContent = 'offline';
+      pill.classList.add('offline-pill');
+      showOfflineBanner();
+    } else {
+      pill.textContent = state.plan;
+      pill.classList.remove('offline-pill');
+      if (banner) { banner.remove(); banner = null; }
+      render();  // refresh stale content
+    }
+  };
+
+  function showOfflineBanner() {
+    if (banner) return;
+    banner = document.createElement('div');
+    banner.className = 'offline-banner';
+    banner.innerHTML = `
+      <div>
+        <strong>Server is offline.</strong><br>
+        Run <code>td start</code> or <code>token-dashboard dashboard</code>
+        in your terminal, then click reconnect.
+      </div>
+      <button id="reconnect-btn" class="primary">Reconnect</button>
+    `;
+    document.body.appendChild(banner);
+    $('#reconnect-btn').addEventListener('click', async () => {
+      const btn = $('#reconnect-btn');
+      btn.disabled = true;
+      btn.textContent = 'Trying…';
+      try {
+        const r = await fetch('/api/heartbeat', { method: 'POST' });
+        if (r.ok) { hbFailures = 0; setOffline(false); return; }
+      } catch { /* fall through */ }
+      btn.disabled = false;
+      btn.textContent = 'Reconnect';
+    });
+  }
+
+  const _hb = async () => {
+    try {
+      const r = await fetch('/api/heartbeat', { method: 'POST' });
+      if (r.ok) { hbFailures = 0; if (serverOffline) setOffline(false); return; }
+    } catch { /* fall through */ }
+    hbFailures += 1;
+    if (hbFailures >= 2) setOffline(true);
+  };
   _hb();
   setInterval(_hb, 10000);
 
