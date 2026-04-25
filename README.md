@@ -148,6 +148,10 @@ Python 3.11+ (no runtime dependencies) for the CLI, scanner, and HTTP server. SQ
 
 Data flow: `token_dashboard/cli.py` → `token_dashboard/scanner.py` → SQLite DB; `token_dashboard/server.py` exposes `/api/*` JSON routes and serves `web/`.
 
+## Integrations
+
+- **nushell** — see [`nu/td/`](nu/td/) for a module that treats the dashboard as a headless daemon and the browser, nu, and scripts as equal clients. After `use /path/to/repo/nu/td`: `td start` launches the daemon (no browser, then prints today's totals), `td stop` / `td restart` / `td status` for lifecycle, `td dashboard` opens the browser view, `td today`, `td prompts --limit 50 | where billable_tokens > 50000`, `td tips | where category == "right-size"` for queries piping into native nu tables. `help td` lists every command. Override the host with `$env.TD_HOST`.
+
 ## Further reading
 
 - [`CLAUDE.md`](CLAUDE.md) — conventions and architecture overview (also picked up automatically by Claude Code)
