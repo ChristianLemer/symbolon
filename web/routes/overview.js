@@ -13,7 +13,7 @@ function readRange() {
   const q = (location.hash.split('?')[1] || '');
   const m = /(?:^|&)range=([^&]+)/.exec(q);
   const k = m && decodeURIComponent(m[1]);
-  return RANGES.find(r => r.key === k) || RANGES[1];
+  return RANGES.find(r => r.key === k) || RANGES[0];
 }
 
 function writeRange(key) {
@@ -41,6 +41,7 @@ function withSince(url, since) {
 export default async function (root) {
   const range = readRange();
   const since = await sinceIso(range);
+  const todayMeta = range.today ? await api('/api/today/range') : null;
 
   const [totals, projects, sessions, tools, daily, byModel] = await Promise.all([
     api(withSince('/api/overview', since)),
@@ -82,7 +83,7 @@ export default async function (root) {
   root.innerHTML = `
     <div class="flex" style="margin-bottom:14px">
       <h2 style="margin:0;font-size:16px;letter-spacing:-0.01em">Overview</h2>
-      <span class="muted" style="font-size:12px">${range.today ? 'today' : range.days ? `last ${range.days} days` : 'all time'}</span>
+      <span class="muted" style="font-size:12px">${range.today ? `today · since ${String(todayMeta.day_starts_at_hour).padStart(2, '0')}:00` : range.days ? `last ${range.days} days` : 'all time'}</span>
       <div class="spacer"></div>
       ${rangeTabs}
     </div>
