@@ -24,6 +24,10 @@ dev = [
 [tool.hatch.build.targets.wheel]
 packages = ["token_dashboard"]
 
+[tool.hatch.build.targets.wheel.force-include]
+"nu/td/mod.nu" = "token_dashboard/_resources/nu/td/mod.nu"
+"raycast" = "token_dashboard/_resources/raycast"
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 

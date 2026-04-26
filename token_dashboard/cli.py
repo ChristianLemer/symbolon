@@ -2,11 +2,21 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
+import shutil
+import socket
+import sys
+import urllib.error
+import urllib.request
 import webbrowser
 from pathlib import Path
 
-from .db import default_db_path, init_db, overview_totals
+RAYCAST_OWNER_MARKER = "@raycast.packageName Token Dashboard"
+RAYCAST_DEFAULT_DEST = "~/.raycast-scripts"
+
+from .db import default_db_path, init_db, model_breakdown, overview_totals
+from .pricing import cost_for, load_pricing
 from .scanner import scan_dir
 from .tips import all_tips
 from .util import today_range_local
@@ -22,6 +32,29 @@ def _projects(args) -> str:
         or os.environ.get("CLAUDE_PROJECTS_DIR")
         or str(Path.home() / ".claude" / "projects")
     )
+
+
+def _host_port() -> tuple[str, int]:
+    return os.environ.get("HOST", "127.0.0.1"), int(os.environ.get("PORT", "8080"))
+
+
+def _server_running(host: str, port: int, timeout: float = 1.0) -> bool:
+    try:
+        with socket.create_connection((host, port), timeout=timeout):
+            return True
+    except OSError:
+        return False
+
+
+def _today_cost_usd(db: str, since: str, until: str) -> float:
+    pricing_path = Path(__file__).resolve().parent / "pricing.json"
+    pricing = load_pricing(pricing_path)
+    total = 0.0
+    for m in model_breakdown(db, since, until):
+        c = cost_for(m["model"], m, pricing)
+        if c["usd"] is not None:
+            total += c["usd"]
+    return total
 
 
 def cmd_scan(args):
@@ -67,6 +100,100 @@ def cmd_tips(args):
         print(f"  {tip['body']}\n")
 
 
+def cmd_status(args):
+    db = _db_path(args)
+    init_db(db)
+    host, port = _host_port()
+    running = _server_running(host, port)
+    s, e, _day = today_range_local()
+    t = overview_totals(db, since=s, until=e)
+    cost = _today_cost_usd(db, s, e)
+    indicator = "running" if running else "stopped"
+    glyph = "●" if running else "○"
+    turns = t["turns"] or 0
+    sessions = t["sessions"] or 0
+    print(
+        f"{glyph} {indicator} · today ${cost:.2f}"
+        f" · {turns} prompts · {sessions} sessions"
+    )
+
+
+def cmd_stop(args):
+    host, port = _host_port()
+    url = f"http://{host}:{port}/api/quit"
+    req = urllib.request.Request(url, data=b"{}", method="POST",
+                                 headers={"Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=2) as r:  # noqa: S310 — localhost only
+            json.loads(r.read() or b"{}")
+        print("Token Dashboard: stopped.")
+    except (urllib.error.URLError, ConnectionError, OSError):
+        print("Token Dashboard: not running.")
+        sys.exit(1)
+
+
+def _integration_paths() -> dict[str, Path]:
+    """Resolve bundled integration paths, with a clone-tree fallback for dev."""
+    bundled = Path(__file__).resolve().parent / "_resources"
+    if bundled.is_dir():
+        return {"raycast": bundled / "raycast", "nu": bundled / "nu" / "td"}
+    repo = Path(__file__).resolve().parent.parent
+    return {"raycast": repo / "raycast", "nu": repo / "nu" / "td"}
+
+
+def _install_raycast_scripts(src: Path) -> Path:
+    dest = Path(RAYCAST_DEFAULT_DEST).expanduser()
+    dest.mkdir(parents=True, exist_ok=True)
+    for f in dest.iterdir():
+        if f.is_file() and f.suffix == ".sh":
+            try:
+                if RAYCAST_OWNER_MARKER in f.read_text(errors="ignore"):
+                    f.unlink()
+            except OSError:
+                pass
+    for script in src.iterdir():
+        if script.is_file() and script.suffix == ".sh":
+            target = dest / script.name
+            shutil.copy2(script, target)
+            target.chmod(0o755)
+    return dest
+
+
+def cmd_integrations(args):
+    paths = _integration_paths()
+    missing = [k for k, p in paths.items() if not p.is_dir()]
+    if missing:
+        print(
+            f"Token Dashboard: integration files for {missing} not found.\n"
+            "  Reinstall with `uv tool install --reinstall token-dashboard`.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    if args.install:
+        if args.kind not in (None, "raycast"):
+            print("--install only applies to raycast integrations", file=sys.stderr)
+            sys.exit(2)
+        dest = _install_raycast_scripts(paths["raycast"])
+        print(f"Installed Token Dashboard Raycast scripts to {dest}")
+        print("Register the directory in Raycast: Settings → Extensions → Scripts → Add Directories")
+        return
+    if args.kind:
+        print(paths[args.kind])
+        return
+    for name, p in paths.items():
+        print(f"{name}: {p}")
+
+
+def cmd_open(args):
+    host, port = _host_port()
+    url = f"http://{host}:{port}/"
+    if not _server_running(host, port):
+        print("Token Dashboard: not running. Start it with: token-dashboard dashboard")
+        sys.exit(1)
+    webbrowser.open(url)
+    print(f"Opened {url}")
+
+
 def cmd_dashboard(args):
     db = _db_path(args)
     init_db(db)
@@ -93,10 +220,22 @@ def main():
         prog="token-dashboard", description="Local Claude Code usage dashboard", parents=[common]
     )
     sub = p.add_subparsers(dest="cmd")
-    sub.add_parser("scan",  parents=[common]).set_defaults(func=cmd_scan)
-    sub.add_parser("today", parents=[common]).set_defaults(func=cmd_today)
-    sub.add_parser("stats", parents=[common]).set_defaults(func=cmd_stats)
-    sub.add_parser("tips",  parents=[common]).set_defaults(func=cmd_tips)
+    sub.add_parser("scan",   parents=[common]).set_defaults(func=cmd_scan)
+    sub.add_parser("today",  parents=[common]).set_defaults(func=cmd_today)
+    sub.add_parser("stats",  parents=[common]).set_defaults(func=cmd_stats)
+    sub.add_parser("tips",   parents=[common]).set_defaults(func=cmd_tips)
+    sub.add_parser("status", parents=[common]).set_defaults(func=cmd_status)
+    sub.add_parser("stop",   parents=[common]).set_defaults(func=cmd_stop)
+    sub.add_parser("open",   parents=[common]).set_defaults(func=cmd_open)
+    integ = sub.add_parser(
+        "integrations", parents=[common],
+        help="Print the path to bundled integration files (Raycast, nushell)",
+    )
+    integ.add_argument("kind", nargs="?", choices=["raycast", "nu"],
+                       help="If given, print only that path; otherwise print all.")
+    integ.add_argument("--install", action="store_true",
+                       help=f"Copy bundled Raycast scripts to {RAYCAST_DEFAULT_DEST}")
+    integ.set_defaults(func=cmd_integrations)
     d = sub.add_parser("dashboard", parents=[common])
     d.add_argument("--no-scan", action="store_true")
     d.add_argument("--no-open", action="store_true")

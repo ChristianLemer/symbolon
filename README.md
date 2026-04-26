@@ -101,6 +101,16 @@ token-dashboard stats         # all-time totals (terminal)
 token-dashboard tips          # active suggestions (terminal)
 token-dashboard dashboard     # scan + serve the UI at http://localhost:8080
 
+# daemon control (useful for launchers like Raycast, Alfred, nushell)
+token-dashboard status        # one-liner: server up/down + today's cost + prompt count
+token-dashboard open          # open the running dashboard in the browser
+token-dashboard stop          # ask the running daemon to shut down
+
+# integrations
+token-dashboard integrations          # paths to bundled Raycast scripts + nu module
+token-dashboard integrations raycast  # just the Raycast directory path
+token-dashboard integrations nu       # just the nu module path
+
 # dashboard flags
 token-dashboard dashboard --no-open   # don't auto-open the browser
 token-dashboard dashboard --no-scan   # skip the initial scan (use cached DB only)
@@ -150,7 +160,19 @@ Data flow: `token_dashboard/cli.py` → `token_dashboard/scanner.py` → SQLite 
 
 ## Integrations
 
-- **nushell** — see [`nu/td/`](nu/td/) for a module that treats the dashboard as a headless daemon and the browser, nu, and scripts as equal clients. After `use /path/to/repo/nu/td`: `td start` launches the daemon (no browser, then prints today's totals), `td stop` / `td restart` / `td status` for lifecycle, `td dashboard` opens the browser view, `td today`, `td prompts --limit 50 | where billable_tokens > 50000`, `td tips | where category == "right-size"` for queries piping into native nu tables. `help td` lists every command. Override the host with `$env.TD_HOST`.
+The Raycast scripts and nushell module are **shipped inside the wheel** — `uv tool install token-dashboard` lays them down alongside the binary, and `uv tool uninstall` removes them. Discover their installed location with `token-dashboard integrations`:
+
+```bash
+$ token-dashboard integrations
+raycast: /Users/.../token-dashboard/.../site-packages/token_dashboard/_resources/raycast
+nu:      /Users/.../token-dashboard/.../site-packages/token_dashboard/_resources/nu/td
+
+$ token-dashboard integrations raycast    # just the Raycast path
+$ token-dashboard integrations nu         # just the nu path
+```
+
+- **nushell** — module that treats the dashboard as a headless daemon and the browser, nu, and scripts as equal clients. Add to your config: `use (token-dashboard integrations nu)`. Then: `td start` launches the daemon (no browser, then prints today's totals), `td stop` / `td restart` / `td status` for lifecycle, `td dashboard` opens the browser view, `td today`, `td prompts --limit 50 | where billable_tokens > 50000`, `td tips | where category == "right-size"` for queries piping into native nu tables. `help td` lists every command. Override the host with `$env.TD_HOST`.
+- **Raycast** — four script commands (`Token Dashboard Start`, `Token Dashboard Status`, `Token Dashboard Open`, `Token Dashboard Stop`) wrapped around the matching `token-dashboard` CLI subcommands. In Raycast → Settings → Extensions → Script Commands, click "Add Directories" and paste the path from `token-dashboard integrations raycast`. The four commands appear grouped under "Token Dashboard". `Token Dashboard Status` is the glanceable one — bind it to a hotkey to see today's spend without leaving the keyboard.
 
 ## Further reading
 
