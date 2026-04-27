@@ -30,7 +30,7 @@ A local dashboard that reads the JSONL transcripts Claude Code writes to `~/.cla
 ### One-liner, no install (recommended)
 
 ```bash
-uvx --from git+https://github.com/nateherkai/token-dashboard token-dashboard dashboard
+uvx --from git+https://github.com/ChristianLemer/token-dashboard token-dashboard dashboard
 ```
 
 No cloning, no venv setup. `uvx` fetches, isolates, and runs in one step. Stop with `Ctrl+C`.
@@ -38,16 +38,20 @@ No cloning, no venv setup. `uvx` fetches, isolates, and runs in one step. Stop w
 ### Install once, run from anywhere
 
 ```bash
-uv tool install git+https://github.com/nateherkai/token-dashboard
+uv tool install git+https://github.com/ChristianLemer/token-dashboard
 token-dashboard dashboard
 ```
 
 After the first install, `token-dashboard` is a global command — no need to be in any particular directory.
 
+> **First time using `uv tool`?** uv installs executables to `~/.local/bin` (Unix) or `%USERPROFILE%\.local\bin` (Windows) and warns if that directory isn't on your `PATH`. Run `uv tool update-shell` once and it adds the right line to your shell config (`.bashrc` / `.zshrc` / PowerShell profile). Nushell users may need to add it manually to `env.nu`: `$env.Path = ($env.Path | split row (char esep) | append ($nu.home-path | path join '.local' 'bin'))`.
+>
+> **Tip — install from a specific branch or tag.** Append `@<ref>` to the URL: `uv tool install --force git+https://github.com/ChristianLemer/token-dashboard@dev`. Same syntax works with `uvx --from`. Use `--force` to re-install over an existing version.
+
 ### Without uv
 
 ```bash
-git clone https://github.com/nateherkai/token-dashboard.git
+git clone https://github.com/ChristianLemer/token-dashboard.git
 cd token-dashboard
 python3 cli.py dashboard
 ```
