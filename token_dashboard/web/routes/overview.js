@@ -2,12 +2,20 @@ import { api, fmt, state } from '/web/app.js';
 import { barChart, donutChart, groupedBarChart, stackedBarChart } from '/web/charts.js';
 
 const RANGES = [
-  { key: 'today', label: 'Today', days: null, today: true },
-  { key: '7d',    label: '7d',    days: 7 },
-  { key: '30d',   label: '30d',   days: 30 },
-  { key: '90d',   label: '90d',   days: 90 },
-  { key: 'all',   label: 'All',   days: null },
+  { key: 'today', dayOffset: 0 },
+  { key: 'd1', dayOffset: 1 },
+  { key: 'd2', dayOffset: 2 },
+  { key: 'd3', dayOffset: 3 },
+  { key: 'd4', dayOffset: 4 },
+  { key: 'd5', dayOffset: 5 },
+  { key: 'd6', dayOffset: 6 },
+  { key: '7d',  label: '7d',  days: 7 },
+  { key: '30d', label: '30d', days: 30 },
+  { key: '90d', label: '90d', days: 90 },
+  { key: 'all', label: 'All', days: null },
 ];
+
+const isDayRange = (r) => r.dayOffset !== undefined;
 
 function readRange() {
   const q = (location.hash.split('?')[1] || '');
@@ -21,35 +29,55 @@ function writeRange(key) {
   location.hash = `#${base}?range=${encodeURIComponent(key)}`;
 }
 
-async function sinceIso(range) {
-  if (range.today) {
-    // Server is the canonical source for the "today" boundary — see
-    // token_dashboard/util.py::today_range_local. Defaults to a 4 a.m.
-    // local cutoff so late-night sessions count toward yesterday.
-    const r = await api('/api/today/range');
-    return r.since;
-  }
-  if (!range.days) return null;
-  return new Date(Date.now() - range.days * 86400 * 1000).toISOString();
+// Server is the canonical source for cutoff-aware day windows — see
+// token_dashboard/util.py::today_range_local. Defaults to a 4 a.m. local
+// cutoff so late-night sessions count toward yesterday.
+async function dayWindow(offset) {
+  return await api(`/api/today/range?offset=${offset}`);
 }
 
-function withSince(url, since) {
+function nDaysAgoIso(days) {
+  return new Date(Date.now() - days * 86400 * 1000).toISOString();
+}
+
+function withSince(url, since, until) {
   if (!since) return url;
-  return `${url}${url.includes('?') ? '&' : '?'}since=${encodeURIComponent(since)}`;
+  const sep = url.includes('?') ? '&' : '?';
+  let result = `${url}${sep}since=${encodeURIComponent(since)}`;
+  if (until) result += `&until=${encodeURIComponent(until)}`;
+  return result;
+}
+
+// Short weekday name for a YYYY-MM-DD day string. Noon UTC avoids DST edges.
+function weekdayShort(dayStr) {
+  return new Date(`${dayStr}T12:00:00Z`).toLocaleDateString(undefined, { weekday: 'short' });
+}
+
+// Compute the day string (YYYY-MM-DD) for `today.day` minus `offset` days.
+function dayStringFor(todayDayStr, offset) {
+  const [y, m, d] = todayDayStr.split('-').map(Number);
+  const dt = new Date(Date.UTC(y, m - 1, d));
+  dt.setUTCDate(dt.getUTCDate() - offset);
+  return dt.toISOString().slice(0, 10);
 }
 
 export default async function (root) {
   const range = readRange();
-  const since = await sinceIso(range);
-  const todayMeta = range.today ? await api('/api/today/range') : null;
+  // Always fetch today's window — used to label weekday tabs and as the
+  // selected window when the active range is a day range.
+  const todayMeta = await api('/api/today/range');
+  const win = isDayRange(range) ? (range.dayOffset === 0 ? todayMeta : await dayWindow(range.dayOffset)) : null;
+
+  const since = win ? win.since : (range.days ? nDaysAgoIso(range.days) : null);
+  const until = win ? win.until : null;
 
   const [totals, projects, sessions, tools, daily, byModel] = await Promise.all([
-    api(withSince('/api/overview', since)),
-    api(withSince('/api/projects', since)),
-    api(withSince('/api/sessions?limit=10', since)),
-    api(withSince('/api/tools', since)),
-    api(withSince('/api/daily', since)),
-    api(withSince('/api/by-model', since)),
+    api(withSince('/api/overview', since, until)),
+    api(withSince('/api/projects', since, until)),
+    api(withSince('/api/sessions?limit=10', since, until)),
+    api(withSince('/api/tools', since, until)),
+    api(withSince('/api/daily', since, until)),
+    api(withSince('/api/by-model', since, until)),
   ]);
 
   const cacheCreate =
@@ -57,8 +85,11 @@ export default async function (root) {
     (totals.cache_create_1h_tokens || 0);
 
   function monthlyRate(cost) {
-    if (range.today) {
-      const fracOfDay = (Date.now() - Date.parse(todayMeta.since)) / 86400000;
+    if (isDayRange(range)) {
+      // A complete past day projects directly: today's cost × 30.
+      if (range.dayOffset > 0) return (cost || 0) * 30;
+      // Today is in progress — extrapolate hourly pace to a full month.
+      const fracOfDay = (Date.now() - Date.parse(win.since)) / 86400000;
       if (fracOfDay < 0.05) return null;  // first ~72 min of the cutoff window
       return (cost || 0) / fracOfDay * 30;
     }
@@ -73,15 +104,23 @@ export default async function (root) {
       <div class="value" title="${fullVal}">${compactVal}</div>
     </div>`;
 
+  const tabLabel = (r) => {
+    if (r.label) return r.label;
+    if (isDayRange(r)) {
+      const wd = weekdayShort(dayStringFor(todayMeta.day, r.dayOffset));
+      return r.dayOffset === 0 ? `Today (${wd})` : wd;
+    }
+    return r.key;
+  };
   const rangeTabs = `
     <div class="range-tabs" role="tablist">
-      ${RANGES.map(r => `<button data-range="${r.key}" class="${r.key === range.key ? 'active' : ''}">${r.label}</button>`).join('')}
+      ${RANGES.map(r => `<button data-range="${r.key}" class="${r.key === range.key ? 'active' : ''}">${tabLabel(r)}</button>`).join('')}
     </div>`;
 
   root.innerHTML = `
     <div class="flex" style="margin-bottom:14px">
       <h2 style="margin:0;font-size:16px;letter-spacing:-0.01em">Overview</h2>
-      <span class="muted" style="font-size:12px">${range.today ? `since ${String(todayMeta.day_starts_at_hour).padStart(2, '0')}:00` : range.days ? `last ${range.days} days` : 'all time'}</span>
+      <span class="muted" style="font-size:12px">${isDayRange(range) ? (range.dayOffset === 0 ? `since ${String(win.day_starts_at_hour).padStart(2, '0')}:00` : `${win.day} · ${String(win.day_starts_at_hour).padStart(2, '0')}:00–${String(win.day_starts_at_hour).padStart(2, '0')}:00 next`) : range.days ? `last ${range.days} days` : 'all time'}</span>
       <div class="spacer"></div>
       ${rangeTabs}
     </div>
@@ -101,7 +140,7 @@ export default async function (root) {
       <div class="card kpi">
         <div class="label">Est. $/mo</div>
         <div class="value" title="${monthly !== null ? `${fmt.usd(monthly)}/mo` : 'n/a'}">${monthly !== null ? fmt.usd(monthly) : '—'}</div>
-        <div class="sub">${range.today ? "today's pace × 30" : range.days ? `×${(30/range.days).toFixed(1)} (${range.days}d rate)` : 'all time'}</div>
+        <div class="sub">${isDayRange(range) ? (range.dayOffset === 0 ? "today's pace × 30" : "this day × 30") : range.days ? `×${(30/range.days).toFixed(1)} (${range.days}d rate)` : 'all time'}</div>
       </div>
     </div>
 

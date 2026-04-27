@@ -156,7 +156,12 @@ def build_handler(db_path: str, projects_dir: str):
                 return _send_json(self, n)
             if path == "/api/today/range":
                 from .util import DEFAULT_DAY_STARTS_AT_HOUR
-                since, until, day = today_range_local()
+                try:
+                    offset = int(qs.get("offset", ["0"])[0])
+                except ValueError:
+                    offset = 0
+                offset = max(0, min(offset, 365))
+                since, until, day = today_range_local(offset_days=offset)
                 return _send_json(self, {
                     "since": since,
                     "until": until,

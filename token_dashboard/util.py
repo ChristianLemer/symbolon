@@ -12,26 +12,27 @@ DEFAULT_DAY_STARTS_AT_HOUR = 4
 def today_range_local(
     day_starts_at_hour: int = DEFAULT_DAY_STARTS_AT_HOUR,
     *,
+    offset_days: int = 0,
     now: datetime | None = None,
 ) -> tuple[str, str, str]:
-    """Return the canonical "today" window for the user's local timezone.
+    """Return a 24-hour window aligned to the user's local cutoff hour.
 
     The day starts at `day_starts_at_hour` local time, runs for 24 h, and
     is returned as UTC ISO timestamps so the server's string comparison
-    against stored UTC timestamps is unambiguous.
+    against stored UTC timestamps is unambiguous. `offset_days=0` is
+    today, `1` is yesterday, etc.
 
     `now` is overridable for tests; it must carry tzinfo if provided.
 
     Returns:
         (since_iso_utc, until_iso_utc, day_label_local)
     """
-    # When `now` is provided (tests), use it as-is so callers can pin a
-    # specific timezone. Otherwise read system local time.
     base = now if now is not None else datetime.now(UTC).astimezone()
     cutoff_today = base.replace(
         hour=day_starts_at_hour, minute=0, second=0, microsecond=0
     )
-    start = cutoff_today if base >= cutoff_today else cutoff_today - timedelta(days=1)
+    start_today = cutoff_today if base >= cutoff_today else cutoff_today - timedelta(days=1)
+    start = start_today - timedelta(days=offset_days)
     end = start + timedelta(days=1)
     return (
         start.astimezone(UTC).isoformat(),

@@ -55,6 +55,29 @@ class TodayRangeLocalTests(unittest.TestCase):
         u = datetime.fromisoformat(until)
         self.assertEqual(u - s, timedelta(days=1))
 
+    def test_offset_days_yesterday(self):
+        # 10:00 local UTC+2 on Apr 25 — offset_days=1 should return Apr 24's
+        # cutoff window.
+        tz = timezone(timedelta(hours=2))
+        now = datetime(2026, 4, 25, 10, 0, 0, tzinfo=tz)
+        since, until, day = today_range_local(offset_days=1, now=now)
+        self.assertEqual(since, "2026-04-24T02:00:00+00:00")
+        self.assertEqual(until, "2026-04-25T02:00:00+00:00")
+        self.assertEqual(day, "2026-04-24")
+
+    def test_offset_days_before_cutoff(self):
+        # 02:00 local UTC+2 — before cutoff, so today's day-label is Apr 24.
+        # offset_days=1 should walk back one more cutoff window to Apr 23.
+        tz = timezone(timedelta(hours=2))
+        now = datetime(2026, 4, 25, 2, 0, 0, tzinfo=tz)
+        _, _, day = today_range_local(offset_days=1, now=now)
+        self.assertEqual(day, "2026-04-23")
+
+    def test_offset_days_six_back(self):
+        now = datetime(2026, 4, 25, 12, 0, 0, tzinfo=UTC)
+        _, _, day = today_range_local(offset_days=6, now=now)
+        self.assertEqual(day, "2026-04-19")
+
 
 if __name__ == "__main__":
     unittest.main()

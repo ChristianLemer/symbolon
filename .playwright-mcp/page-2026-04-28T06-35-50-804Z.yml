@@ -1,0 +1,1002 @@
+- generic [ref=e2]:
+  - region
+  - generic [ref=e3]:
+    - link "Skip to content" [ref=e4] [cursor=pointer]:
+      - /url: "#start-of-content"
+    - banner [ref=e6]:
+      - heading "Navigation Menu" [level=2] [ref=e7]
+      - generic [ref=e8]:
+        - link "Homepage" [ref=e10] [cursor=pointer]:
+          - /url: /
+          - img [ref=e11]
+        - generic [ref=e13]:
+          - navigation "Global" [ref=e16]:
+            - list [ref=e17]:
+              - listitem [ref=e18]:
+                - button "Platform" [ref=e20] [cursor=pointer]:
+                  - text: Platform
+                  - img [ref=e21]
+              - listitem [ref=e23]:
+                - button "Solutions" [ref=e25] [cursor=pointer]:
+                  - text: Solutions
+                  - img [ref=e26]
+              - listitem [ref=e28]:
+                - button "Resources" [ref=e30] [cursor=pointer]:
+                  - text: Resources
+                  - img [ref=e31]
+              - listitem [ref=e33]:
+                - button "Open Source" [ref=e35] [cursor=pointer]:
+                  - text: Open Source
+                  - img [ref=e36]
+              - listitem [ref=e38]:
+                - button "Enterprise" [ref=e40] [cursor=pointer]:
+                  - text: Enterprise
+                  - img [ref=e41]
+              - listitem [ref=e43]:
+                - link "Pricing" [ref=e44] [cursor=pointer]:
+                  - /url: https://github.com/pricing
+                  - generic [ref=e45]: Pricing
+          - generic [ref=e46]:
+            - button "Search or jump to…" [ref=e49] [cursor=pointer]:
+              - img [ref=e51]
+            - link "Sign in" [ref=e54] [cursor=pointer]:
+              - /url: /login?return_to=https%3A%2F%2Fgithub.com%2FChristianLemer%2Ftoken-dashboard%2Ftree%2Fdev
+            - link "Sign up" [ref=e55] [cursor=pointer]:
+              - /url: /signup?ref_cta=Sign+up&ref_loc=header+logged+out&ref_page=%2F%3Cuser-name%3E%2F%3Crepo-name%3E%2Ffiles%2Fdisambiguate&source=header-repo&source_repo=ChristianLemer%2Ftoken-dashboard
+            - button "Appearance settings" [ref=e58] [cursor=pointer]:
+              - img
+  - main [ref=e62]:
+    - generic [ref=e63]:
+      - generic [ref=e64]:
+        - generic [ref=e65]:
+          - generic [ref=e66]:
+            - img [ref=e67]
+            - link "ChristianLemer" [ref=e70] [cursor=pointer]:
+              - /url: /ChristianLemer
+            - generic [ref=e71]: /
+            - strong [ref=e72]:
+              - link "token-dashboard" [ref=e73] [cursor=pointer]:
+                - /url: /ChristianLemer/token-dashboard
+            - generic [ref=e74]: Public
+          - generic [ref=e75]:
+            - text: forked from
+            - link "nateherkai/token-dashboard" [ref=e76] [cursor=pointer]:
+              - /url: /nateherkai/token-dashboard
+        - generic [ref=e77]:
+          - list:
+            - listitem [ref=e78]:
+              - link "You must be signed in to change notification settings" [ref=e79] [cursor=pointer]:
+                - /url: /login?return_to=%2FChristianLemer%2Ftoken-dashboard
+                - img [ref=e80]
+                - text: Notifications
+            - listitem [ref=e82]:
+              - link "Fork 0" [ref=e83] [cursor=pointer]:
+                - /url: /login?return_to=%2FChristianLemer%2Ftoken-dashboard
+                - img [ref=e84]
+                - text: Fork
+                - generic "0" [ref=e86]
+            - listitem [ref=e87]:
+              - link "You must be signed in to star a repository" [ref=e89] [cursor=pointer]:
+                - /url: /login?return_to=%2FChristianLemer%2Ftoken-dashboard
+                - img [ref=e90]
+                - text: Star
+                - generic "0 users starred this repository" [ref=e92]: "0"
+      - navigation "Repository" [ref=e93]:
+        - list [ref=e94]:
+          - listitem [ref=e95]:
+            - link "Code" [ref=e96] [cursor=pointer]:
+              - /url: /ChristianLemer/token-dashboard/tree/dev
+              - img [ref=e97]
+              - generic [ref=e99]: Code
+          - listitem [ref=e100]:
+            - link "Pull requests" [ref=e101] [cursor=pointer]:
+              - /url: /ChristianLemer/token-dashboard/pulls
+              - img [ref=e102]
+              - generic [ref=e104]: Pull requests
+          - listitem [ref=e105]:
+            - link "Actions" [ref=e106] [cursor=pointer]:
+              - /url: /ChristianLemer/token-dashboard/actions
+              - img [ref=e107]
+              - generic [ref=e109]: Actions
+          - listitem [ref=e110]:
+            - link "Projects" [ref=e111] [cursor=pointer]:
+              - /url: /ChristianLemer/token-dashboard/projects
+              - img [ref=e112]
+              - generic [ref=e114]: Projects
+          - listitem [ref=e115]:
+            - link "Security and quality" [ref=e116] [cursor=pointer]:
+              - /url: /ChristianLemer/token-dashboard/security
+              - img [ref=e117]
+              - generic [ref=e119]: Security and quality
+          - listitem [ref=e120]:
+            - link "Insights" [ref=e121] [cursor=pointer]:
+              - /url: /ChristianLemer/token-dashboard/pulse
+              - img [ref=e122]
+              - generic [ref=e124]: Insights
+    - generic [ref=e137]:
+      - heading "ChristianLemer/token-dashboard" [level=1] [ref=e139]
+      - generic [ref=e140]:
+        - generic [ref=e143]:
+          - generic [ref=e144]:
+            - generic [ref=e145]:
+              - button "dev branch" [ref=e147] [cursor=pointer]:
+                - generic [ref=e148]:
+                  - generic [ref=e150]:
+                    - img [ref=e152]
+                    - generic [ref=e155]: dev
+                  - generic:
+                    - img
+              - generic [ref=e156]:
+                - link "2 Branches" [ref=e157] [cursor=pointer]:
+                  - /url: /ChristianLemer/token-dashboard/branches
+                  - generic [ref=e158]:
+                    - generic:
+                      - img
+                    - generic [ref=e160]:
+                      - strong [ref=e161]: "2"
+                      - text: Branches
+                - link "0 Tags" [ref=e162] [cursor=pointer]:
+                  - /url: /ChristianLemer/token-dashboard/tags
+                  - generic [ref=e163]:
+                    - generic:
+                      - img
+                    - generic [ref=e165]:
+                      - strong [ref=e166]: "0"
+                      - text: Tags
+            - generic [ref=e167]:
+              - generic [ref=e171]:
+                - img [ref=e173]
+                - combobox "Go to file" [ref=e175]
+              - button "Code" [ref=e176] [cursor=pointer]:
+                - generic [ref=e177]:
+                  - generic:
+                    - img
+                  - generic [ref=e178]: Code
+                  - generic:
+                    - img
+          - generic [ref=e180]:
+            - text: This branch is
+            - link "12 commits ahead of" [ref=e181] [cursor=pointer]:
+              - /url: /ChristianLemer/token-dashboard/compare/nateherkai%3Atoken-dashboard%3Amain...dev
+            - generic [ref=e182]: nateherkai/token-dashboard:main
+            - text: .
+          - generic [ref=e183]:
+            - generic [ref=e184]:
+              - heading "Folders and files" [level=2] [ref=e185]
+              - table "Folders and files" [ref=e186]:
+                - rowgroup:
+                  - row "Name Last commit message Last commit date":
+                    - columnheader "Name"
+                    - columnheader "Last commit message":
+                      - generic "Last commit message"
+                    - columnheader "Last commit date":
+                      - generic "Last commit date"
+                - rowgroup [ref=e187]:
+                  - 'row "Latest commit ChristianLemer commits by ChristianLemer feat(overview): per-day drill-down with weekday tabs Open commit details failure Commit ced5cf6 · Apr 28, 20266 hours ago History 42 Commits" [ref=e188]':
+                    - 'cell "Latest commit ChristianLemer commits by ChristianLemer feat(overview): per-day drill-down with weekday tabs Open commit details failure Commit ced5cf6 · Apr 28, 20266 hours ago History 42 Commits" [ref=e189]':
+                      - generic [ref=e190]:
+                        - heading "Latest commit" [level=2] [ref=e191]
+                        - generic [ref=e192]:
+                          - generic [ref=e194]:
+                            - link "ChristianLemer" [ref=e195] [cursor=pointer]:
+                              - /url: /ChristianLemer
+                              - img "ChristianLemer" [ref=e196]
+                            - link "commits by ChristianLemer" [ref=e197] [cursor=pointer]:
+                              - /url: /ChristianLemer/token-dashboard/commits?author=ChristianLemer
+                              - text: ChristianLemer
+                          - generic [ref=e198]:
+                            - 'link "feat(overview): per-day drill-down with weekday tabs" [ref=e201] [cursor=pointer]':
+                              - /url: /ChristianLemer/token-dashboard/commit/ced5cf645857cc7c03f9cf8d11bcdb83ea8d8f42
+                            - button "Open commit details" [ref=e202] [cursor=pointer]:
+                              - img [ref=e203]
+                            - button "failure" [ref=e205] [cursor=pointer]:
+                              - img [ref=e206]
+                        - generic [ref=e208]:
+                          - generic [ref=e210]:
+                            - link "Commit ced5cf6" [ref=e211] [cursor=pointer]:
+                              - /url: /ChristianLemer/token-dashboard/commit/ced5cf645857cc7c03f9cf8d11bcdb83ea8d8f42
+                              - text: ced5cf6
+                            - text: ·
+                            - generic "Apr 28, 2026, 1:59 AM GMT+2" [ref=e212]: Apr 28, 20266 hours ago
+                          - generic [ref=e213]:
+                            - heading "History" [level=2] [ref=e214]
+                            - link "42 Commits" [ref=e215] [cursor=pointer]:
+                              - /url: /ChristianLemer/token-dashboard/commits/dev/
+                              - generic [ref=e216]:
+                                - generic:
+                                  - img
+                                - generic [ref=e217]: 42 Commits
+                  - 'row ".github/workflows, (Directory) ci: add GitHub Actions workflow running pytest + ruff on push/PR Apr 25, 20262 days ago" [ref=e218]':
+                    - cell ".github/workflows, (Directory)" [ref=e219]:
+                      - generic [ref=e220]:
+                        - img [ref=e221]
+                        - link ".github/workflows, (Directory)" [ref=e226] [cursor=pointer]:
+                          - /url: /ChristianLemer/token-dashboard/tree/dev/.github/workflows
+                          - text: .github/workflows
+                    - 'cell "ci: add GitHub Actions workflow running pytest + ruff on push/PR" [ref=e227]':
+                      - 'link "ci: add GitHub Actions workflow running pytest + ruff on push/PR" [ref=e230] [cursor=pointer]':
+                        - /url: /ChristianLemer/token-dashboard/commit/e7ea50a079dbf9c4a39b6d8e5c97089c2173a5a4
+                    - cell "Apr 25, 20262 days ago" [ref=e231]:
+                      - generic [ref=e232]: Apr 25, 20262 days ago
+                  - 'row "docs, (Directory) chore: pre-publish polish — scope clarity, lint cleanup, package fix Apr 28, 20267 hours ago" [ref=e233]':
+                    - cell "docs, (Directory)" [ref=e234]:
+                      - generic [ref=e235]:
+                        - img [ref=e236]
+                        - link "docs, (Directory)" [ref=e241] [cursor=pointer]:
+                          - /url: /ChristianLemer/token-dashboard/tree/dev/docs
+                          - text: docs
+                    - 'cell "chore: pre-publish polish — scope clarity, lint cleanup, package fix" [ref=e242]':
+                      - 'link "chore: pre-publish polish — scope clarity, lint cleanup, package fix" [ref=e245] [cursor=pointer]':
+                        - /url: /ChristianLemer/token-dashboard/commit/d50d71c9fefb00cf22ca5315d06974f3f82ddb6f
+                    - cell "Apr 28, 20267 hours ago" [ref=e246]:
+                      - generic [ref=e247]: Apr 28, 20267 hours ago
+                  - 'row "nu/td, (Directory) feat: centralize today range as a server endpoint with 4 a.m. cutoff Apr 25, 20262 days ago" [ref=e248]':
+                    - cell "nu/td, (Directory)" [ref=e249]:
+                      - generic [ref=e250]:
+                        - img [ref=e251]
+                        - link "nu/td, (Directory)" [ref=e256] [cursor=pointer]:
+                          - /url: /ChristianLemer/token-dashboard/tree/dev/nu/td
+                          - text: nu/td
+                    - 'cell "feat: centralize today range as a server endpoint with 4 a.m. cutoff" [ref=e257]':
+                      - 'link "feat: centralize today range as a server endpoint with 4 a.m. cutoff" [ref=e260] [cursor=pointer]':
+                        - /url: /ChristianLemer/token-dashboard/commit/5a6e04303c567ca0c51312dbdbe7a7d6ce21f9f4
+                    - cell "Apr 25, 20262 days ago" [ref=e261]:
+                      - generic [ref=e262]: Apr 25, 20262 days ago
+                  - 'row "raycast, (Directory) feat(integrations): bundle Raycast scripts and nu module in the wheel Apr 28, 20267 hours ago" [ref=e263]':
+                    - cell "raycast, (Directory)" [ref=e264]:
+                      - generic [ref=e265]:
+                        - img [ref=e266]
+                        - link "raycast, (Directory)" [ref=e271] [cursor=pointer]:
+                          - /url: /ChristianLemer/token-dashboard/tree/dev/raycast
+                          - text: raycast
+                    - 'cell "feat(integrations): bundle Raycast scripts and nu module in the wheel" [ref=e272]':
+                      - 'link "feat(integrations): bundle Raycast scripts and nu module in the wheel" [ref=e275] [cursor=pointer]':
+                        - /url: /ChristianLemer/token-dashboard/commit/1d4de3e80f73e4843f79b5578c4be001e3d8e3fc
+                    - cell "Apr 28, 20267 hours ago" [ref=e276]:
+                      - generic [ref=e277]: Apr 28, 20267 hours ago
+                  - 'row "tests, (Directory) feat(overview): per-day drill-down with weekday tabs Apr 28, 20266 hours ago" [ref=e278]':
+                    - cell "tests, (Directory)" [ref=e279]:
+                      - generic [ref=e280]:
+                        - img [ref=e281]
+                        - link "tests, (Directory)" [ref=e286] [cursor=pointer]:
+                          - /url: /ChristianLemer/token-dashboard/tree/dev/tests
+                          - text: tests
+                    - 'cell "feat(overview): per-day drill-down with weekday tabs" [ref=e287]':
+                      - 'link "feat(overview): per-day drill-down with weekday tabs" [ref=e290] [cursor=pointer]':
+                        - /url: /ChristianLemer/token-dashboard/commit/ced5cf645857cc7c03f9cf8d11bcdb83ea8d8f42
+                    - cell "Apr 28, 20266 hours ago" [ref=e291]:
+                      - generic [ref=e292]: Apr 28, 20266 hours ago
+                  - 'row "token_dashboard, (Directory) feat(overview): per-day drill-down with weekday tabs Apr 28, 20266 hours ago" [ref=e293]':
+                    - cell "token_dashboard, (Directory)" [ref=e294]:
+                      - generic [ref=e295]:
+                        - img [ref=e296]
+                        - link "token_dashboard, (Directory)" [ref=e301] [cursor=pointer]:
+                          - /url: /ChristianLemer/token-dashboard/tree/dev/token_dashboard
+                          - text: token_dashboard
+                    - 'cell "feat(overview): per-day drill-down with weekday tabs" [ref=e302]':
+                      - 'link "feat(overview): per-day drill-down with weekday tabs" [ref=e305] [cursor=pointer]':
+                        - /url: /ChristianLemer/token-dashboard/commit/ced5cf645857cc7c03f9cf8d11bcdb83ea8d8f42
+                    - cell "Apr 28, 20266 hours ago" [ref=e306]:
+                      - generic [ref=e307]: Apr 28, 20266 hours ago
+                  - 'row ".gitignore, (File) tooling: migrate to uv + ruff, add workspace config, document tech debt Apr 25, 20262 days ago" [ref=e308]':
+                    - cell ".gitignore, (File)" [ref=e309]:
+                      - generic [ref=e310]:
+                        - img [ref=e311]
+                        - link ".gitignore, (File)" [ref=e316] [cursor=pointer]:
+                          - /url: /ChristianLemer/token-dashboard/blob/dev/.gitignore
+                          - text: .gitignore
+                    - 'cell "tooling: migrate to uv + ruff, add workspace config, document tech debt" [ref=e317]':
+                      - 'link "tooling: migrate to uv + ruff, add workspace config, document tech debt" [ref=e320] [cursor=pointer]':
+                        - /url: /ChristianLemer/token-dashboard/commit/d3b431d413161b69c1d9552ce645779cc6f7da26
+                    - cell "Apr 25, 20262 days ago" [ref=e321]:
+                      - generic [ref=e322]: Apr 25, 20262 days ago
+                  - 'row "CLAUDE.md, (File) chore: pre-publish polish — scope clarity, lint cleanup, package fix Apr 28, 20267 hours ago" [ref=e323]':
+                    - cell "CLAUDE.md, (File)" [ref=e324]:
+                      - generic [ref=e325]:
+                        - img [ref=e326]
+                        - link "CLAUDE.md, (File)" [ref=e331] [cursor=pointer]:
+                          - /url: /ChristianLemer/token-dashboard/blob/dev/CLAUDE.md
+                          - text: CLAUDE.md
+                    - 'cell "chore: pre-publish polish — scope clarity, lint cleanup, package fix" [ref=e332]':
+                      - 'link "chore: pre-publish polish — scope clarity, lint cleanup, package fix" [ref=e335] [cursor=pointer]':
+                        - /url: /ChristianLemer/token-dashboard/commit/d50d71c9fefb00cf22ca5315d06974f3f82ddb6f
+                    - cell "Apr 28, 20267 hours ago" [ref=e336]:
+                      - generic [ref=e337]: Apr 28, 20267 hours ago
+                  - 'row "CONTRIBUTING.md, (File) docs: add dashboard screenshots and prune dead doc refs Apr 20, 2026last week" [ref=e338]':
+                    - cell "CONTRIBUTING.md, (File)" [ref=e339]:
+                      - generic [ref=e340]:
+                        - img [ref=e341]
+                        - link "CONTRIBUTING.md, (File)" [ref=e346] [cursor=pointer]:
+                          - /url: /ChristianLemer/token-dashboard/blob/dev/CONTRIBUTING.md
+                          - text: CONTRIBUTING.md
+                    - 'cell "docs: add dashboard screenshots and prune dead doc refs" [ref=e347]':
+                      - 'link "docs: add dashboard screenshots and prune dead doc refs" [ref=e350] [cursor=pointer]':
+                        - /url: /ChristianLemer/token-dashboard/commit/1551a375892ddaaa052f1bb8ec9b8bcad00d3176
+                    - cell "Apr 20, 2026last week" [ref=e351]:
+                      - generic [ref=e352]: Apr 20, 2026last week
+                  - 'row "LICENSE, (File) chore(oss-release): prepare repo for public publish Apr 20, 2026last week" [ref=e353]':
+                    - cell "LICENSE, (File)" [ref=e354]:
+                      - generic [ref=e355]:
+                        - img [ref=e356]
+                        - link "LICENSE, (File)" [ref=e361] [cursor=pointer]:
+                          - /url: /ChristianLemer/token-dashboard/blob/dev/LICENSE
+                          - text: LICENSE
+                    - 'cell "chore(oss-release): prepare repo for public publish" [ref=e362]':
+                      - 'link "chore(oss-release): prepare repo for public publish" [ref=e365] [cursor=pointer]':
+                        - /url: /ChristianLemer/token-dashboard/commit/dbfeb5fb8a8ec97705f076b78cb530f3a6e77c79
+                    - cell "Apr 20, 2026last week" [ref=e366]:
+                      - generic [ref=e367]: Apr 20, 2026last week
+                  - 'row "README.md, (File) docs(readme): fork install URLs and uv tool install tips Apr 28, 20266 hours ago" [ref=e368]':
+                    - cell "README.md, (File)" [ref=e369]:
+                      - generic [ref=e370]:
+                        - img [ref=e371]
+                        - link "README.md, (File)" [ref=e376] [cursor=pointer]:
+                          - /url: /ChristianLemer/token-dashboard/blob/dev/README.md
+                          - text: README.md
+                    - 'cell "docs(readme): fork install URLs and uv tool install tips" [ref=e377]':
+                      - 'link "docs(readme): fork install URLs and uv tool install tips" [ref=e380] [cursor=pointer]':
+                        - /url: /ChristianLemer/token-dashboard/commit/d0595178dbda1471e1058a024055f6818bded3ce
+                    - cell "Apr 28, 20266 hours ago" [ref=e381]:
+                      - generic [ref=e382]: Apr 28, 20266 hours ago
+                  - 'row "cli.py, (File) tooling: migrate to uv + ruff, add workspace config, document tech debt Apr 25, 20262 days ago" [ref=e383]':
+                    - cell "cli.py, (File)" [ref=e384]:
+                      - generic [ref=e385]:
+                        - img [ref=e386]
+                        - link "cli.py, (File)" [ref=e391] [cursor=pointer]:
+                          - /url: /ChristianLemer/token-dashboard/blob/dev/cli.py
+                          - text: cli.py
+                    - 'cell "tooling: migrate to uv + ruff, add workspace config, document tech debt" [ref=e392]':
+                      - 'link "tooling: migrate to uv + ruff, add workspace config, document tech debt" [ref=e395] [cursor=pointer]':
+                        - /url: /ChristianLemer/token-dashboard/commit/d3b431d413161b69c1d9552ce645779cc6f7da26
+                    - cell "Apr 25, 20262 days ago" [ref=e396]:
+                      - generic [ref=e397]: Apr 25, 20262 days ago
+                  - 'row "pyproject.toml, (File) feat(integrations): bundle Raycast scripts and nu module in the wheel Apr 28, 20267 hours ago" [ref=e398]':
+                    - cell "pyproject.toml, (File)" [ref=e399]:
+                      - generic [ref=e400]:
+                        - img [ref=e401]
+                        - link "pyproject.toml, (File)" [ref=e406] [cursor=pointer]:
+                          - /url: /ChristianLemer/token-dashboard/blob/dev/pyproject.toml
+                          - text: pyproject.toml
+                    - 'cell "feat(integrations): bundle Raycast scripts and nu module in the wheel" [ref=e407]':
+                      - 'link "feat(integrations): bundle Raycast scripts and nu module in the wheel" [ref=e410] [cursor=pointer]':
+                        - /url: /ChristianLemer/token-dashboard/commit/1d4de3e80f73e4843f79b5578c4be001e3d8e3fc
+                    - cell "Apr 28, 20267 hours ago" [ref=e411]:
+                      - generic [ref=e412]: Apr 28, 20267 hours ago
+                  - 'row "token-dashboard.code-workspace, (File) tooling: migrate to uv + ruff, add workspace config, document tech debt Apr 25, 20262 days ago" [ref=e413]':
+                    - cell "token-dashboard.code-workspace, (File)" [ref=e414]:
+                      - generic [ref=e415]:
+                        - img [ref=e416]
+                        - link "token-dashboard.code-workspace, (File)" [ref=e421] [cursor=pointer]:
+                          - /url: /ChristianLemer/token-dashboard/blob/dev/token-dashboard.code-workspace
+                          - text: token-dashboard.code-workspace
+                    - 'cell "tooling: migrate to uv + ruff, add workspace config, document tech debt" [ref=e422]':
+                      - 'link "tooling: migrate to uv + ruff, add workspace config, document tech debt" [ref=e425] [cursor=pointer]':
+                        - /url: /ChristianLemer/token-dashboard/commit/d3b431d413161b69c1d9552ce645779cc6f7da26
+                    - cell "Apr 25, 20262 days ago" [ref=e426]:
+                      - generic [ref=e427]: Apr 25, 20262 days ago
+                  - 'row "uv.lock, (File) tooling: migrate to uv + ruff, add workspace config, document tech debt Apr 25, 20262 days ago" [ref=e428]':
+                    - cell "uv.lock, (File)" [ref=e429]:
+                      - generic [ref=e430]:
+                        - img [ref=e431]
+                        - link "uv.lock, (File)" [ref=e436] [cursor=pointer]:
+                          - /url: /ChristianLemer/token-dashboard/blob/dev/uv.lock
+                          - text: uv.lock
+                    - 'cell "tooling: migrate to uv + ruff, add workspace config, document tech debt" [ref=e437]':
+                      - 'link "tooling: migrate to uv + ruff, add workspace config, document tech debt" [ref=e440] [cursor=pointer]':
+                        - /url: /ChristianLemer/token-dashboard/commit/d3b431d413161b69c1d9552ce645779cc6f7da26
+                    - cell "Apr 25, 20262 days ago" [ref=e441]:
+                      - generic [ref=e442]: Apr 25, 20262 days ago
+            - generic [ref=e444]:
+              - generic [ref=e445]:
+                - heading "Repository files navigation" [level=2] [ref=e446]
+                - navigation "Repository files" [ref=e447]:
+                  - list [ref=e448]:
+                    - listitem [ref=e449]:
+                      - link "README" [ref=e450] [cursor=pointer]:
+                        - /url: "#"
+                        - img [ref=e452]
+                        - generic [ref=e454]: README
+                    - listitem [ref=e455]:
+                      - link "Contributing" [ref=e456] [cursor=pointer]:
+                        - /url: "#"
+                        - img [ref=e458]
+                        - generic [ref=e460]: Contributing
+                    - listitem [ref=e461]:
+                      - link "License" [ref=e462] [cursor=pointer]:
+                        - /url: "#"
+                        - img [ref=e464]
+                        - generic [ref=e466]: License
+                - button "Outline" [ref=e467] [cursor=pointer]:
+                  - img [ref=e468]
+              - article [ref=e471]:
+                - generic [ref=e472]:
+                  - heading "Token Dashboard" [level=1] [ref=e473]
+                  - 'link "Permalink: Token Dashboard" [ref=e474] [cursor=pointer]':
+                    - /url: "#token-dashboard"
+                    - img [ref=e475]
+                - paragraph [ref=e477]:
+                  - text: A local dashboard that reads the JSONL transcripts Claude Code writes to
+                  - code [ref=e478]: ~/.claude/projects/
+                  - text: and turns them into per-prompt cost analytics, tool/file heatmaps, subagent attribution, cache analytics, project comparisons, and a rule-based tips engine.
+                - paragraph [ref=e479]:
+                  - strong [ref=e480]: Everything runs locally.
+                  - text: No data leaves your machine — no telemetry, no API calls for your data, no login.
+                - paragraph [ref=e481]:
+                  - link "Overview tab — totals and daily charts" [ref=e482] [cursor=pointer]:
+                    - /url: /ChristianLemer/token-dashboard/blob/dev/docs/images/dashboard-overview-top.jpg
+                    - img "Overview tab — totals and daily charts" [ref=e483]
+                - paragraph [ref=e484]:
+                  - link "Overview tab — per-project, per-model, top tools, recent sessions" [ref=e485] [cursor=pointer]:
+                    - /url: /ChristianLemer/token-dashboard/blob/dev/docs/images/dashboard-overview-bottom.jpg
+                    - img "Overview tab — per-project, per-model, top tools, recent sessions" [ref=e486]
+                - blockquote [ref=e487]:
+                  - paragraph [ref=e488]:
+                    - strong [ref=e489]: Lineage
+                    - text: — This fork builds on
+                    - link "nateherkai/token-dashboard" [ref=e490] [cursor=pointer]:
+                      - /url: https://github.com/nateherkai/token-dashboard
+                    - text: ", itself a substantial reimplementation inspired by"
+                    - link "phuryn/claude-usage" [ref=e491] [cursor=pointer]:
+                      - /url: https://github.com/phuryn/claude-usage
+                    - text: ". What I add on top:"
+                    - code [ref=e492]: uv
+                    - text: tooling + ruff/ty config, graceful shutdown UX (Ctrl+C / ⏻ button / browser-close watchdog), a "Today" range with honest monthly cost projection, source-IP guard on
+                    - code [ref=e493]: /api/quit
+                    - text: ", and a GitHub Actions CI. See"
+                    - link "docs/inspiration.md" [ref=e494] [cursor=pointer]:
+                      - /url: /ChristianLemer/token-dashboard/blob/dev/docs/inspiration.md
+                      - code [ref=e495]: docs/inspiration.md
+                    - text: for the original feature set.
+                - generic [ref=e496]:
+                  - heading "What this is useful for" [level=2] [ref=e497]
+                  - 'link "Permalink: What this is useful for" [ref=e498] [cursor=pointer]':
+                    - /url: "#what-this-is-useful-for"
+                    - img [ref=e499]
+                - list [ref=e501]:
+                  - listitem [ref=e502]: "Seeing which of your prompts are expensive (surprise: they usually involve large tool results)."
+                  - listitem [ref=e503]: Comparing token usage across projects you've worked on.
+                  - listitem [ref=e504]: Spotting wasteful patterns — the same file read twenty times in a session, a tool call returning 80k tokens.
+                  - listitem [ref=e505]: Understanding what a "cache hit" actually saves you.
+                  - listitem [ref=e506]: If you're on Pro or Max, confirming you're getting your money's worth in API-equivalent dollars.
+                - generic [ref=e507]:
+                  - heading "Prerequisites" [level=2] [ref=e508]
+                  - 'link "Permalink: Prerequisites" [ref=e509] [cursor=pointer]':
+                    - /url: "#prerequisites"
+                    - img [ref=e510]
+                - list [ref=e512]:
+                  - listitem [ref=e513]:
+                    - strong [ref=e514]: Claude Code
+                    - text: — installed and with at least one session run. If you just installed Claude Code and haven't used it yet, run at least one prompt first.
+                  - listitem [ref=e515]:
+                    - strong [ref=e516]: A web browser.
+                    - text: Any modern one.
+                  - listitem [ref=e517]:
+                    - strong [ref=e518]: Python 3.11+
+                    - text: "— already on macOS and most Linux. On Windows:"
+                    - code [ref=e519]: winget install Python.Python.3.12
+                    - text: .
+                  - listitem [ref=e520]:
+                    - strong [ref=e521]:
+                      - link "uv" [ref=e522] [cursor=pointer]:
+                        - /url: https://docs.astral.sh/uv/getting-started/installation/
+                    - text: — recommended but not required. If you don't have it, see the
+                    - emphasis [ref=e523]: Without uv
+                    - text: section below.
+                - generic [ref=e524]:
+                  - heading "Quickstart" [level=2] [ref=e525]
+                  - 'link "Permalink: Quickstart" [ref=e526] [cursor=pointer]':
+                    - /url: "#quickstart"
+                    - img [ref=e527]
+                - generic [ref=e529]:
+                  - heading "One-liner, no install (recommended)" [level=3] [ref=e530]
+                  - 'link "Permalink: One-liner, no install (recommended)" [ref=e531] [cursor=pointer]':
+                    - /url: "#one-liner-no-install-recommended"
+                    - img [ref=e532]
+                - generic [ref=e534]:
+                  - generic [ref=e535]: uvx --from git+https://github.com/ChristianLemer/token-dashboard token-dashboard dashboard
+                  - button "Copy" [ref=e537] [cursor=pointer]:
+                    - img [ref=e538]
+                - paragraph [ref=e541]:
+                  - text: No cloning, no venv setup.
+                  - code [ref=e542]: uvx
+                  - text: fetches, isolates, and runs in one step. Stop with
+                  - code [ref=e543]: Ctrl+C
+                  - text: .
+                - generic [ref=e544]:
+                  - heading "Install once, run from anywhere" [level=3] [ref=e545]
+                  - 'link "Permalink: Install once, run from anywhere" [ref=e546] [cursor=pointer]':
+                    - /url: "#install-once-run-from-anywhere"
+                    - img [ref=e547]
+                - generic [ref=e549]:
+                  - generic [ref=e550]: uv tool install git+https://github.com/ChristianLemer/token-dashboard token-dashboard dashboard
+                  - button "Copy" [ref=e552] [cursor=pointer]:
+                    - img [ref=e553]
+                - paragraph [ref=e556]:
+                  - text: After the first install,
+                  - code [ref=e557]: token-dashboard
+                  - text: is a global command — no need to be in any particular directory.
+                - blockquote [ref=e558]:
+                  - paragraph [ref=e559]:
+                    - strong [ref=e560]:
+                      - text: First time using
+                      - code [ref=e561]: uv tool
+                      - text: "?"
+                    - text: uv installs executables to
+                    - code [ref=e562]: ~/.local/bin
+                    - text: (Unix) or
+                    - code [ref=e563]: "%USERPROFILE%\\.local\\bin"
+                    - text: (Windows) and warns if that directory isn't on your
+                    - code [ref=e564]: PATH
+                    - text: . Run
+                    - code [ref=e565]: uv tool update-shell
+                    - text: once and it adds the right line to your shell config (
+                    - code [ref=e566]: .bashrc
+                    - text: /
+                    - code [ref=e567]: .zshrc
+                    - text: / PowerShell profile). Nushell users may need to add it manually to
+                    - code [ref=e568]: env.nu
+                    - text: ":"
+                    - code [ref=e569]: $env.Path = ($env.Path | split row (char esep) | append ($nu.home-path | path join '.local' 'bin'))
+                    - text: .
+                  - paragraph [ref=e570]:
+                    - strong [ref=e571]: Tip — install from a specific branch or tag.
+                    - text: Append
+                    - code [ref=e572]: "@<ref>"
+                    - text: "to the URL:"
+                    - code [ref=e573]: uv tool install --force git+https://github.com/ChristianLemer/token-dashboard@dev
+                    - text: . Same syntax works with
+                    - code [ref=e574]: uvx --from
+                    - text: . Use
+                    - code [ref=e575]: "--force"
+                    - text: to re-install over an existing version.
+                - generic [ref=e576]:
+                  - heading "Without uv" [level=3] [ref=e577]
+                  - 'link "Permalink: Without uv" [ref=e578] [cursor=pointer]':
+                    - /url: "#without-uv"
+                    - img [ref=e579]
+                - generic [ref=e581]:
+                  - generic [ref=e582]: git clone https://github.com/ChristianLemer/token-dashboard.git cd token-dashboard python3 cli.py dashboard
+                  - button "Copy" [ref=e584] [cursor=pointer]:
+                    - img [ref=e585]
+                - blockquote [ref=e588]:
+                  - paragraph [ref=e589]:
+                    - text: On Windows, substitute
+                    - code [ref=e590]: py -3
+                    - text: for
+                    - code [ref=e591]: python3
+                    - text: .
+                - separator [ref=e592]
+                - paragraph [ref=e593]: "All three options:"
+                - list [ref=e594]:
+                  - listitem [ref=e595]:
+                    - text: Scan
+                    - code [ref=e596]: ~/.claude/projects/
+                    - text: on startup (first run can take 20–60 s on a heavy machine).
+                  - listitem [ref=e597]:
+                    - text: Start a local server at
+                    - link "http://127.0.0.1:8080" [ref=e598] [cursor=pointer]:
+                      - /url: http://127.0.0.1:8080
+                    - text: .
+                  - listitem [ref=e599]: Open your default browser to that URL.
+                - paragraph [ref=e600]:
+                  - text: Leave it running; it re-scans every 30 seconds and pushes updates live. Stop with
+                  - code [ref=e601]: Ctrl+C
+                  - text: ", click the ⏻ button in the top bar, or just close the browser tab — the server auto-shuts 30 s after the last tab disconnects."
+                - generic [ref=e602]:
+                  - heading "Where the data comes from" [level=2] [ref=e603]
+                  - 'link "Permalink: Where the data comes from" [ref=e604] [cursor=pointer]':
+                    - /url: "#where-the-data-comes-from"
+                    - img [ref=e605]
+                - paragraph [ref=e607]: "Claude Code writes one JSONL file per session here:"
+                - table [ref=e609]:
+                  - rowgroup [ref=e610]:
+                    - row "OS Path" [ref=e611]:
+                      - columnheader "OS" [ref=e612]
+                      - columnheader "Path" [ref=e613]
+                  - rowgroup [ref=e614]:
+                    - row "macOS / Linux ~/.claude/projects/<project-slug>/<session-id>.jsonl" [ref=e615]:
+                      - cell "macOS / Linux" [ref=e616]
+                      - cell "~/.claude/projects/<project-slug>/<session-id>.jsonl" [ref=e617]:
+                        - code [ref=e618]: ~/.claude/projects/<project-slug>/<session-id>.jsonl
+                    - row "Windows C:\\Users\\<you>\\.claude\\projects\\<project-slug>\\<session-id>.jsonl" [ref=e619]:
+                      - cell "Windows" [ref=e620]
+                      - cell "C:\\Users\\<you>\\.claude\\projects\\<project-slug>\\<session-id>.jsonl" [ref=e621]:
+                        - code [ref=e622]: C:\Users\<you>\.claude\projects\<project-slug>\<session-id>.jsonl
+                - paragraph [ref=e623]:
+                  - text: The dashboard never modifies those files — it only reads them and keeps a local SQLite cache at
+                  - code [ref=e624]: ~/.claude/token-dashboard.db
+                  - text: .
+                - paragraph [ref=e625]: "To point at a different location:"
+                - generic [ref=e626]:
+                  - generic [ref=e627]: python3 cli.py dashboard --projects-dir /path/to/projects --db /path/to/cache.db
+                  - button "Copy" [ref=e629] [cursor=pointer]:
+                    - img [ref=e630]
+                - generic [ref=e633]:
+                  - heading "Environment variables" [level=3] [ref=e634]
+                  - 'link "Permalink: Environment variables" [ref=e635] [cursor=pointer]':
+                    - /url: "#environment-variables"
+                    - img [ref=e636]
+                - table [ref=e639]:
+                  - rowgroup [ref=e640]:
+                    - row "Var Default Purpose" [ref=e641]:
+                      - columnheader "Var" [ref=e642]
+                      - columnheader "Default" [ref=e643]
+                      - columnheader "Purpose" [ref=e644]
+                  - rowgroup [ref=e645]:
+                    - row "PORT 8080 Port the local web server listens on" [ref=e646]:
+                      - cell "PORT" [ref=e647]:
+                        - code [ref=e648]: PORT
+                      - cell "8080" [ref=e649]:
+                        - code [ref=e650]: "8080"
+                      - cell "Port the local web server listens on" [ref=e651]
+                    - row "HOST 127.0.0.1 Bind address. Keep the default. Setting 0.0.0.0 exposes your entire prompt history to anyone on your local network — don't do this on any network you don't fully control (no coffee-shop Wi-Fi, no coworking spaces)." [ref=e652]:
+                      - cell "HOST" [ref=e653]:
+                        - code [ref=e654]: HOST
+                      - cell "127.0.0.1" [ref=e655]:
+                        - code [ref=e656]: 127.0.0.1
+                      - cell "Bind address. Keep the default. Setting 0.0.0.0 exposes your entire prompt history to anyone on your local network — don't do this on any network you don't fully control (no coffee-shop Wi-Fi, no coworking spaces)." [ref=e657]:
+                        - text: Bind address. Keep the default. Setting
+                        - code [ref=e658]: 0.0.0.0
+                        - text: exposes your entire prompt history to anyone on your local network — don't do this on any network you don't fully control (no coffee-shop Wi-Fi, no coworking spaces).
+                    - row "CLAUDE_PROJECTS_DIR ~/.claude/projects Where to scan for session JSONL files" [ref=e659]:
+                      - cell "CLAUDE_PROJECTS_DIR" [ref=e660]:
+                        - code [ref=e661]: CLAUDE_PROJECTS_DIR
+                      - cell "~/.claude/projects" [ref=e662]:
+                        - code [ref=e663]: ~/.claude/projects
+                      - cell "Where to scan for session JSONL files" [ref=e664]
+                    - row "TOKEN_DASHBOARD_DB ~/.claude/token-dashboard.db SQLite cache location" [ref=e665]:
+                      - cell "TOKEN_DASHBOARD_DB" [ref=e666]:
+                        - code [ref=e667]: TOKEN_DASHBOARD_DB
+                      - cell "~/.claude/token-dashboard.db" [ref=e668]:
+                        - code [ref=e669]: ~/.claude/token-dashboard.db
+                      - cell "SQLite cache location" [ref=e670]
+                - paragraph [ref=e671]:
+                  - text: Pricing lives in
+                  - link "token_dashboard/pricing.json" [ref=e672] [cursor=pointer]:
+                    - /url: /ChristianLemer/token-dashboard/blob/dev/token_dashboard/pricing.json
+                    - code [ref=e673]: token_dashboard/pricing.json
+                  - text: . Edit it directly if model prices change or to add a new plan.
+                - generic [ref=e674]:
+                  - heading "CLI reference" [level=2] [ref=e675]
+                  - 'link "Permalink: CLI reference" [ref=e676] [cursor=pointer]':
+                    - /url: "#cli-reference"
+                    - img [ref=e677]
+                - generic [ref=e679]:
+                  - generic [ref=e680]:
+                    - text: token-dashboard scan
+                    - generic [ref=e681]: "# populate / refresh the local DB, then exit"
+                    - text: token-dashboard today
+                    - generic [ref=e682]: "# today's totals (terminal)"
+                    - text: token-dashboard stats
+                    - generic [ref=e683]: "# all-time totals (terminal)"
+                    - text: token-dashboard tips
+                    - generic [ref=e684]: "# active suggestions (terminal)"
+                    - text: token-dashboard dashboard
+                    - generic [ref=e685]: "# scan + serve the UI at http://localhost:8080"
+                    - generic [ref=e686]: "# daemon control (useful for launchers like Raycast, Alfred, nushell)"
+                    - text: token-dashboard status
+                    - generic [ref=e687]: "# one-liner: server up/down + today's cost + prompt count"
+                    - text: token-dashboard open
+                    - generic [ref=e688]: "# open the running dashboard in the browser"
+                    - text: token-dashboard stop
+                    - generic [ref=e689]: "# ask the running daemon to shut down"
+                    - generic [ref=e690]: "# integrations"
+                    - text: token-dashboard integrations
+                    - generic [ref=e691]: "# paths to bundled Raycast scripts + nu module"
+                    - text: token-dashboard integrations raycast
+                    - generic [ref=e692]: "# just the Raycast directory path"
+                    - text: token-dashboard integrations nu
+                    - generic [ref=e693]: "# just the nu module path"
+                    - generic [ref=e694]: "# dashboard flags"
+                    - text: token-dashboard dashboard --no-open
+                    - generic [ref=e695]: "# don't auto-open the browser"
+                    - text: token-dashboard dashboard --no-scan
+                    - generic [ref=e696]: "# skip the initial scan (use cached DB only)"
+                  - button "Copy" [ref=e698] [cursor=pointer]:
+                    - img [ref=e699]
+                - paragraph [ref=e702]:
+                  - text: "Change the port:"
+                  - code [ref=e703]: PORT=9000 token-dashboard dashboard
+                  - text: .
+                - blockquote [ref=e704]:
+                  - paragraph [ref=e705]:
+                    - strong [ref=e706]: "Without uv:"
+                    - text: replace
+                    - code [ref=e707]: token-dashboard
+                    - text: with
+                    - code [ref=e708]: python3 cli.py
+                    - text: in every command above.
+                - generic [ref=e709]:
+                  - heading "The 7 tabs" [level=2] [ref=e710]
+                  - 'link "Permalink: The 7 tabs" [ref=e711] [cursor=pointer]':
+                    - /url: "#the-7-tabs"
+                    - img [ref=e712]
+                - paragraph [ref=e714]:
+                  - text: The dashboard is a single page with a hash-router tab bar across the top. Each tab is backed by its own JSON API under
+                  - code [ref=e715]: /api/
+                  - text: ":"
+                - list [ref=e716]:
+                  - listitem [ref=e717]:
+                    - strong [ref=e718]: Overview
+                    - text: — all-time input/output/cache tokens, sessions, turns, estimated cost on your chosen plan, daily work and cache-read charts, tokens-by-project, token share by model, top tools by call count, and recent sessions. This is the landing tab.
+                  - listitem [ref=e719]:
+                    - strong [ref=e720]: Prompts
+                    - text: — your most expensive user prompts ranked by tokens. Click any row to see the assistant response, tool calls made, and the size of each tool result.
+                  - listitem [ref=e721]:
+                    - strong [ref=e722]: Sessions
+                    - text: — turn-by-turn view of any single session, with per-turn tokens and tool calls.
+                  - listitem [ref=e723]:
+                    - strong [ref=e724]: Projects
+                    - text: "— per-project comparison: tokens, session counts, and which files were touched most."
+                  - listitem [ref=e725]:
+                    - strong [ref=e726]: Skills
+                    - text: — which skills you invoke most often, and (where we can measure them) their token cost. See
+                    - link "limitations" [ref=e727] [cursor=pointer]:
+                      - /url: /ChristianLemer/token-dashboard/blob/dev/docs/KNOWN_LIMITATIONS.md#skills-token-counts-are-partial
+                    - text: .
+                  - listitem [ref=e728]:
+                    - strong [ref=e729]: Tips
+                    - text: — rule-based suggestions for reducing token usage (repeated file reads, oversized tool results, low cache-hit rate, etc.).
+                  - listitem [ref=e730]:
+                    - strong [ref=e731]: Settings
+                    - text: — switch pricing between API / Pro / Max / Max-20x so cost figures everywhere else reflect your actual plan.
+                - paragraph [ref=e732]: The Overview tab also has a built-in "What do these numbers mean?" panel that explains input/output/cache tokens in plain English.
+                - generic [ref=e733]:
+                  - heading "Troubleshooting" [level=2] [ref=e734]
+                  - 'link "Permalink: Troubleshooting" [ref=e735] [cursor=pointer]':
+                    - /url: "#troubleshooting"
+                    - img [ref=e736]
+                - paragraph [ref=e738]:
+                  - strong [ref=e739]: "\"No data\" or empty charts."
+                  - text: Run
+                  - code [ref=e740]: python3 cli.py scan
+                  - text: once to populate the DB, then reload.
+                - paragraph [ref=e741]:
+                  - strong [ref=e742]: Port 8080 already in use.
+                  - code [ref=e743]: PORT=9000 python3 cli.py dashboard
+                  - text: .
+                - paragraph [ref=e744]:
+                  - strong [ref=e745]: Numbers look wrong / stuck.
+                  - text: The DB lives at
+                  - code [ref=e746]: ~/.claude/token-dashboard.db
+                  - text: . Delete it and re-run
+                  - code [ref=e747]: python3 cli.py scan
+                  - text: to rebuild from scratch.
+                - paragraph [ref=e748]:
+                  - strong [ref=e749]: Running the dashboard twice at the same time.
+                  - text: Don't — both processes will fight over the SQLite DB. Stop all instances before starting a new one.
+                - generic [ref=e750]:
+                  - heading "Accuracy note" [level=2] [ref=e751]
+                  - 'link "Permalink: Accuracy note" [ref=e752] [cursor=pointer]':
+                    - /url: "#accuracy-note"
+                    - img [ref=e753]
+                - paragraph [ref=e755]:
+                  - text: Claude Code writes each assistant response 2–3 times to disk while it streams (the same API message gets snapshotted as output grows). The dashboard dedupes these by
+                  - code [ref=e756]: message.id
+                  - text: so the final tally matches what the API actually billed. If you compare against another tool that sums every JSONL row, expect this dashboard's numbers to be lower — and closer to reality.
+                - generic [ref=e757]:
+                  - heading "Privacy" [level=2] [ref=e758]
+                  - 'link "Permalink: Privacy" [ref=e759] [cursor=pointer]':
+                    - /url: "#privacy"
+                    - img [ref=e760]
+                - paragraph [ref=e762]:
+                  - text: Nothing leaves your machine. No telemetry. No remote calls for your data. The browser fetches its JSON from
+                  - code [ref=e763]: 127.0.0.1
+                  - text: ", and all JS/CSS/fonts are served from that same local server — ECharts is vendored into"
+                  - code [ref=e764]: token_dashboard/web/
+                  - text: ", and the UI falls back to system fonts rather than pulling from a font CDN. If you want to verify:"
+                  - code [ref=e765]: grep -r "https://" token_dashboard/
+                  - text: — you'll find nothing.
+                - generic [ref=e766]:
+                  - heading "Tech stack" [level=2] [ref=e767]
+                  - 'link "Permalink: Tech stack" [ref=e768] [cursor=pointer]':
+                    - /url: "#tech-stack"
+                    - img [ref=e769]
+                - paragraph [ref=e771]: Python 3.11+ (no runtime dependencies) for the CLI, scanner, and HTTP server. SQLite for the local cache. Vanilla JS + ECharts for the UI, no build step. Dark theme, hash-based router, server-sent events for live refresh.
+                - paragraph [ref=e772]:
+                  - text: "Data flow:"
+                  - code [ref=e773]: token_dashboard/cli.py
+                  - text: →
+                  - code [ref=e774]: token_dashboard/scanner.py
+                  - text: → SQLite DB;
+                  - code [ref=e775]: token_dashboard/server.py
+                  - text: exposes
+                  - code [ref=e776]: /api/*
+                  - text: JSON routes and serves
+                  - code [ref=e777]: token_dashboard/web/
+                  - text: .
+                - generic [ref=e778]:
+                  - heading "Integrations" [level=2] [ref=e779]
+                  - 'link "Permalink: Integrations" [ref=e780] [cursor=pointer]':
+                    - /url: "#integrations"
+                    - img [ref=e781]
+                - paragraph [ref=e783]:
+                  - text: The Raycast scripts and nushell module are
+                  - strong [ref=e784]: shipped inside the wheel
+                  - text: —
+                  - code [ref=e785]: uv tool install token-dashboard
+                  - text: lays them down alongside the binary, and
+                  - code [ref=e786]: uv tool uninstall
+                  - text: removes them. Discover their installed location with
+                  - code [ref=e787]: token-dashboard integrations
+                  - text: ":"
+                - generic [ref=e788]:
+                  - generic [ref=e789]:
+                    - text: "$ token-dashboard integrations raycast: /Users/.../token-dashboard/.../site-packages/token_dashboard/_resources/raycast nu: /Users/.../token-dashboard/.../site-packages/token_dashboard/_resources/nu/td $ token-dashboard integrations raycast"
+                    - generic [ref=e790]: "# just the Raycast path"
+                    - text: $ token-dashboard integrations nu
+                    - generic [ref=e791]: "# just the nu path"
+                  - button "Copy" [ref=e793] [cursor=pointer]:
+                    - img [ref=e794]
+                - list [ref=e797]:
+                  - listitem [ref=e798]:
+                    - strong [ref=e799]: nushell
+                    - text: "— module that treats the dashboard as a headless daemon and the browser, nu, and scripts as equal clients. Add to your config:"
+                    - code [ref=e800]: use (token-dashboard integrations nu)
+                    - text: ". Then:"
+                    - code [ref=e801]: td start
+                    - text: launches the daemon (no browser, then prints today's totals),
+                    - code [ref=e802]: td stop
+                    - text: /
+                    - code [ref=e803]: td restart
+                    - text: /
+                    - code [ref=e804]: td status
+                    - text: for lifecycle,
+                    - code [ref=e805]: td dashboard
+                    - text: opens the browser view,
+                    - code [ref=e806]: td today
+                    - text: ","
+                    - code [ref=e807]: td prompts --limit 50 | where billable_tokens > 50000
+                    - text: ","
+                    - code [ref=e808]: td tips | where category == "right-size"
+                    - text: for queries piping into native nu tables.
+                    - code [ref=e809]: help td
+                    - text: lists every command. Override the host with
+                    - code [ref=e810]: $env.TD_HOST
+                    - text: .
+                  - listitem [ref=e811]:
+                    - strong [ref=e812]: Raycast
+                    - text: — four script commands (
+                    - code [ref=e813]: Token Dashboard Start
+                    - text: ","
+                    - code [ref=e814]: Token Dashboard Status
+                    - text: ","
+                    - code [ref=e815]: Token Dashboard Open
+                    - text: ","
+                    - code [ref=e816]: Token Dashboard Stop
+                    - text: ) wrapped around the matching
+                    - code [ref=e817]: token-dashboard
+                    - text: CLI subcommands. In Raycast → Settings → Extensions → Script Commands, click "Add Directories" and paste the path from
+                    - code [ref=e818]: token-dashboard integrations raycast
+                    - text: . The four commands appear grouped under "Token Dashboard".
+                    - code [ref=e819]: Token Dashboard Status
+                    - text: is the glanceable one — bind it to a hotkey to see today's spend without leaving the keyboard.
+                - generic [ref=e820]:
+                  - heading "Further reading" [level=2] [ref=e821]
+                  - 'link "Permalink: Further reading" [ref=e822] [cursor=pointer]':
+                    - /url: "#further-reading"
+                    - img [ref=e823]
+                - list [ref=e825]:
+                  - listitem [ref=e826]:
+                    - link "CLAUDE.md" [ref=e827] [cursor=pointer]:
+                      - /url: /ChristianLemer/token-dashboard/blob/dev/CLAUDE.md
+                      - code [ref=e828]: CLAUDE.md
+                    - text: — conventions and architecture overview (also picked up automatically by Claude Code)
+                  - listitem [ref=e829]:
+                    - link "CONTRIBUTING.md" [ref=e830] [cursor=pointer]:
+                      - /url: /ChristianLemer/token-dashboard/blob/dev/CONTRIBUTING.md
+                      - code [ref=e831]: CONTRIBUTING.md
+                    - text: — how to develop and test
+                  - listitem [ref=e832]:
+                    - link "docs/KNOWN_LIMITATIONS.md" [ref=e833] [cursor=pointer]:
+                      - /url: /ChristianLemer/token-dashboard/blob/dev/docs/KNOWN_LIMITATIONS.md
+                      - code [ref=e834]: docs/KNOWN_LIMITATIONS.md
+                    - text: — rough edges
+                  - listitem [ref=e835]:
+                    - link "docs/inspiration.md" [ref=e836] [cursor=pointer]:
+                      - /url: /ChristianLemer/token-dashboard/blob/dev/docs/inspiration.md
+                      - code [ref=e837]: docs/inspiration.md
+                    - text: — prior art and how this project diverges
+                - generic [ref=e838]:
+                  - heading "Contributing" [level=2] [ref=e839]
+                  - 'link "Permalink: Contributing" [ref=e840] [cursor=pointer]':
+                    - /url: "#contributing"
+                    - img [ref=e841]
+                - paragraph [ref=e843]:
+                  - text: See
+                  - link "CONTRIBUTING.md" [ref=e844] [cursor=pointer]:
+                    - /url: /ChristianLemer/token-dashboard/blob/dev/CONTRIBUTING.md
+                    - code [ref=e845]: CONTRIBUTING.md
+                  - text: ". Short version: fork,"
+                  - code [ref=e846]: uv run pytest
+                  - text: before opening a PR, keep runtime dependencies at zero.
+                - generic [ref=e847]:
+                  - heading "License" [level=2] [ref=e848]
+                  - 'link "Permalink: License" [ref=e849] [cursor=pointer]':
+                    - /url: "#license"
+                    - img [ref=e850]
+                - paragraph [ref=e852]:
+                  - link "MIT" [ref=e853] [cursor=pointer]:
+                    - /url: /ChristianLemer/token-dashboard/blob/dev/LICENSE
+                  - text: .
+        - generic [ref=e857]:
+          - generic [ref=e860]:
+            - heading "About" [level=2] [ref=e861]
+            - paragraph [ref=e862]: See where Claude Code is burning tokens - turn raw JSONL transcripts into local cost analytics, hotspot views, and session-level usage insight.
+            - heading "Resources" [level=3] [ref=e863]
+            - link "Readme" [ref=e865] [cursor=pointer]:
+              - /url: "#readme-ov-file"
+              - img [ref=e866]
+              - text: Readme
+            - heading "License" [level=3] [ref=e868]
+            - link "MIT license" [ref=e870] [cursor=pointer]:
+              - /url: /ChristianLemer/token-dashboard/blob/main/LICENSE
+              - img [ref=e871]
+              - text: MIT license
+            - heading "Contributing" [level=3] [ref=e873]
+            - link "Contributing" [ref=e875] [cursor=pointer]:
+              - /url: "#contributing-ov-file"
+              - img [ref=e876]
+              - text: Contributing
+            - link "Activity" [ref=e879] [cursor=pointer]:
+              - /url: /ChristianLemer/token-dashboard/activity
+              - img [ref=e880]
+              - text: Activity
+            - heading "Stars" [level=3] [ref=e882]
+            - link "0 stars" [ref=e884] [cursor=pointer]:
+              - /url: /ChristianLemer/token-dashboard/stargazers
+              - img [ref=e885]
+              - strong [ref=e887]: "0"
+              - text: stars
+            - heading "Watchers" [level=3] [ref=e888]
+            - link "0 watching" [ref=e890] [cursor=pointer]:
+              - /url: /ChristianLemer/token-dashboard/watchers
+              - img [ref=e891]
+              - strong [ref=e893]: "0"
+              - text: watching
+            - heading "Forks" [level=3] [ref=e894]
+            - link "0 forks" [ref=e896] [cursor=pointer]:
+              - /url: /ChristianLemer/token-dashboard/forks
+              - img [ref=e897]
+              - strong [ref=e899]: "0"
+              - text: forks
+            - link "Report repository" [ref=e901] [cursor=pointer]:
+              - /url: /contact/report-content?content_url=https%3A%2F%2Fgithub.com%2FChristianLemer%2Ftoken-dashboard&report=ChristianLemer+%28user%29
+          - generic [ref=e903]:
+            - heading "Releases" [level=2] [ref=e904]:
+              - link "Releases" [ref=e905] [cursor=pointer]:
+                - /url: /ChristianLemer/token-dashboard/releases
+            - generic [ref=e906]: No releases published
+          - generic [ref=e908]:
+            - heading "Packages" [level=2] [ref=e909]:
+              - link "Packages" [ref=e910] [cursor=pointer]:
+                - /url: /users/ChristianLemer/packages?repo_name=token-dashboard
+            - generic [ref=e911]: No packages published
+          - generic [ref=e913]:
+            - heading "Contributors" [level=2] [ref=e914]:
+              - link "Contributors" [ref=e915] [cursor=pointer]:
+                - /url: /ChristianLemer/token-dashboard/graphs/contributors
+            - generic [ref=e916]: No contributors
+          - generic [ref=e918]:
+            - heading "Languages" [level=2] [ref=e919]
+            - list [ref=e926]:
+              - listitem [ref=e927]:
+                - generic [ref=e928]:
+                  - img [ref=e929]
+                  - generic [ref=e931]: Python
+                  - generic [ref=e932]: 69.5%
+              - listitem [ref=e933]:
+                - generic [ref=e934]:
+                  - img [ref=e935]
+                  - generic [ref=e937]: JavaScript
+                  - generic [ref=e938]: 24.4%
+              - listitem [ref=e939]:
+                - generic [ref=e940]:
+                  - img [ref=e941]
+                  - generic [ref=e943]: CSS
+                  - generic [ref=e944]: 5.8%
+              - listitem [ref=e945]:
+                - generic [ref=e946]:
+                  - img [ref=e947]
+                  - generic [ref=e949]: HTML
+                  - generic [ref=e950]: 0.3%
