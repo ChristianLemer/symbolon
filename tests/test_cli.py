@@ -66,10 +66,11 @@ class CliTests(unittest.TestCase):
         self.assertNotEqual(r.returncode, 0)
         self.assertIn("not running", r.stdout)
 
-    def test_open_when_server_down(self):
-        r = self._run("open", port=_free_port())
-        self.assertNotEqual(r.returncode, 0)
-        self.assertIn("not running", r.stdout)
+    def test_start_command_is_registered(self):
+        # `start` is the new auto-start daemon launcher. We don't actually
+        # spawn here — just confirm the CLI knows the subcommand.
+        r = self._run("start", "--help")
+        self.assertEqual(r.returncode, 0, r.stderr)
 
     def test_integrations_lists_all_paths(self):
         r = self._run("integrations")
@@ -83,7 +84,8 @@ class CliTests(unittest.TestCase):
         # The path printed must point at a real directory containing our scripts.
         path = Path(r.stdout.strip())
         self.assertTrue(path.is_dir(), f"raycast path not a dir: {path}")
-        self.assertTrue((path / "token-dashboard-start.sh").is_file())
+        self.assertTrue((path / "sh" / "token-dashboard-start.sh").is_file())
+        self.assertTrue((path / "ps1" / "token-dashboard-start.ps1").is_file())
 
     def test_integrations_nu_kind(self):
         r = self._run("integrations", "nu")

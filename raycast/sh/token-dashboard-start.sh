@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # @raycast.schemaVersion 1
-# @raycast.title Token Dashboard Open
-# @raycast.mode silent
+# @raycast.title Token Dashboard Start
+# @raycast.mode compact
 # @raycast.icon 🦉
 # @raycast.packageName Token Dashboard
-# @raycast.description Open the Token Dashboard in the browser (server must be running).
+# @raycast.description Launch the Token Dashboard daemon (no browser).
 
 export PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
-exec token-dashboard open
+exec token-dashboard start

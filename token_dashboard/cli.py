@@ -6,7 +6,9 @@ import json
 import os
 import shutil
 import socket
+import subprocess
 import sys
+import time
 import urllib.error
 import urllib.request
 import webbrowser
@@ -100,6 +102,53 @@ def cmd_tips(args):
         print(f"  {tip['body']}\n")
 
 
+def _spawn_daemon() -> None:
+    """Start the dashboard daemon in a fully detached process."""
+    cmd = [sys.argv[0], "dashboard", "--no-open"]
+    kwargs: dict = dict(
+        stdin=subprocess.DEVNULL,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        close_fds=True,
+    )
+    if sys.platform == "win32":
+        kwargs["creationflags"] = (
+            subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP
+        )
+    else:
+        kwargs["start_new_session"] = True
+    subprocess.Popen(cmd, **kwargs)
+
+
+def _wait_for_server(host: str, port: int, timeout_s: float = 5.0) -> bool:
+    deadline = time.monotonic() + timeout_s
+    while time.monotonic() < deadline:
+        if _server_running(host, port):
+            return True
+        time.sleep(0.1)
+    return False
+
+
+def _ensure_running(host: str, port: int) -> bool:
+    """Ensure the daemon is up. Spawn it and wait if not. Return True on success."""
+    if _server_running(host, port):
+        return True
+    _spawn_daemon()
+    return _wait_for_server(host, port)
+
+
+def cmd_start(args):
+    host, port = _host_port()
+    if _server_running(host, port):
+        print(f"Token Dashboard: already running at http://{host}:{port}/")
+        return
+    print("Token Dashboard: starting daemon…")
+    if not _ensure_running(host, port):
+        print("Token Dashboard: failed to start within 5s", file=sys.stderr)
+        sys.exit(1)
+    print(f"Token Dashboard: running at http://{host}:{port}/")
+
+
 def cmd_status(args):
     db = _db_path(args)
     init_db(db)
@@ -144,18 +193,24 @@ def _integration_paths() -> dict[str, Path]:
 def _install_raycast_scripts(src: Path) -> Path:
     dest = Path(RAYCAST_DEFAULT_DEST).expanduser()
     dest.mkdir(parents=True, exist_ok=True)
+    variant = "ps1" if sys.platform == "win32" else "sh"
+    variant_dir = src / variant
+    if not variant_dir.is_dir():
+        # Backwards-compat: pre-platform-split layout had .sh files at top.
+        variant_dir = src
     for f in dest.iterdir():
-        if f.is_file() and f.suffix == ".sh":
+        if f.is_file() and f.suffix in (".sh", ".ps1"):
             try:
                 if RAYCAST_OWNER_MARKER in f.read_text(errors="ignore"):
                     f.unlink()
             except OSError:
                 pass
-    for script in src.iterdir():
-        if script.is_file() and script.suffix == ".sh":
+    for script in variant_dir.iterdir():
+        if script.is_file() and script.suffix in (".sh", ".ps1"):
             target = dest / script.name
             shutil.copy2(script, target)
-            target.chmod(0o755)
+            if sys.platform != "win32":
+                target.chmod(0o755)
     return dest
 
 
@@ -188,8 +243,10 @@ def cmd_open(args):
     host, port = _host_port()
     url = f"http://{host}:{port}/"
     if not _server_running(host, port):
-        print("Token Dashboard: not running. Start it with: token-dashboard dashboard")
-        sys.exit(1)
+        print("Token Dashboard: starting daemon…")
+        if not _ensure_running(host, port):
+            print("Token Dashboard: failed to start within 5s", file=sys.stderr)
+            sys.exit(1)
     webbrowser.open(url)
     print(f"Opened {url}")
 
@@ -225,6 +282,7 @@ def main():
     sub.add_parser("stats",  parents=[common]).set_defaults(func=cmd_stats)
     sub.add_parser("tips",   parents=[common]).set_defaults(func=cmd_tips)
     sub.add_parser("status", parents=[common]).set_defaults(func=cmd_status)
+    sub.add_parser("start",  parents=[common]).set_defaults(func=cmd_start)
     sub.add_parser("stop",   parents=[common]).set_defaults(func=cmd_stop)
     sub.add_parser("open",   parents=[common]).set_defaults(func=cmd_open)
     integ = sub.add_parser(
