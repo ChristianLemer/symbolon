@@ -6,7 +6,7 @@ Guidance for Claude Code when working in this repository.
 
 **Token Dashboard** — a local dashboard for tracking Claude Code token usage, costs, and session history. Reads the JSONL transcripts Claude Code writes to `~/.claude/projects/` and turns them into per-prompt cost analytics, tool/file heatmaps, subagent attribution, cache analytics, project comparisons, and a rule-based tips engine.
 
-Forked from [nateherkai/token-dashboard](https://github.com/nateherkai/token-dashboard) — a substantial reimplementation inspired by [phuryn/claude-usage](https://github.com/phuryn/claude-usage). The upstream diverges from claude-usage in UI (vanilla JS + ECharts, dark theme, hash router, SSE refresh) and scope (expensive-prompt drill-down, skills view, tips engine, streaming-snapshot dedup). This fork adds uv tooling, graceful shutdown, monthly cost projection, security hardening, and CI. See `docs/inspiration.md` for the lineage.
+Forked from [nateherkai/token-dashboard](https://github.com/nateherkai/token-dashboard) — a substantial reimplementation inspired by [phuryn/claude-usage](https://github.com/phuryn/claude-usage). The upstream diverges from claude-usage in UI (vanilla JS + ECharts, dark theme, hash router, SSE refresh) and scope (expensive-prompt drill-down, skills view, tips engine, streaming-snapshot dedup). This fork repositions the tool for non-developer users — `uv tool install` packaging, Today-first UX, daemon model, bundled Raycast/nushell integrations, and hardening. See [`docs/lineage.md`](docs/lineage.md) for the full chain and what each layer added.
 
 ## Status
 
@@ -32,7 +32,7 @@ Claude Code writes one JSONL file per session to `~/.claude/projects/<project-sl
 
 ## Customizing
 
-Env vars: `PORT` (default 8080), `HOST` (default 127.0.0.1), `CLAUDE_PROJECTS_DIR`, `TOKEN_DASHBOARD_DB`. Pricing lives in `pricing.json`. See README.md § Environment variables for details.
+Env vars: `PORT` (default 8080), `HOST` (default 127.0.0.1), `CLAUDE_PROJECTS_DIR`, `TOKEN_DASHBOARD_DB`. Pricing lives in `pricing.json`. See [`docs/configuration.md`](docs/configuration.md) for details.
 
 ## Known limitations
 
