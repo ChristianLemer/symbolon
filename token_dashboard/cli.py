@@ -214,6 +214,44 @@ def _install_raycast_scripts(src: Path) -> Path:
     return dest
 
 
+def _pricing_path() -> Path:
+    return Path(__file__).resolve().parent / "pricing.json"
+
+
+def cmd_pricing_sync(args):
+    from .pricing_sync import sync_from_litellm
+
+    dest = _pricing_path()
+    print("Token Dashboard: fetching pricing from LiteLLM…")
+    try:
+        new_pricing = sync_from_litellm(dest)
+    except Exception as e:
+        print(f"Token Dashboard: pricing sync failed: {e}", file=sys.stderr)
+        sys.exit(1)
+    print(f"Token Dashboard: updated {dest}")
+    print(f"  models: {len(new_pricing['models'])}")
+    print(f"  tiers:  {sorted(new_pricing['tier_fallback'])}")
+
+
+def _maybe_auto_sync_pricing(skip: bool = False) -> None:
+    """Refresh pricing.json on startup if it's older than a week."""
+    if skip:
+        return
+    from .pricing_sync import is_stale, sync_from_litellm
+
+    dest = _pricing_path()
+    if not is_stale(dest):
+        return
+    print("Token Dashboard: pricing.json is stale, refreshing from LiteLLM…")
+    try:
+        sync_from_litellm(dest)
+    except Exception as e:
+        print(
+            f"Token Dashboard: pricing auto-sync failed (continuing with cached): {e}",
+            file=sys.stderr,
+        )
+
+
 def cmd_integrations(args):
     paths = _integration_paths()
     missing = [k for k, p in paths.items() if not p.is_dir()]
@@ -254,6 +292,7 @@ def cmd_open(args):
 def cmd_dashboard(args):
     db = _db_path(args)
     init_db(db)
+    _maybe_auto_sync_pricing(skip=args.no_auto_sync)
     if not args.no_scan:
         scan_dir(_projects(args), db)
     from .server import run
@@ -294,9 +333,20 @@ def main():
     integ.add_argument("--install", action="store_true",
                        help=f"Copy bundled Raycast scripts to {RAYCAST_DEFAULT_DEST}")
     integ.set_defaults(func=cmd_integrations)
+    pricing = sub.add_parser(
+        "pricing", parents=[common],
+        help="Pricing-related commands (e.g. `pricing sync`)",
+    )
+    pricing_sub = pricing.add_subparsers(dest="pricing_cmd")
+    pricing_sub.add_parser(
+        "sync", parents=[common],
+        help="Refresh pricing.json from LiteLLM's community model registry.",
+    ).set_defaults(func=cmd_pricing_sync)
     d = sub.add_parser("dashboard", parents=[common])
     d.add_argument("--no-scan", action="store_true")
     d.add_argument("--no-open", action="store_true")
+    d.add_argument("--no-auto-sync", action="store_true",
+                   help="Skip the weekly pricing.json refresh from LiteLLM.")
     d.set_defaults(func=cmd_dashboard)
     args = p.parse_args()
     if not args.cmd:
