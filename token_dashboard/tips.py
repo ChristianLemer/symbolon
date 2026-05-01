@@ -115,7 +115,11 @@ def repeated_target_tips(db_path, today_iso: str | None = None) -> list[dict]:
     return out
 
 
-def right_size_tips(db_path, today_iso: str | None = None) -> list[dict]:
+def right_size_tips(
+    db_path,
+    today_iso: str | None = None,
+    pricing: dict | None = None,
+) -> list[dict]:
     today_iso = today_iso or datetime.now(UTC).isoformat()
     since = _iso_days_ago(today_iso, 7)
     sql = """
@@ -131,8 +135,25 @@ def right_size_tips(db_path, today_iso: str | None = None) -> list[dict]:
         row = c.execute(sql, (since,)).fetchone()
     if not row or (row["n"] or 0) < 10:
         return []
-    api_opus   = ((row["in_tok"] or 0) * 15 + (row["out_tok"] or 0) * 75) / 1_000_000
-    api_sonnet = ((row["in_tok"] or 0) *  3 + (row["out_tok"] or 0) * 15) / 1_000_000
+    if pricing is None:
+        from pathlib import Path
+
+        from .pricing import load_pricing
+        pricing = load_pricing(Path(__file__).resolve().parent / "pricing.json")
+    fb = pricing.get("tier_fallback", {})
+    opus = fb.get("opus")
+    sonnet = fb.get("sonnet")
+    if not opus or not sonnet:
+        # Pricing data is missing or malformed — better silent than wrong.
+        return []
+    api_opus = (
+        (row["in_tok"] or 0) * opus["input"]
+        + (row["out_tok"] or 0) * opus["output"]
+    ) / 1_000_000
+    api_sonnet = (
+        (row["in_tok"] or 0) * sonnet["input"]
+        + (row["out_tok"] or 0) * sonnet["output"]
+    ) / 1_000_000
     savings = api_opus - api_sonnet
     if savings < 1.0:
         return []
@@ -197,10 +218,14 @@ def outlier_tips(db_path, today_iso: str | None = None) -> list[dict]:
     return out
 
 
-def all_tips(db_path, today_iso: str | None = None) -> list[dict]:
+def all_tips(
+    db_path,
+    today_iso: str | None = None,
+    pricing: dict | None = None,
+) -> list[dict]:
     return [
         *cache_discipline_tips(db_path, today_iso),
         *repeated_target_tips(db_path, today_iso),
-        *right_size_tips(db_path, today_iso),
+        *right_size_tips(db_path, today_iso, pricing=pricing),
         *outlier_tips(db_path, today_iso),
     ]

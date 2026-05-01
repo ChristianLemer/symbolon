@@ -148,7 +148,7 @@ def build_handler(db_path: str, projects_dir: str):
                 sid = path.rsplit("/", 1)[1]
                 return _send_json(self, session_turns(db_path, sid))
             if path == "/api/tips":
-                return _send_json(self, all_tips(db_path))
+                return _send_json(self, all_tips(db_path, pricing=pricing))
             if path == "/api/plan":
                 return _send_json(self, {"plan": get_plan(db_path), "pricing": pricing})
             if path == "/api/scan":
