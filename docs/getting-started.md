@@ -1,6 +1,6 @@
 # Getting started
 
-You've installed the dashboard and run `token-dashboard dashboard`. Your browser opened to <http://127.0.0.1:8080>. Now what?
+You've installed the dashboard and run `symbolon dashboard`. Your browser opened to <http://127.0.0.1:8080>. Now what?
 
 This page walks you through the seven tabs and tells you what to look at first.
 

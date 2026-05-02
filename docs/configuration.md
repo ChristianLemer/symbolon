@@ -7,12 +7,12 @@
 | `PORT` | `8080` | Port the local web server listens on. |
 | `HOST` | `127.0.0.1` | Bind address. **Keep the default.** Setting `0.0.0.0` exposes your prompt history to anyone on your local network — don't do this on any network you don't fully control. |
 | `CLAUDE_PROJECTS_DIR` | `~/.claude/projects` | Where to scan for Claude Code's session JSONL files. |
-| `TOKEN_DASHBOARD_DB` | `~/.claude/token-dashboard.db` | SQLite cache location. |
+| `SYMBOLON_DB` | `~/.claude/symbolon.db` | SQLite cache location. |
 
 Example:
 
 ```bash
-PORT=9000 token-dashboard dashboard
+PORT=9000 symbolon dashboard
 ```
 
 ## Where the data comes from
@@ -29,19 +29,19 @@ The dashboard never modifies these files — it only reads them and keeps a loca
 To point at a different location:
 
 ```bash
-token-dashboard dashboard --projects-dir /path/to/projects --db /path/to/cache.db
+symbolon dashboard --projects-dir /path/to/projects --db /path/to/cache.db
 ```
 
 ## Pricing
 
-Pricing lives in `pricing.json` inside the package (`token_dashboard/pricing.json`). Each entry maps a model identifier to per-token rates and tier metadata.
+Pricing lives in `pricing.json` inside the package (`symbolon/pricing.json`). Each entry maps a model identifier to per-token rates and tier metadata.
 
 For switching between plans (API / Pro / Max / Max-20×), use the **Settings** tab in the dashboard — that changes how all cost figures are computed in the UI without touching `pricing.json`.
 
 If model prices change, edit `pricing.json` directly. Find its installed path with:
 
 ```bash
-python3 -c "import token_dashboard, os; print(os.path.join(os.path.dirname(token_dashboard.__file__), 'pricing.json'))"
+python3 -c "import symbolon, os; print(os.path.join(os.path.dirname(symbolon.__file__), 'pricing.json'))"
 ```
 
 ## Multiple dashboards on the same machine

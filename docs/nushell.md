@@ -11,7 +11,7 @@ If you live in [nushell](https://www.nushell.sh/), the dashboard ships as a daem
 ## Setup
 
 ```nu
-use (token-dashboard integrations nu)
+use (symbolon integrations nu)
 ```
 
 Add that line to your nushell config (typically `~/.config/nushell/config.nu`).
@@ -19,8 +19,8 @@ Add that line to your nushell config (typically `~/.config/nushell/config.nu`).
 To find the path manually:
 
 ```bash
-$ token-dashboard integrations nu
-/Users/.../site-packages/token_dashboard/_resources/nu/td
+$ symbolon integrations nu
+/Users/.../site-packages/symbolon/_resources/nu/td
 ```
 
 ## Common commands
@@ -58,4 +58,4 @@ Useful if you're running the dashboard on a non-default port (see [Configuration
 
 ## Updates
 
-When you upgrade Token Dashboard (`uv tool upgrade token-dashboard`), the bundled module updates with it. The `use` line in your config keeps pointing at the latest installed version.
+When you upgrade Symbolon (`uv tool upgrade symbolon`), the bundled module updates with it. The `use` line in your config keeps pointing at the latest installed version.

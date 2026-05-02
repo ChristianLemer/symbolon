@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "token-dashboard"
+name = "symbolon"
 version = "0.1.0"
 description = "Local dashboard for tracking Claude Code token usage and costs"
 readme = "README.md"
@@ -12,7 +12,7 @@ requires-python = ">=3.11"
 dependencies = []
 
 [project.scripts]
-token-dashboard = "token_dashboard.cli:main"
+symbolon = "symbolon.cli:main"
 
 [dependency-groups]
 dev = [
@@ -22,11 +22,11 @@ dev = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["token_dashboard"]
+packages = ["symbolon"]
 
 [tool.hatch.build.targets.wheel.force-include]
-"nu/td/mod.nu" = "token_dashboard/_resources/nu/td/mod.nu"
-"raycast" = "token_dashboard/_resources/raycast"
+"nu/td/mod.nu" = "symbolon/_resources/nu/td/mod.nu"
+"raycast" = "symbolon/_resources/raycast"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

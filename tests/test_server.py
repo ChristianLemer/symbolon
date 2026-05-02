@@ -8,8 +8,8 @@ import unittest
 import urllib.request
 from pathlib import Path
 
-from token_dashboard.db import init_db
-from token_dashboard.server import build_handler
+from symbolon.db import init_db
+from symbolon.server import build_handler
 
 
 def _free_port():
@@ -42,7 +42,7 @@ class ServerTests(unittest.TestCase):
 
     def test_index_html(self):
         body = self._get("/")
-        self.assertIn(b"Token Dashboard", body)
+        self.assertIn(b"Symbolon", body)
 
     def test_overview_json(self):
         body = json.loads(self._get("/api/overview"))

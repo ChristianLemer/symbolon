@@ -1,4 +1,4 @@
-"""Token Dashboard CLI."""
+"""Symbolon CLI."""
 from __future__ import annotations
 
 import argparse
@@ -20,12 +20,17 @@ from .scanner import scan_dir
 from .tips import all_tips
 from .util import today_range_local
 
-RAYCAST_OWNER_MARKER = "@raycast.packageName Token Dashboard"
+RAYCAST_OWNER_MARKERS = (
+    "@raycast.packageName Symbolon",
+    # Legacy from before the rename — keep so users upgrading from
+    # token-dashboard get their old scripts cleaned up on `--install`.
+    "@raycast.packageName Token Dashboard",
+)
 RAYCAST_DEFAULT_DEST = "~/.raycast-scripts"
 
 
 def _db_path(args) -> str:
-    return args.db or os.environ.get("TOKEN_DASHBOARD_DB") or str(default_db_path())
+    return args.db or os.environ.get("SYMBOLON_DB") or str(default_db_path())
 
 
 def _projects(args) -> str:
@@ -64,7 +69,7 @@ def cmd_scan(args):
     init_db(db)
     n = scan_dir(_projects(args), db)
     print(
-        f"Token Dashboard: scanned {n['files']} files,"
+        f"Symbolon: scanned {n['files']} files,"
         f" {n['messages']} messages, {n['tools']} tool calls"
     )
 
@@ -74,7 +79,7 @@ def cmd_today(args):
     init_db(db)
     s, e, day = today_range_local()
     t = overview_totals(db, since=s, until=e)
-    print(f"Token Dashboard — {day}")
+    print(f"Symbolon — {day}")
     print(f"  sessions: {t['sessions']}    turns: {t['turns']}")
     print(f"  input:    {t['input_tokens']:>12,}    output: {t['output_tokens']:>12,}")
     cache_cr = t["cache_create_5m_tokens"] + t["cache_create_1h_tokens"]
@@ -85,7 +90,7 @@ def cmd_stats(args):
     db = _db_path(args)
     init_db(db)
     t = overview_totals(db)
-    print("Token Dashboard — all time")
+    print("Symbolon — all time")
     print(f"  sessions: {t['sessions']}    turns: {t['turns']}")
     print(f"  input:    {t['input_tokens']:>12,}    output: {t['output_tokens']:>12,}")
 
@@ -95,7 +100,7 @@ def cmd_tips(args):
     init_db(db)
     tips = all_tips(db)
     if not tips:
-        print("Token Dashboard: no suggestions")
+        print("Symbolon: no suggestions")
         return
     for tip in tips:
         print(f"[{tip['category']}] {tip['title']}")
@@ -140,13 +145,13 @@ def _ensure_running(host: str, port: int) -> bool:
 def cmd_start(args):
     host, port = _host_port()
     if _server_running(host, port):
-        print(f"Token Dashboard: already running at http://{host}:{port}/")
+        print(f"Symbolon: already running at http://{host}:{port}/")
         return
-    print("Token Dashboard: starting daemon…")
+    print("Symbolon: starting daemon…")
     if not _ensure_running(host, port):
-        print("Token Dashboard: failed to start within 5s", file=sys.stderr)
+        print("Symbolon: failed to start within 5s", file=sys.stderr)
         sys.exit(1)
-    print(f"Token Dashboard: running at http://{host}:{port}/")
+    print(f"Symbolon: running at http://{host}:{port}/")
 
 
 def cmd_status(args):
@@ -175,9 +180,9 @@ def cmd_stop(args):
     try:
         with urllib.request.urlopen(req, timeout=2) as r:  # noqa: S310 — localhost only
             json.loads(r.read() or b"{}")
-        print("Token Dashboard: stopped.")
+        print("Symbolon: stopped.")
     except (urllib.error.URLError, ConnectionError, OSError):
-        print("Token Dashboard: not running.")
+        print("Symbolon: not running.")
         sys.exit(1)
 
 
@@ -201,7 +206,8 @@ def _install_raycast_scripts(src: Path) -> Path:
     for f in dest.iterdir():
         if f.is_file() and f.suffix in (".sh", ".ps1"):
             try:
-                if RAYCAST_OWNER_MARKER in f.read_text(errors="ignore"):
+                content = f.read_text(errors="ignore")
+                if any(m in content for m in RAYCAST_OWNER_MARKERS):
                     f.unlink()
             except OSError:
                 pass
@@ -222,13 +228,13 @@ def cmd_pricing_sync(args):
     from .pricing_sync import sync_from_litellm
 
     dest = _pricing_path()
-    print("Token Dashboard: fetching pricing from LiteLLM…")
+    print("Symbolon: fetching pricing from LiteLLM…")
     try:
         new_pricing = sync_from_litellm(dest)
     except Exception as e:
-        print(f"Token Dashboard: pricing sync failed: {e}", file=sys.stderr)
+        print(f"Symbolon: pricing sync failed: {e}", file=sys.stderr)
         sys.exit(1)
-    print(f"Token Dashboard: updated {dest}")
+    print(f"Symbolon: updated {dest}")
     print(f"  models: {len(new_pricing['models'])}")
     print(f"  tiers:  {sorted(new_pricing['tier_fallback'])}")
 
@@ -242,12 +248,12 @@ def _maybe_auto_sync_pricing(skip: bool = False) -> None:
     dest = _pricing_path()
     if not is_stale(dest):
         return
-    print("Token Dashboard: pricing.json is stale, refreshing from LiteLLM…")
+    print("Symbolon: pricing.json is stale, refreshing from LiteLLM…")
     try:
         sync_from_litellm(dest)
     except Exception as e:
         print(
-            f"Token Dashboard: pricing auto-sync failed (continuing with cached): {e}",
+            f"Symbolon: pricing auto-sync failed (continuing with cached): {e}",
             file=sys.stderr,
         )
 
@@ -257,8 +263,8 @@ def cmd_integrations(args):
     missing = [k for k, p in paths.items() if not p.is_dir()]
     if missing:
         print(
-            f"Token Dashboard: integration files for {missing} not found.\n"
-            "  Reinstall with `uv tool install --reinstall token-dashboard`.",
+            f"Symbolon: integration files for {missing} not found.\n"
+            "  Reinstall with `uv tool install --reinstall symbolon`.",
             file=sys.stderr,
         )
         sys.exit(1)
@@ -267,7 +273,7 @@ def cmd_integrations(args):
             print("--install only applies to raycast integrations", file=sys.stderr)
             sys.exit(2)
         dest = _install_raycast_scripts(paths["raycast"])
-        print(f"Installed Token Dashboard Raycast scripts to {dest}")
+        print(f"Installed Symbolon Raycast scripts to {dest}")
         print(
             "Register the directory in Raycast: "
             "Settings → Extensions → Scripts → Add Directories"
@@ -284,9 +290,9 @@ def cmd_open(args):
     host, port = _host_port()
     url = f"http://{host}:{port}/"
     if not _server_running(host, port):
-        print("Token Dashboard: starting daemon…")
+        print("Symbolon: starting daemon…")
         if not _ensure_running(host, port):
-            print("Token Dashboard: failed to start within 5s", file=sys.stderr)
+            print("Symbolon: failed to start within 5s", file=sys.stderr)
             sys.exit(1)
     webbrowser.open(url)
     print(f"Opened {url}")
@@ -305,18 +311,18 @@ def cmd_dashboard(args):
     url = f"http://{host}:{port}/"
     if not args.no_open:
         webbrowser.open(url)
-    print(f"Token Dashboard listening on {url}  (Ctrl+C to stop)")
+    print(f"Symbolon listening on {url}  (Ctrl+C to stop)")
     run(host, port, db, _projects(args))
-    print("Token Dashboard stopped.")
+    print("Symbolon stopped.")
 
 
 def main():
     common = argparse.ArgumentParser(add_help=False)
-    common.add_argument("--db", help="SQLite path (default ~/.claude/token-dashboard.db)")
+    common.add_argument("--db", help="SQLite path (default ~/.claude/symbolon.db)")
     common.add_argument("--projects-dir", help="JSONL root (default ~/.claude/projects)")
 
     p = argparse.ArgumentParser(
-        prog="token-dashboard", description="Local Claude Code usage dashboard", parents=[common]
+        prog="symbolon", description="Local Claude Code usage dashboard", parents=[common]
     )
     sub = p.add_subparsers(dest="cmd")
     sub.add_parser("scan",   parents=[common]).set_defaults(func=cmd_scan)

@@ -1,4 +1,4 @@
-# GitHub admin commands for Token Dashboard.
+# GitHub admin commands for Symbolon.
 #
 # Wraps the `gh` CLI. Sub-modules group related commands.
 

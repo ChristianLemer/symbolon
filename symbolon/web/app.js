@@ -45,7 +45,7 @@ function buildTopbar() {
   const wrap = document.createElement('header');
   wrap.className = 'topbar';
   wrap.innerHTML = `
-    <div class="brand">Token Dashboard</div>
+    <div class="brand">Symbolon</div>
     <span class="scope-tag" title="Claude Desktop, claude.ai web, and direct API calls are not tracked here. Cross-check with console.anthropic.com for the full picture.">Claude Code only</span>
     <nav>
       ${Object.keys(ROUTES).map(p => `<a href="#${p}" data-route="${p}">${p.slice(1)}</a>`).join('')}
@@ -191,7 +191,7 @@ async function boot() {
     banner.innerHTML = `
       <div>
         <strong>Server is offline.</strong><br>
-        Run <code>td start</code> or <code>token-dashboard dashboard</code>
+        Run <code>td start</code> or <code>symbolon dashboard</code>
         in your terminal, then click reconnect.
       </div>
       <button id="reconnect-btn" class="primary">Reconnect</button>

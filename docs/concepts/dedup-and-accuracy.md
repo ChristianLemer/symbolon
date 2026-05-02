@@ -12,7 +12,7 @@ This is great for crash recovery: if Claude Code dies mid-response, the latest s
 
 The dashboard's scanner uses `(session_id, message_id)` as a deduplication key. When it sees a row that updates a previous snapshot, it evicts the older snapshot from its accounting. The final tally is one row per actual API message — exactly what was billed.
 
-You can see this in `token_dashboard/scanner.py` (look for `_evict_prior_snapshots`).
+You can see this in `symbolon/scanner.py` (look for `_evict_prior_snapshots`).
 
 ## What this means in practice
 

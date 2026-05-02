@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from token_dashboard.db import connect, init_db
+from symbolon.db import connect, init_db
 
 
 class InitDbTests(unittest.TestCase):

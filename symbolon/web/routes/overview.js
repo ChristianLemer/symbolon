@@ -30,7 +30,7 @@ function writeRange(key) {
 }
 
 // Server is the canonical source for cutoff-aware day windows — see
-// token_dashboard/util.py::today_range_local. Defaults to a 4 a.m. local
+// symbolon/util.py::today_range_local. Defaults to a 4 a.m. local
 // cutoff so late-night sessions count toward yesterday.
 async function dayWindow(offset) {
   return await api(`/api/today/range?offset=${offset}`);

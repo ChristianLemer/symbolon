@@ -4,7 +4,7 @@ Guidance for Claude Code when working in this repository.
 
 ## Project overview
 
-**Token Dashboard** — a local dashboard for tracking Claude Code token usage, costs, and session history. Reads the JSONL transcripts Claude Code writes to `~/.claude/projects/` and turns them into per-prompt cost analytics, tool/file heatmaps, subagent attribution, cache analytics, project comparisons, and a rule-based tips engine.
+**Symbolon** — a local dashboard for tracking Claude Code token usage, costs, and session history. Reads the JSONL transcripts Claude Code writes to `~/.claude/projects/` and turns them into per-prompt cost analytics, tool/file heatmaps, subagent attribution, cache analytics, project comparisons, and a rule-based tips engine.
 
 Forked from [nateherkai/token-dashboard](https://github.com/nateherkai/token-dashboard) — a substantial reimplementation inspired by [phuryn/claude-usage](https://github.com/phuryn/claude-usage). The upstream diverges from claude-usage in UI (vanilla JS + ECharts, dark theme, hash router, SSE refresh) and scope (expensive-prompt drill-down, skills view, tips engine, streaming-snapshot dedup). This fork repositions the tool for non-developer users — `uv tool install` packaging, Today-first UX, daemon model, bundled Raycast/nushell integrations, and hardening. See [`docs/lineage.md`](docs/lineage.md) for the full chain and what each layer added.
 
@@ -14,9 +14,9 @@ Working codebase. 68 Python unit tests (`python3 -m unittest discover tests`). S
 
 ## Architecture
 
-- `cli.py` → `token_dashboard/scanner.py` → `~/.claude/token-dashboard.db` (SQLite)
-- `token_dashboard/server.py` exposes JSON APIs (`/api/*`) + SSE stream (`/api/stream`) + static frontend (`token_dashboard/web/`)
-- `token_dashboard/web/` is vanilla JS, no build step — hash router + ECharts
+- `cli.py` → `symbolon/scanner.py` → `~/.claude/symbolon.db` (SQLite)
+- `symbolon/server.py` exposes JSON APIs (`/api/*`) + SSE stream (`/api/stream`) + static frontend (`symbolon/web/`)
+- `symbolon/web/` is vanilla JS, no build step — hash router + ECharts
 
 ## Data source
 
@@ -38,7 +38,7 @@ Apply this even mid-PR: an extra small chore commit is cheaper than a review whe
 
 ## Customizing
 
-Env vars: `PORT` (default 8080), `HOST` (default 127.0.0.1), `CLAUDE_PROJECTS_DIR`, `TOKEN_DASHBOARD_DB`. Pricing lives in `pricing.json`. See [`docs/configuration.md`](docs/configuration.md) for details.
+Env vars: `PORT` (default 8080), `HOST` (default 127.0.0.1), `CLAUDE_PROJECTS_DIR`, `SYMBOLON_DB`. Pricing lives in `pricing.json`. See [`docs/configuration.md`](docs/configuration.md) for details.
 
 ## Known limitations
 
@@ -52,7 +52,7 @@ When working with Python, invoke the relevant `/astral:<skill>` for uv, ty, and 
 
 ```bash
 uv run pytest                                      # all tests
-uv run token-dashboard dashboard --no-open         # start the server
+uv run symbolon dashboard --no-open         # start the server
 curl http://127.0.0.1:8080/api/overview            # sanity-check an endpoint
 uv run ruff check .                                # lint
 uv run ty check                                    # type-check

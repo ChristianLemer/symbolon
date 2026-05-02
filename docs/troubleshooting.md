@@ -2,14 +2,14 @@
 
 ## "No data" or empty charts
 
-Run `token-dashboard scan` once to populate the database, then reload the page.
+Run `symbolon scan` once to populate the database, then reload the page.
 
 ## Port 8080 already in use
 
 Another program is on that port. Pick a different one:
 
 ```bash
-PORT=9000 token-dashboard dashboard
+PORT=9000 symbolon dashboard
 ```
 
 ## Numbers look wrong, or stuck
@@ -17,8 +17,8 @@ PORT=9000 token-dashboard dashboard
 The cache is stale or got into a bad state. Delete it and rebuild:
 
 ```bash
-rm ~/.claude/token-dashboard.db
-token-dashboard scan
+rm ~/.claude/symbolon.db
+symbolon scan
 ```
 
 The next scan will be slower than usual — it has to read every JSONL from scratch — but subsequent ones are incremental.
@@ -30,7 +30,7 @@ Expected on heavy users (hundreds of sessions, tens of MB of JSONL). The scanner
 If you don't want to wait, start without scanning:
 
 ```bash
-token-dashboard dashboard --no-scan
+symbolon dashboard --no-scan
 ```
 
 The dashboard runs against the existing cache. The scanner will catch up on the next 30-second cycle.
@@ -40,7 +40,7 @@ The dashboard runs against the existing cache. The scanner will catch up on the 
 Don't. Both processes will fight over the SQLite database — you'll see inconsistent numbers and occasional `database is locked` errors. Stop all instances before starting a new one:
 
 ```bash
-token-dashboard stop
+symbolon stop
 ```
 
 ## I closed the browser but the server is still running
@@ -49,9 +49,9 @@ Either:
 
 - It's still in its 30-second grace window — wait, or click the **⏻** button if you can.
 - You stopped your only tab, but another tab is still open elsewhere — close it.
-- Force it: `token-dashboard stop`.
+- Force it: `symbolon stop`.
 
-## "command not found: token-dashboard"
+## "command not found: symbolon"
 
 `uv` installs executables to `~/.local/bin` (Unix) or `%USERPROFILE%\.local\bin` (Windows). If that directory isn't on your `PATH`, run:
 

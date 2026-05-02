@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from token_dashboard.db import (
+from symbolon.db import (
     connect,
     daily_token_breakdown,
     expensive_prompts,
@@ -154,8 +154,8 @@ class ProjectNameTests(unittest.TestCase):
 
     def test_basename_of_windows_cwd(self):
         self.assertEqual(
-            project_name_for(r"C:\Users\alice\projects\Token Dashboard", "anything"),
-            "Token Dashboard",
+            project_name_for(r"C:\Users\alice\projects\Symbolon", "anything"),
+            "Symbolon",
         )
 
     def test_trailing_slash_stripped(self):
@@ -186,10 +186,10 @@ class ProjectNameTests(unittest.TestCase):
     def test_walks_up_preserves_spaces(self):
         self.assertEqual(
             project_name_for(
-                r"C:\Users\alice\projects\Token Dashboard\src\subdir",
-                "C--Users-alice-projects-Token-Dashboard",
+                r"C:\Users\alice\projects\My Project\src\subdir",
+                "C--Users-alice-projects-My-Project",
             ),
-            "Token Dashboard",
+            "My Project",
         )
 
 

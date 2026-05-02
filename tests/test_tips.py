@@ -2,8 +2,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from token_dashboard.db import connect, init_db
-from token_dashboard.tips import (
+from symbolon.db import connect, init_db
+from symbolon.tips import (
     cache_discipline_tips,
     dismiss_tip,
     outlier_tips,

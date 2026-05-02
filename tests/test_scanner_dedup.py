@@ -10,8 +10,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from token_dashboard.db import init_db
-from token_dashboard.scanner import scan_dir
+from symbolon.db import init_db
+from symbolon.scanner import scan_dir
 
 
 def _write_jsonl(path, lines):

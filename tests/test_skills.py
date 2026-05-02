@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from token_dashboard.skills import _slugs_for, scan_catalog
+from symbolon.skills import _slugs_for, scan_catalog
 
 
 def _write(p: Path, body: str) -> None:

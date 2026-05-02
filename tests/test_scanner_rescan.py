@@ -14,8 +14,8 @@ import time
 import unittest
 from pathlib import Path
 
-from token_dashboard.db import init_db
-from token_dashboard.scanner import scan_dir
+from symbolon.db import init_db
+from symbolon.scanner import scan_dir
 
 
 def _assistant_with_tool_use(uuid: str, msg_id: str, ts: str, output_tokens: int) -> dict:

@@ -2,7 +2,7 @@ import json
 import unittest
 from pathlib import Path
 
-from token_dashboard.scanner import parse_record
+from symbolon.scanner import parse_record
 
 FIXTURES = Path(__file__).parent / "fixtures"
 

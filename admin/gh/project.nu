@@ -2,7 +2,7 @@
 #
 # Idempotent — safe to re-run.
 
-const PROJECT_TITLE = "Token Dashboard"
+const PROJECT_TITLE = "Symbolon"
 
 def info [text: string] { print $"(ansi yellow)($text)(ansi reset)" }
 def ok   [text: string] { print $"(ansi green)($text)(ansi reset)" }

@@ -1,10 +1,10 @@
-# Token Dashboard — nushell integration
+# Symbolon — nushell integration
 #
 # Hits the local dashboard's JSON API and returns nu-native records / tables.
 # Override the host with $env.TD_HOST (default: http://127.0.0.1:8080).
 #
 # Install (in your nu config or one-off):
-#   use /path/to/token-dashboard/nu/td
+#   use /path/to/symbolon/nu/td
 #
 # Common commands:
 #   td start        # launch the daemon (no browser) and show today's totals
@@ -19,7 +19,7 @@
 # Run `help td` for the full command list, `help td <command>` for details.
 #
 # Or import without the `td` prefix:
-#   use /path/to/token-dashboard/nu/td *
+#   use /path/to/symbolon/nu/td *
 #   start
 #   today
 #   prompts --limit 50 | sort-by billable_tokens
@@ -68,27 +68,27 @@ export def status []: nothing -> record {
 # Use `td dashboard` to open the browser, `td stop` to stop.
 export def start [] {
   if (is-alive) {
-    ok "Token Dashboard daemon is already running."
+    ok "Symbolon daemon is already running."
     return (today)
   }
-  if (which token-dashboard | is-empty) {
+  if (which symbolon | is-empty) {
     error make {
-      msg: "token-dashboard not found on PATH"
-      help: "install with: uv tool install git+https://github.com/ChristianLemer/token-dashboard"
+      msg: "symbolon not found on PATH"
+      help: "install with: uv tool install git+https://github.com/ChristianLemer/symbolon"
     }
   }
-  ^bash -c "nohup token-dashboard dashboard --no-open >/dev/null 2>&1 &"
-  info "Token Dashboard daemon starting…"
+  ^bash -c "nohup symbolon dashboard --no-open >/dev/null 2>&1 &"
+  info "Symbolon daemon starting…"
   for _ in 0..60 {
     sleep 500ms
     if (is-alive) {
-      ok "Token Dashboard daemon ready."
+      ok "Symbolon daemon ready."
       return (today)
     }
   }
   error make {
     msg: "daemon did not become reachable within 30 s"
-    help: "try running it in foreground to see errors: `^token-dashboard dashboard --no-open`"
+    help: "try running it in foreground to see errors: `^symbolon dashboard --no-open`"
   }
 }
 
@@ -96,21 +96,21 @@ export def start [] {
 # Polls until the daemon is actually unreachable so subsequent
 # `td status` reflects reality.
 export def stop []: nothing -> record {
-  info "Token Dashboard daemon stopping…"
+  info "Symbolon daemon stopping…"
   let response = (http post (url "/api/quit") "")
   for _ in 0..30 {
     if not (is-alive) {
-      ok "Token Dashboard daemon stopped."
+      ok "Symbolon daemon stopped."
       return $response
     }
     sleep 100ms
   }
-  fail "Token Dashboard daemon may still be running (timeout reached)."
+  fail "Symbolon daemon may still be running (timeout reached)."
   $response
 }
 
 # Stop the daemon if running, then start. Useful after upgrading the
-# `token-dashboard` binary so the new code takes effect.
+# `symbolon` binary so the new code takes effect.
 export def restart [] {
   if (is-alive) { stop | ignore }
   start

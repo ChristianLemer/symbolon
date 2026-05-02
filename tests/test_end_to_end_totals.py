@@ -12,8 +12,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from token_dashboard.db import init_db, overview_totals
-from token_dashboard.scanner import scan_dir
+from symbolon.db import init_db, overview_totals
+from symbolon.scanner import scan_dir
 
 
 def _user(uuid: str, ts: str, text: str) -> dict:

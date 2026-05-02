@@ -27,7 +27,7 @@ ROOT = Path(__file__).resolve().parent.parent
 MOD_DIR = ROOT / "nu" / "td"
 NU_TEST = MOD_DIR / "tests" / "test_commands.nu"
 NU = shutil.which("nu")
-DASHBOARD_BIN = ROOT / ".venv" / "bin" / "token-dashboard"
+DASHBOARD_BIN = ROOT / ".venv" / "bin" / "symbolon"
 
 
 def _free_port() -> int:

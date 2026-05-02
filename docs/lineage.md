@@ -1,6 +1,6 @@
 # Lineage
 
-Token Dashboard's design didn't appear from nowhere. Here's the chain.
+Symbolon's design didn't appear from nowhere. Here's the chain.
 
 ## phuryn/claude-usage — the original idea
 
@@ -45,6 +45,8 @@ What Nate added on top:
 
 This fork (Christian Lemer) takes Nate's complete dashboard and changes who it's for: someone who isn't a developer but uses Claude Code daily, and would like to know what it's costing them — without having to set up a Python project.
 
+> **Note on naming.** This fork was originally published as `token-dashboard` (matching the upstream). It was renamed to **Symbolon** — Greek σύμβολον, "token" — to give the two audiences distinct namespaces and avoid the confusion of two divergent projects sharing one name.
+
 What this fork adds:
 
 - **One-command install via `uv tool install`** — no `git clone`, no virtualenv, no PATH setup. Same UX on macOS, Linux, and Windows.
@@ -57,4 +59,4 @@ What this fork adds:
 
 ## Acknowledgements
 
-Thanks to **phuryn** for proving the idea was worth building, and to **Nate Herk** for the dashboard this fork stands on. Most of the code that makes Token Dashboard useful is theirs; this fork is hospitality on top.
+Thanks to **phuryn** for proving the idea was worth building, and to **Nate Herk** for the dashboard this fork stands on. Most of the code that makes Symbolon useful is theirs; this fork is hospitality on top.

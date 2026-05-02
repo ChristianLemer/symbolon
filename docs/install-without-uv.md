@@ -1,6 +1,6 @@
 # Install without uv
 
-Already have Python set up and would rather not install another tool? You can run Token Dashboard directly from a `git clone`.
+Already have Python set up and would rather not install another tool? You can run Symbolon directly from a `git clone`.
 
 ## Requirements
 
@@ -10,8 +10,8 @@ Already have Python set up and would rather not install another tool? You can ru
 ## Steps
 
 ```bash
-git clone https://github.com/ChristianLemer/token-dashboard.git
-cd token-dashboard
+git clone https://github.com/ChristianLemer/symbolon.git
+cd symbolon
 python3 cli.py dashboard
 ```
 
@@ -24,8 +24,8 @@ The dashboard runs the same way as the `uv tool install` route: it scans `~/.cla
 | | `uv tool install` | `git clone` |
 |---|---|---|
 | Setup steps | 2 | 3 |
-| Global `token-dashboard` command | yes | no — you stay in the cloned directory |
-| Updates | `uv tool upgrade token-dashboard` | `git pull` |
+| Global `symbolon` command | yes | no — you stay in the cloned directory |
+| Updates | `uv tool upgrade symbolon` | `git pull` |
 | Bundled Raycast / nushell integrations | yes (inside the wheel) | yes (in the cloned tree under `raycast/` and `nu/`) |
 
 ## Replacing the CLI command in the docs
@@ -33,12 +33,12 @@ The dashboard runs the same way as the `uv tool install` route: it scans `~/.cla
 Throughout the rest of the documentation, you'll see commands like:
 
 ```bash
-token-dashboard scan
-token-dashboard status
-token-dashboard integrations raycast --install
+symbolon scan
+symbolon status
+symbolon integrations raycast --install
 ```
 
-When using the `git clone` route, replace `token-dashboard` with `python3 cli.py`:
+When using the `git clone` route, replace `symbolon` with `python3 cli.py`:
 
 ```bash
 python3 cli.py scan

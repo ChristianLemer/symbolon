@@ -239,7 +239,7 @@ def _watchdog(timeout: float = 30.0, interval: float = 5.0):
     while True:
         time.sleep(interval)
         if time.time() - _heartbeat["at"] > timeout:
-            print("\nToken Dashboard: no client detected, shutting down…")
+            print("\nSymbolon: no client detected, shutting down…")
             os.kill(os.getpid(), signal.SIGINT)
             return
 
@@ -276,6 +276,6 @@ def run(host: str, port: int, db_path: str, projects_dir: str):
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
-        print("\nToken Dashboard stopping…")
+        print("\nSymbolon stopping…")
     finally:
         httpd.shutdown()

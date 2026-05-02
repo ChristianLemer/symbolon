@@ -1,4 +1,4 @@
-# Token Dashboard
+# Symbolon
 
 Know what Claude Code is costing you. A local dashboard that turns your session history into clear answers — what you spent today, where the tokens went, and where you can save.
 
@@ -43,7 +43,7 @@ See [astral.sh/uv](https://docs.astral.sh/uv/getting-started/installation/) for 
 ### Try it (no install)
 
 ```bash
-uvx --from git+https://github.com/ChristianLemer/token-dashboard token-dashboard dashboard
+uvx --from git+https://github.com/ChristianLemer/symbolon symbolon dashboard
 ```
 
 `uvx` fetches, runs, and discards in one step — nothing left behind on your machine. Good for trying it once before deciding.
@@ -51,19 +51,19 @@ uvx --from git+https://github.com/ChristianLemer/token-dashboard token-dashboard
 ### Install it
 
 ```bash
-uv tool install git+https://github.com/ChristianLemer/token-dashboard
-token-dashboard dashboard
+uv tool install git+https://github.com/ChristianLemer/symbolon
+symbolon dashboard
 ```
 
-`uv tool` puts `token-dashboard` on your PATH as a global command — run it from anywhere, upgrade later with `uv tool upgrade token-dashboard`.
+`uv tool` puts `symbolon` on your PATH as a global command — run it from anywhere, upgrade later with `uv tool upgrade symbolon`.
 
 ### From source (no `uv` needed)
 
 If you already have Python 3.11+ and would rather not add another tool:
 
 ```bash
-git clone https://github.com/ChristianLemer/token-dashboard.git
-cd token-dashboard
+git clone https://github.com/ChristianLemer/symbolon.git
+cd symbolon
 python3 cli.py dashboard
 ```
 

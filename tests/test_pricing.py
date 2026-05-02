@@ -1,10 +1,10 @@
 import unittest
 from pathlib import Path
 
-import token_dashboard
-from token_dashboard.pricing import cost_for, format_for_user, load_pricing
+import symbolon
+from symbolon.pricing import cost_for, format_for_user, load_pricing
 
-PRICING = Path(token_dashboard.__file__).resolve().parent / "pricing.json"
+PRICING = Path(symbolon.__file__).resolve().parent / "pricing.json"
 
 
 class CostTests(unittest.TestCase):

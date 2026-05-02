@@ -1,4 +1,4 @@
-"""Tests for token_dashboard.pricing_sync.
+"""Tests for symbolon.pricing_sync.
 
 The fetcher is injected so tests run without network and pin behavior against
 known LiteLLM-shaped fixtures.
@@ -10,7 +10,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from token_dashboard.pricing_sync import (
+from symbolon.pricing_sync import (
     _build_tier_fallback,
     _transform_to_models,
     is_stale,

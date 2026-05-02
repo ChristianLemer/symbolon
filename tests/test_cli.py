@@ -26,7 +26,7 @@ class CliTests(unittest.TestCase):
         self.db = self.tmp / "t.db"
 
     def _run(self, *args, port: int | None = None):
-        env = {**os.environ, "TOKEN_DASHBOARD_DB": str(self.db)}
+        env = {**os.environ, "SYMBOLON_DB": str(self.db)}
         if port is not None:
             env["PORT"] = str(port)
         return subprocess.run(
@@ -40,7 +40,7 @@ class CliTests(unittest.TestCase):
         self.assertIn("scanned", r1.stdout)
         r2 = self._run("today")
         self.assertEqual(r2.returncode, 0, r2.stderr)
-        self.assertIn("Token Dashboard", r2.stdout)
+        self.assertIn("Symbolon", r2.stdout)
 
     def test_stats(self):
         self._run("scan", "--projects-dir", self.proj)
@@ -84,8 +84,8 @@ class CliTests(unittest.TestCase):
         # The path printed must point at a real directory containing our scripts.
         path = Path(r.stdout.strip())
         self.assertTrue(path.is_dir(), f"raycast path not a dir: {path}")
-        self.assertTrue((path / "sh" / "token-dashboard-start.sh").is_file())
-        self.assertTrue((path / "ps1" / "token-dashboard-start.ps1").is_file())
+        self.assertTrue((path / "sh" / "symbolon-start.sh").is_file())
+        self.assertTrue((path / "ps1" / "symbolon-start.ps1").is_file())
 
     def test_integrations_nu_kind(self):
         r = self._run("integrations", "nu")

@@ -1,10 +1,10 @@
-"""Unit tests for token_dashboard.util.today_range_local."""
+"""Unit tests for symbolon.util.today_range_local."""
 from __future__ import annotations
 
 import unittest
 from datetime import UTC, datetime, timedelta, timezone
 
-from token_dashboard.util import today_range_local
+from symbolon.util import today_range_local
 
 
 class TodayRangeLocalTests(unittest.TestCase):
