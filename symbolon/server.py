@@ -28,7 +28,7 @@ from .pricing import cost_for, get_plan, load_pricing, set_plan
 from .scanner import scan_dir
 from .skills import cached_catalog
 from .tips import all_tips, dismiss_tip
-from .util import today_range_local
+from .util import DEFAULT_DAY_STARTS_AT_HOUR, today_range_local
 
 WEB_ROOT = Path(__file__).resolve().parent / "web"
 PRICING_JSON = Path(__file__).resolve().parent / "pricing.json"
@@ -155,7 +155,6 @@ def build_handler(db_path: str, projects_dir: str):
                 n = scan_dir(projects_dir, db_path)
                 return _send_json(self, n)
             if path == "/api/today/range":
-                from .util import DEFAULT_DAY_STARTS_AT_HOUR
                 try:
                     offset = int(qs.get("offset", ["0"])[0])
                 except ValueError:

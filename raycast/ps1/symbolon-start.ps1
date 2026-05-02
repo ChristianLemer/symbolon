@@ -1,4 +1,4 @@
-# @raycast.schemaVersion 1
+﻿# @raycast.schemaVersion 1
 # @raycast.title Symbolon Start
 # @raycast.mode compact
 # @raycast.icon 🦉

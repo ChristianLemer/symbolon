@@ -10,5 +10,13 @@ node_modules/
 .claude/
 docs/superpowers/
 
+# Python tool caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+*.egg-info/
+build/
+
 # Playwright MCP browser session artifacts
 .playwright-mcp/
