@@ -74,8 +74,19 @@ function buildTopbar() {
     btn.disabled = true;
     btn.textContent = '…';
     try {
-      await fetch('/api/quit', { method: 'POST' });
-    } catch { /* server closed before response */ }
+      const res = await fetch('/api/quit', { method: 'POST' });
+      // fetch only rejects on network errors. A 403 from the source-IP guard
+      // (non-localhost client) returns OK at the network level — we must
+      // check the HTTP status explicitly.
+      if (!res.ok) throw new Error(`quit failed: ${res.status}`);
+    } catch {
+      // Server didn't acknowledge shutdown — restore the button and bail
+      // before clearing the page.
+      quitArmed = false;
+      btn.disabled = false;
+      btn.textContent = '⏻';
+      return;
+    }
     const msg = document.createElement('div');
     msg.style.cssText = 'display:grid;place-items:center;height:100vh;color:#8B98A6;font-family:system-ui;font-size:14px';
     document.body.innerHTML = '';
