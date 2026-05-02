@@ -77,7 +77,10 @@ export def start [] {
       help: "install with: uv tool install git+https://github.com/ChristianLemer/symbolon"
     }
   }
-  ^bash -c "nohup symbolon dashboard --no-open >/dev/null 2>&1 &"
+  # Delegate to the CLI's cross-platform spawn (start_new_session on Unix,
+  # DETACHED_PROCESS on Windows). Avoids depending on `bash`, which isn't
+  # in PATH on Windows.
+  symbolon start
   info "Symbolon daemon starting…"
   for _ in 0..60 {
     sleep 500ms
@@ -96,6 +99,10 @@ export def start [] {
 # Polls until the daemon is actually unreachable so subsequent
 # `td status` reflects reality.
 export def stop []: nothing -> record {
+  if not (is-alive) {
+    ok "Symbolon daemon is already stopped."
+    return {alive: false}
+  }
   info "Symbolon daemon stopping…"
   let response = (http post (url "/api/quit") "")
   for _ in 0..30 {
