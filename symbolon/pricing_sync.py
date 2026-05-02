@@ -86,17 +86,21 @@ def _transform_to_models(
         try:
             inp = float(meta["input_cost_per_token"])
             outp = float(meta["output_cost_per_token"])
+            # Cache fields are sometimes absent. Anthropic's documented
+            # multipliers (cache read = 0.10×, 5m create = 1.25×, 1h create =
+            # 2.00×) are the safe fallback. LiteLLM has been adding the
+            # explicit fields, so this path mostly handles older snapshots.
+            # Note: meta.get(key, default) only uses default when the key is
+            # *absent*; if a cache field is present but null, float(None)
+            # raises TypeError — caught here so we skip the model rather than
+            # abort the whole sync.
+            cache_read = float(meta.get("cache_read_input_token_cost", inp * 0.10))
+            cache_5m = float(meta.get("cache_creation_input_token_cost", inp * 1.25))
+            cache_1h = float(
+                meta.get("cache_creation_input_token_cost_above_1hr", inp * 2.00)
+            )
         except (KeyError, ValueError, TypeError):
             continue
-        # Cache fields are sometimes absent. Anthropic's documented multipliers
-        # (cache read = 0.10×, 5m create = 1.25×, 1h create = 2.00×) are the
-        # safe fallback. LiteLLM has been adding the explicit fields, so this
-        # path mostly handles older snapshots.
-        cache_read = float(meta.get("cache_read_input_token_cost", inp * 0.10))
-        cache_5m = float(meta.get("cache_creation_input_token_cost", inp * 1.25))
-        cache_1h = float(
-            meta.get("cache_creation_input_token_cost_above_1hr", inp * 2.00)
-        )
         out[name] = {
             "tier": m.group(1),
             "input": _to_per_mtok(inp),

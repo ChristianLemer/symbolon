@@ -161,6 +161,24 @@ class TransformTests(unittest.TestCase):
         }
         self.assertEqual(_transform_to_models(bad), {})
 
+    def test_null_cache_field_skips_entry_not_aborts_transform(self):
+        # If LiteLLM ever ships a model with `cache_*: null` (rather than
+        # the field absent), float(None) raises TypeError. The transform
+        # must catch that and skip the model — not propagate and abort
+        # the whole sync.
+        fixture = {
+            "claude-opus-broken": {
+                "litellm_provider": "anthropic",
+                "input_cost_per_token": 0.000005,
+                "output_cost_per_token": 0.000025,
+                "cache_read_input_token_cost": None,  # the trap
+            },
+            "claude-opus-4-7": LITELLM_FIXTURE["claude-opus-4-7"],
+        }
+        models = _transform_to_models(fixture)
+        self.assertNotIn("claude-opus-broken", models)
+        self.assertIn("claude-opus-4-7", models)
+
 
 class TierFallbackTests(unittest.TestCase):
     def test_picks_cheapest_per_tier(self):
