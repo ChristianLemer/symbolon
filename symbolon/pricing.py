@@ -3,12 +3,11 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Union
 
 from .db import connect
 
 
-def load_pricing(path: Union[str, Path]) -> dict:
+def load_pricing(path: str | Path) -> dict:
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
 
@@ -41,13 +40,13 @@ def cost_for(model: str, usage: dict, pricing: dict) -> dict:
     return {"usd": round(sum(bd.values()), 6), "estimated": estimated, "breakdown": bd}
 
 
-def get_plan(db_path: Union[str, Path], default: str = "api") -> str:
+def get_plan(db_path: str | Path, default: str = "api") -> str:
     with connect(db_path) as c:
         row = c.execute("SELECT v FROM plan WHERE k='plan'").fetchone()
     return row["v"] if row else default
 
 
-def set_plan(db_path: Union[str, Path], plan: str) -> None:
+def set_plan(db_path: str | Path, plan: str) -> None:
     with connect(db_path) as c:
         c.execute("INSERT OR REPLACE INTO plan (k, v) VALUES ('plan', ?)", (plan,))
         c.commit()

@@ -4,7 +4,6 @@ from __future__ import annotations
 import json
 import time
 from pathlib import Path
-from typing import Union
 
 from .db import connect
 
@@ -251,7 +250,7 @@ def scan_file(path: Path, project_slug: str, conn, start_byte: int = 0) -> dict:
     return {"messages": msgs, "tools": tools, "end_offset": end_offset}
 
 
-def scan_dir(projects_root: Union[str, Path], db_path: Union[str, Path]) -> dict:
+def scan_dir(projects_root: str | Path, db_path: str | Path) -> dict:
     root = Path(projects_root)
     totals = {"messages": 0, "tools": 0, "files": 0}
     if not root.is_dir():
