@@ -82,7 +82,9 @@ Once it runs:
 
 ## Privacy
 
-Nothing you see in the dashboard leaves your machine. No telemetry, no remote calls. The browser fetches everything from `127.0.0.1`, including charts and fonts. If you want to verify, search the source — there's nothing pointing outward.
+Your usage data stays on your machine. No telemetry, no analytics, no remote calls for anything you see in the dashboard. The browser fetches everything from `127.0.0.1`, including charts and fonts.
+
+The one exception: on startup, if `~/.claude/symbolon.db` is older than a week, Symbolon fetches the latest model pricing from [LiteLLM's public catalog](https://github.com/BerriAI/litellm) (a JSON file on GitHub). This keeps Opus/Sonnet/Haiku rates accurate as Anthropic ships new models. No usage data is sent. Pass `--no-auto-sync` (or stay offline) to skip this fetch entirely; Symbolon falls back to the rates bundled with your install.
 
 ## Going further
 

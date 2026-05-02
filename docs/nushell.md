@@ -10,18 +10,23 @@ If you live in [nushell](https://www.nushell.sh/), the dashboard ships as a daem
 
 ## Setup
 
-```nu
-use (symbolon integrations nu)
-```
+`use` is a nushell parser keyword and requires a parse-time constant path — it
+can't take a runtime command result. So setup is two steps:
 
-Add that line to your nushell config (typically `~/.config/nushell/config.nu`).
-
-To find the path manually:
+**1. Get the module path:**
 
 ```bash
 $ symbolon integrations nu
 /Users/.../site-packages/symbolon/_resources/nu/td
 ```
+
+**2. Add the path to your nushell config** (typically `~/.config/nushell/config.nu`):
+
+```nu
+use /Users/.../site-packages/symbolon/_resources/nu/td *
+```
+
+(Substitute the path you got in step 1.)
 
 ## Common commands
 
