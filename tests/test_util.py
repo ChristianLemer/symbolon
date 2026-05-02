@@ -14,8 +14,8 @@ class TodayRangeLocalTests(unittest.TestCase):
         now = datetime(2026, 4, 25, 10, 0, 0, tzinfo=tz)
         since, until, day = today_range_local(now=now)
         # 4 a.m. local 2026-04-25 in UTC+2 = 2 a.m. UTC same day
-        self.assertEqual(since, "2026-04-25T02:00:00+00:00")
-        self.assertEqual(until, "2026-04-26T02:00:00+00:00")
+        self.assertEqual(since, "2026-04-25T02:00:00Z")
+        self.assertEqual(until, "2026-04-26T02:00:00Z")
         self.assertEqual(day, "2026-04-25")
 
     def test_before_cutoff_returns_yesterday_at_cutoff(self):
@@ -26,8 +26,8 @@ class TodayRangeLocalTests(unittest.TestCase):
         since, until, day = today_range_local(now=now)
         # The "today" started at 4 a.m. local on 2026-04-24
         # = 2 a.m. UTC on 2026-04-24
-        self.assertEqual(since, "2026-04-24T02:00:00+00:00")
-        self.assertEqual(until, "2026-04-25T02:00:00+00:00")
+        self.assertEqual(since, "2026-04-24T02:00:00Z")
+        self.assertEqual(until, "2026-04-25T02:00:00Z")
         self.assertEqual(day, "2026-04-24")
 
     def test_custom_cutoff_hour(self):
@@ -37,15 +37,15 @@ class TodayRangeLocalTests(unittest.TestCase):
         since, _, day = today_range_local(0, now=now)
         # 1 a.m. local is past midnight, so today is 2026-04-25 local
         # = midnight local in UTC+2 = 22:00 UTC on 2026-04-24
-        self.assertEqual(since, "2026-04-24T22:00:00+00:00")
+        self.assertEqual(since, "2026-04-24T22:00:00Z")
         self.assertEqual(day, "2026-04-25")
 
     def test_utc_timezone(self):
         # User in UTC, 10:00 local = 10:00 UTC, well past 4 a.m.
         now = datetime(2026, 4, 25, 10, 0, 0, tzinfo=UTC)
         since, until, day = today_range_local(now=now)
-        self.assertEqual(since, "2026-04-25T04:00:00+00:00")
-        self.assertEqual(until, "2026-04-26T04:00:00+00:00")
+        self.assertEqual(since, "2026-04-25T04:00:00Z")
+        self.assertEqual(until, "2026-04-26T04:00:00Z")
         self.assertEqual(day, "2026-04-25")
 
     def test_window_is_exactly_24h(self):
@@ -61,8 +61,8 @@ class TodayRangeLocalTests(unittest.TestCase):
         tz = timezone(timedelta(hours=2))
         now = datetime(2026, 4, 25, 10, 0, 0, tzinfo=tz)
         since, until, day = today_range_local(offset_days=1, now=now)
-        self.assertEqual(since, "2026-04-24T02:00:00+00:00")
-        self.assertEqual(until, "2026-04-25T02:00:00+00:00")
+        self.assertEqual(since, "2026-04-24T02:00:00Z")
+        self.assertEqual(until, "2026-04-25T02:00:00Z")
         self.assertEqual(day, "2026-04-24")
 
     def test_offset_days_before_cutoff(self):

@@ -34,8 +34,12 @@ def today_range_local(
     start_today = cutoff_today if base >= cutoff_today else cutoff_today - timedelta(days=1)
     start = start_today - timedelta(days=offset_days)
     end = start + timedelta(days=1)
+    # Use strftime with explicit "Z" suffix to match the format Claude Code
+    # writes into JSONL transcripts (and the scanner stores verbatim). Avoids
+    # the fragile pattern where SQLite's lexicographic compare between "...Z"
+    # (stored) and "...+00:00" (this filter) only worked by ASCII coincidence.
     return (
-        start.astimezone(UTC).isoformat(),
-        end.astimezone(UTC).isoformat(),
+        start.astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        end.astimezone(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
         start.strftime("%Y-%m-%d"),
     )
