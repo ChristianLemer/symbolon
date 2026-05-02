@@ -6,7 +6,6 @@ const PROJECT_TITLE = "Symbolon"
 
 def info [text: string] { print $"(ansi yellow)($text)(ansi reset)" }
 def ok   [text: string] { print $"(ansi green)($text)(ansi reset)" }
-def fail [text: string] { print $"(ansi red)($text)(ansi reset)" }
 
 def current-login []: nothing -> string {
   let r = (gh api user --jq .login | complete)
@@ -30,7 +29,8 @@ def current-repo [login: string]: nothing -> string {
   let mine = (
     $r.stdout
     | lines
-    | parse --regex 'github\.com[:/](?P<owner>[^/]+)/(?P<name>[^/\s.]+)'
+    | parse --regex 'github\.com[:/](?P<owner>[^/]+)/(?P<name>\S+)'
+    | update name {|row| $row.name | str replace --regex `\.git$` "" }
     | where owner == $login
     | get --optional 0
   )
@@ -122,8 +122,10 @@ export def open []: nothing -> nothing {
   let owner = (current-login)
   let existing = (find $owner)
   if $existing == null {
-    fail $"No project named '($PROJECT_TITLE)' found for ($owner). Run `admin gh project create` first."
-    return
+    error make {
+      msg: $"No project named '($PROJECT_TITLE)' found for ($owner). Run `admin gh project create` first.",
+      label: {text: "project lookup returned null", span: (metadata $existing).span}
+    }
   }
   let r = (gh project view $existing.number --owner $owner --web | complete)
   if $r.exit_code != 0 {
