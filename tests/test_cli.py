@@ -30,7 +30,7 @@ class CliTests(unittest.TestCase):
         if port is not None:
             env["PORT"] = str(port)
         return subprocess.run(
-            [sys.executable, "cli.py", *args],
+            [sys.executable, "-m", "symbolon.cli", *args],
             cwd=ROOT, env=env, capture_output=True, text=True,
         )
 

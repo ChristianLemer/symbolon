@@ -17,6 +17,7 @@ import os
 import shutil
 import socket
 import subprocess
+import sys
 import time
 import unittest
 import urllib.error
@@ -133,6 +134,10 @@ class QuitCycleTest(unittest.TestCase):
 @unittest.skipIf(
     not DASHBOARD_BIN.exists(),
     f"dashboard binary not found at {DASHBOARD_BIN} (run `uv sync`)",
+)
+@unittest.skipIf(
+    sys.platform == "win32",
+    "bash/nohup/lsof are Unix-only — this regression test is meaningless on Windows",
 )
 class BashBackgroundQuitCycleTest(unittest.TestCase):
     """Regression: when bash backgrounds a job with `&` (the pattern used by
