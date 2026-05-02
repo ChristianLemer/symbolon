@@ -29,6 +29,6 @@ You might think "just take the last snapshot per message and skip the math." We 
 
 ## Where the limitations are
 
-The dedup is robust for the formats Claude Code currently writes. If Anthropic changes the JSONL schema or the streaming behavior, the scanner may need to adjust. The relevant code is small and tested — see `tests/test_scanner.py` for the dedup test cases.
+The dedup is robust for the formats Claude Code currently writes. If Anthropic changes the JSONL schema or the streaming behavior, the scanner may need to adjust. The relevant code is small and tested — see `tests/test_scanner_dedup.py` and `tests/test_scanner_rescan.py` for the dedup test cases.
 
 For surfaces this dashboard *can't* see at all (Claude Desktop, claude.ai web, direct API calls), see [Known limitations](../KNOWN_LIMITATIONS.md).

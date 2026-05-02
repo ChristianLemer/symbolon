@@ -9,7 +9,18 @@ Run `symbolon scan` once to populate the database, then reload the page.
 Another program is on that port. Pick a different one:
 
 ```bash
+# macOS / Linux
 PORT=9000 symbolon dashboard
+```
+
+```powershell
+# Windows PowerShell
+$env:PORT=9000; symbolon dashboard
+```
+
+```cmd
+:: Windows cmd.exe
+set PORT=9000 && symbolon dashboard
 ```
 
 ## Numbers look wrong, or stuck
@@ -17,7 +28,14 @@ PORT=9000 symbolon dashboard
 The cache is stale or got into a bad state. Delete it and rebuild:
 
 ```bash
+# macOS / Linux
 rm ~/.claude/symbolon.db
+symbolon scan
+```
+
+```powershell
+# Windows PowerShell
+Remove-Item $env:USERPROFILE\.claude\symbolon.db
 symbolon scan
 ```
 
