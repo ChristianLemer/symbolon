@@ -30,6 +30,12 @@ Claude Code writes one JSONL file per session to `~/.claude/projects/<project-sl
 - **Small files with clear responsibilities.** If a file grows past ~400 lines or accretes three distinct concerns, split it.
 - **Streaming-snapshot dedup.** When adding scanner logic that joins the `messages` table, remember `(session_id, message_id)` is the dedup key, not `uuid`. See `scanner._evict_prior_snapshots` and the migration note in `db._migrate_add_message_id`.
 
+## Commit hygiene
+
+One commit, one concern. Lint fixes, typo fixes, dead-code removal, imports reordering — these get their own commits (`chore(lint)`, `chore(cleanup)`, etc.), never folded into a feature commit even when convenient. Each commit's description should accurately cover all of its content; if you're padding a feature commit's body with "also …", split.
+
+Apply this even mid-PR: an extra small chore commit is cheaper than a review where reviewers have to mentally separate concerns inside one commit's diff.
+
 ## Customizing
 
 Env vars: `PORT` (default 8080), `HOST` (default 127.0.0.1), `CLAUDE_PROJECTS_DIR`, `TOKEN_DASHBOARD_DB`. Pricing lives in `pricing.json`. See [`docs/configuration.md`](docs/configuration.md) for details.
