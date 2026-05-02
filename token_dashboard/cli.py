@@ -14,14 +14,14 @@ import urllib.request
 import webbrowser
 from pathlib import Path
 
-RAYCAST_OWNER_MARKER = "@raycast.packageName Token Dashboard"
-RAYCAST_DEFAULT_DEST = "~/.raycast-scripts"
-
 from .db import default_db_path, init_db, model_breakdown, overview_totals
 from .pricing import cost_for, load_pricing
 from .scanner import scan_dir
 from .tips import all_tips
 from .util import today_range_local
+
+RAYCAST_OWNER_MARKER = "@raycast.packageName Token Dashboard"
+RAYCAST_DEFAULT_DEST = "~/.raycast-scripts"
 
 
 def _db_path(args) -> str:
@@ -105,12 +105,12 @@ def cmd_tips(args):
 def _spawn_daemon() -> None:
     """Start the dashboard daemon in a fully detached process."""
     cmd = [sys.argv[0], "dashboard", "--no-open"]
-    kwargs: dict = dict(
-        stdin=subprocess.DEVNULL,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-        close_fds=True,
-    )
+    kwargs: dict = {
+        "stdin": subprocess.DEVNULL,
+        "stdout": subprocess.DEVNULL,
+        "stderr": subprocess.DEVNULL,
+        "close_fds": True,
+    }
     if sys.platform == "win32":
         kwargs["creationflags"] = (
             subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP
@@ -268,7 +268,10 @@ def cmd_integrations(args):
             sys.exit(2)
         dest = _install_raycast_scripts(paths["raycast"])
         print(f"Installed Token Dashboard Raycast scripts to {dest}")
-        print("Register the directory in Raycast: Settings → Extensions → Scripts → Add Directories")
+        print(
+            "Register the directory in Raycast: "
+            "Settings → Extensions → Scripts → Add Directories"
+        )
         return
     if args.kind:
         print(paths[args.kind])

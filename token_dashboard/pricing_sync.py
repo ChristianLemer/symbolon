@@ -16,7 +16,7 @@ import time
 import urllib.error
 import urllib.request
 from collections.abc import Callable
-from datetime import date
+from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any
 
@@ -56,7 +56,7 @@ def _is_active(meta: dict, as_of: date | None = None) -> bool:
     if not dep:
         return True
     try:
-        return date.fromisoformat(dep) > (as_of or date.today())
+        return date.fromisoformat(dep) > (as_of or datetime.now(UTC).date())
     except (ValueError, TypeError):
         return True
 
