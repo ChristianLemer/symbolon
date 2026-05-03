@@ -224,9 +224,34 @@ async function boot() {
 
   // Server build identity captured on first heartbeat. If a later beat
   // reports a different version, the server has been upgraded under us
-  // (typically `uv tool install --reinstall`) — hard-reload so we pick
-  // up the matching SPA bundle.
+  // (typically `uv tool install --reinstall`). Surface a banner rather
+  // than reloading immediately — a brutal reload mid-consultation feels
+  // like the page broke. Auto-reload after 5s as a safety net so the
+  // user doesn't keep poking a stale SPA forever.
   let serverBuild = null;
+  let updateBanner = null;
+
+  function showUpdateBanner(newId) {
+    if (updateBanner) return;
+    updateBanner = document.createElement('div');
+    updateBanner.className = 'offline-banner';
+    updateBanner.innerHTML = `
+      <div>
+        <strong>Symbolon was updated.</strong><br>
+        Now running <code>${fmt.htmlSafe(newId)}</code>. Reloading in <span id="update-countdown">5</span>s…
+      </div>
+      <button id="update-reload-btn" class="primary">Reload now</button>
+    `;
+    document.body.appendChild(updateBanner);
+    $('#update-reload-btn').addEventListener('click', () => location.reload());
+    let remaining = 5;
+    setInterval(() => {
+      remaining -= 1;
+      const el = document.getElementById('update-countdown');
+      if (el) el.textContent = String(remaining);
+      if (remaining <= 0) location.reload();
+    }, 1000);
+  }
 
   const _hb = async () => {
     try {
@@ -239,7 +264,7 @@ async function boot() {
           if (info?.version) {
             const id = `${info.version}@${info.commit || ''}`;
             if (serverBuild === null) serverBuild = id;
-            else if (serverBuild !== id) location.reload();
+            else if (serverBuild !== id) showUpdateBanner(id);
           }
         } catch { /* heartbeat without JSON body is fine */ }
         return;
