@@ -134,20 +134,73 @@ def _wait_for_server(host: str, port: int, timeout_s: float = 5.0) -> bool:
     return False
 
 
+def _wait_for_stop(host: str, port: int, timeout_s: float = 5.0) -> bool:
+    deadline = time.monotonic() + timeout_s
+    while time.monotonic() < deadline:
+        if not _server_running(host, port):
+            return True
+        time.sleep(0.1)
+    return False
+
+
+def _daemon_build(host: str, port: int) -> tuple[str | None, str | None]:
+    """Probe the running daemon for its version + commit. Returns (None, None)
+    if it doesn't answer or doesn't carry the field (older build)."""
+    url = f"http://{host}:{port}/api/heartbeat"
+    req = urllib.request.Request(
+        url, data=b"{}", method="POST",
+        headers={"Content-Type": "application/json"},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=2) as r:  # noqa: S310 — localhost only
+            info = json.loads(r.read() or b"{}")
+    except (urllib.error.URLError, ConnectionError, OSError, json.JSONDecodeError):
+        return None, None
+    return info.get("version"), info.get("commit")
+
+
+def _stop_daemon(host: str, port: int) -> bool:
+    url = f"http://{host}:{port}/api/quit"
+    req = urllib.request.Request(
+        url, data=b"{}", method="POST",
+        headers={"Content-Type": "application/json"},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=2) as r:  # noqa: S310 — localhost only
+            r.read()
+    except (urllib.error.URLError, ConnectionError, OSError):
+        return False
+    return _wait_for_stop(host, port)
+
+
 def _ensure_running(host: str, port: int) -> bool:
-    """Ensure the daemon is up. Spawn it and wait if not. Return True on success."""
+    """Ensure the daemon is up *and* matches our binary's version. Spawn or
+    restart as needed. Returns True on success.
+
+    Without this check, `uv tool install --reinstall` followed by `symbolon
+    open` would reuse the still-running old daemon — leaving the user on a
+    silently broken dashboard (missing endpoints, stale SPA).
+    """
     if _server_running(host, port):
-        return True
+        from .about import build_info
+        ours = build_info()
+        d_version, d_commit = _daemon_build(host, port)
+        same = (d_version == ours["version"] and d_commit == ours["commit"])
+        if same:
+            return True
+        print(
+            f"Symbolon: daemon is on {d_version or '?'}@{d_commit or '?'},"
+            f" binary is {ours['version']}@{ours['commit'] or '?'} — restarting…"
+        )
+        if not _stop_daemon(host, port):
+            print("Symbolon: failed to stop stale daemon", file=sys.stderr)
+            return False
     _spawn_daemon()
     return _wait_for_server(host, port)
 
 
 def cmd_start(args):
     host, port = _host_port()
-    if _server_running(host, port):
-        print(f"Symbolon: already running at http://{host}:{port}/")
-        return
-    print("Symbolon: starting daemon…")
     if not _ensure_running(host, port):
         print("Symbolon: failed to start within 5s", file=sys.stderr)
         sys.exit(1)

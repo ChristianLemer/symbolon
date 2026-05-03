@@ -75,6 +75,10 @@ def _serve_static(handler, rel: str) -> None:
     handler.send_response(200)
     handler.send_header("Content-Type", ctype or "application/octet-stream")
     handler.send_header("Content-Length", str(len(body)))
+    # Force revalidation so the SPA picks up new bundles after a reinstall.
+    # Without this the browser may keep serving stale app.js even on reload,
+    # which silently breaks features added in the new build.
+    handler.send_header("Cache-Control", "no-cache")
     handler.end_headers()
     handler.wfile.write(body)
 
@@ -212,7 +216,12 @@ def build_handler(db_path: str, projects_dir: str):
                 return _send_json(self, {"ok": True})
             if url.path == "/api/heartbeat":
                 _heartbeat["at"] = time.time()
-                return _send_json(self, {"ok": True})
+                info = build_info()
+                return _send_json(self, {
+                    "ok": True,
+                    "version": info["version"],
+                    "commit": info["commit"],
+                })
             if url.path == "/api/quit":
                 # Source IP is set by the kernel and unforgeable, unlike the
                 # Host header. Prevents remote kill when HOST=0.0.0.0.

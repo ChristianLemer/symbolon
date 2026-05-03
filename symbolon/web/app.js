@@ -222,10 +222,28 @@ async function boot() {
     });
   }
 
+  // Server build identity captured on first heartbeat. If a later beat
+  // reports a different version, the server has been upgraded under us
+  // (typically `uv tool install --reinstall`) — hard-reload so we pick
+  // up the matching SPA bundle.
+  let serverBuild = null;
+
   const _hb = async () => {
     try {
       const r = await fetch('/api/heartbeat', { method: 'POST' });
-      if (r.ok) { hbFailures = 0; if (serverOffline) setOffline(false); return; }
+      if (r.ok) {
+        hbFailures = 0;
+        if (serverOffline) setOffline(false);
+        try {
+          const info = await r.json();
+          if (info?.version) {
+            const id = `${info.version}@${info.commit || ''}`;
+            if (serverBuild === null) serverBuild = id;
+            else if (serverBuild !== id) location.reload();
+          }
+        } catch { /* heartbeat without JSON body is fine */ }
+        return;
+      }
     } catch { /* fall through */ }
     hbFailures += 1;
     if (hbFailures >= 2) setOffline(true);
