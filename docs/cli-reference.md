@@ -12,18 +12,16 @@ Every command and flag.
 | `symbolon today` | Print today's totals to the terminal. |
 | `symbolon stats` | Print all-time totals to the terminal. |
 | `symbolon tips` | Print active suggestions (the same content as the Tips tab). |
-| `symbolon dashboard` | Scan and serve the UI at <http://127.0.0.1:8080>. The recommended entry point. |
 
 ### Daemon control
 
-Useful for launchers like Raycast and Alfred, or for shell scripts.
-
 | Command | What it does |
 |---|---|
-| `symbolon status` | One-line server up/down + today's cost + prompt count. Returns non-zero if the server is down. |
-| `symbolon start` | Start the daemon in the background (no browser). |
-| `symbolon open` | Open the dashboard in the browser. Starts the daemon if needed. |
+| `symbolon open` | Open the dashboard in the browser. Starts the daemon if needed. The recommended entry point for humans. |
+| `symbolon start` | Start the daemon in the background (no browser). For scripts, autostart, or service managers. |
+| `symbolon start --foreground` | Run the server in the foreground (logs visible, Ctrl+C to stop). For systemd, launchd, Docker, or debugging. |
 | `symbolon stop` | Ask the running daemon to shut down. |
+| `symbolon status` | One-line server up/down + today's cost + prompt count. Returns non-zero if the server is down. |
 
 ### Integrations
 
@@ -34,19 +32,24 @@ Useful for launchers like Raycast and Alfred, or for shell scripts.
 | `symbolon integrations raycast --install` | Copy Raycast scripts to `~/.raycast-scripts/` (platform-aware: bash on macOS/Linux, PowerShell on Windows). |
 | `symbolon integrations nu` | Print just the nushell module path. |
 
-## Dashboard flags
+## `start --foreground` flags
 
 | Flag | What it does |
 |---|---|
-| `--no-open` | Don't auto-open the browser when starting. |
 | `--no-scan` | Skip the initial scan and use the cached DB only. Useful for slow first scans. |
+| `--no-auto-sync` | Skip the weekly `pricing.json` refresh from LiteLLM. |
+
+## Common flags
+
+| Flag | What it does |
+|---|---|
 | `--projects-dir <path>` | Override `~/.claude/projects/`. |
 | `--db <path>` | Override `~/.claude/symbolon.db`. |
 
 Example:
 
 ```bash
-symbolon dashboard --projects-dir /path/to/projects --db /path/to/cache.db
+symbolon start --foreground --projects-dir /path/to/projects --db /path/to/cache.db
 ```
 
 ## Environment variables

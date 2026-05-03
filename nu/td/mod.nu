@@ -91,7 +91,7 @@ export def start [] {
   }
   error make {
     msg: "daemon did not become reachable within 30 s"
-    help: "try running it in foreground to see errors: `^symbolon dashboard --no-open`"
+    help: "try running it in foreground to see errors: `^symbolon start --foreground`"
   }
 }
 

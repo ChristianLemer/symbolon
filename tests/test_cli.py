@@ -84,8 +84,8 @@ class CliTests(unittest.TestCase):
         # The path printed must point at a real directory containing our scripts.
         path = Path(r.stdout.strip())
         self.assertTrue(path.is_dir(), f"raycast path not a dir: {path}")
-        self.assertTrue((path / "sh" / "symbolon-start.sh").is_file())
-        self.assertTrue((path / "ps1" / "symbolon-start.ps1").is_file())
+        self.assertTrue((path / "sh" / "symbolon-dashboard.sh").is_file())
+        self.assertTrue((path / "ps1" / "symbolon-dashboard.ps1").is_file())
 
     def test_integrations_nu_kind(self):
         r = self._run("integrations", "nu")

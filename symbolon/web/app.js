@@ -203,8 +203,7 @@ async function boot() {
     banner.innerHTML = `
       <div>
         <strong>Server is offline.</strong><br>
-        Run <code>symbolon start</code> or <code>symbolon dashboard</code>
-        in your terminal, then click reconnect.
+        Run <code>symbolon start</code> in your terminal, then click reconnect.
       </div>
       <button id="reconnect-btn" class="primary">Reconnect</button>
     `;

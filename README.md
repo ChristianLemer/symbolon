@@ -43,7 +43,7 @@ See [astral.sh/uv](https://docs.astral.sh/uv/getting-started/installation/) for 
 ### Try it (no install)
 
 ```bash
-uvx --from git+https://github.com/ChristianLemer/symbolon symbolon dashboard
+uvx --from git+https://github.com/ChristianLemer/symbolon symbolon open
 ```
 
 `uvx` fetches, runs, and discards in one step — nothing left behind on your machine. Good for trying it once before deciding.
@@ -52,7 +52,7 @@ uvx --from git+https://github.com/ChristianLemer/symbolon symbolon dashboard
 
 ```bash
 uv tool install git+https://github.com/ChristianLemer/symbolon
-symbolon dashboard
+symbolon open
 ```
 
 `uv tool` puts `symbolon` on your PATH as a global command — run it from anywhere, upgrade later with `uv tool upgrade symbolon`.
@@ -64,7 +64,7 @@ If you already have Python 3.11+ and would rather not add another tool:
 ```bash
 git clone https://github.com/ChristianLemer/symbolon.git
 cd symbolon
-python3 cli.py dashboard
+python3 cli.py open
 ```
 
 > On Windows, use `py -3` in place of `python3`.
@@ -91,7 +91,7 @@ The one exception: on startup, if `~/.claude/symbolon.db` is older than a week, 
 | Topic | What's there |
 |---|---|
 | [Getting started](docs/getting-started.md) | A walkthrough of each tab — what to look at first, what each number means |
-| [Raycast integration](docs/raycast.md) | A hotkey that shows today's spend without opening the dashboard |
+| [Raycast integration](docs/raycast.md) | A hotkey that opens the dashboard, daemon and all |
 | [nushell integration](docs/nushell.md) | Query your usage from the shell |
 | [CLI reference](docs/cli-reference.md) | Every command and flag |
 | [Configuration](docs/configuration.md) | Environment variables, pricing tweaks |

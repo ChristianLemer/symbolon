@@ -12,7 +12,7 @@
 Example:
 
 ```bash
-PORT=9000 symbolon dashboard
+PORT=9000 symbolon open
 ```
 
 ## Where the data comes from
@@ -29,7 +29,7 @@ The dashboard never modifies these files — it only reads them and keeps a loca
 To point at a different location:
 
 ```bash
-symbolon dashboard --projects-dir /path/to/projects --db /path/to/cache.db
+symbolon open --projects-dir /path/to/projects --db /path/to/cache.db
 ```
 
 ## Pricing

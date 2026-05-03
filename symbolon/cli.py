@@ -109,7 +109,7 @@ def cmd_tips(args):
 
 def _spawn_daemon() -> None:
     """Start the dashboard daemon in a fully detached process."""
-    cmd = [sys.argv[0], "dashboard", "--no-open"]
+    cmd = [sys.argv[0], "start", "--foreground"]
     kwargs: dict = {
         "stdin": subprocess.DEVNULL,
         "stdout": subprocess.DEVNULL,
@@ -201,6 +201,22 @@ def _ensure_running(host: str, port: int) -> bool:
 
 def cmd_start(args):
     host, port = _host_port()
+    if args.foreground:
+        # Run the server in the current process (logs visible, Ctrl+C to
+        # stop, suitable for systemd/launchd/Docker). This is also the
+        # mode `_spawn_daemon` invokes inside the detached child.
+        db = _db_path(args)
+        init_db(db)
+        _maybe_auto_sync_pricing(skip=args.no_auto_sync)
+        if not args.no_scan:
+            scan_dir(_projects(args), db)
+        from .server import run
+
+        url = f"http://{host}:{port}/"
+        print(f"Symbolon listening on {url}  (Ctrl+C to stop)")
+        run(host, port, db, _projects(args))
+        print("Symbolon stopped.")
+        return
     if not _ensure_running(host, port):
         print("Symbolon: failed to start within 5s", file=sys.stderr)
         sys.exit(1)
@@ -351,24 +367,6 @@ def cmd_open(args):
     print(f"Opened {url}")
 
 
-def cmd_dashboard(args):
-    db = _db_path(args)
-    init_db(db)
-    _maybe_auto_sync_pricing(skip=args.no_auto_sync)
-    if not args.no_scan:
-        scan_dir(_projects(args), db)
-    from .server import run
-
-    host = os.environ.get("HOST", "127.0.0.1")
-    port = int(os.environ.get("PORT", "8080"))
-    url = f"http://{host}:{port}/"
-    if not args.no_open:
-        webbrowser.open(url)
-    print(f"Symbolon listening on {url}  (Ctrl+C to stop)")
-    run(host, port, db, _projects(args))
-    print("Symbolon stopped.")
-
-
 def main():
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument("--db", help="SQLite path (default ~/.claude/symbolon.db)")
@@ -383,9 +381,19 @@ def main():
     sub.add_parser("stats",  parents=[common]).set_defaults(func=cmd_stats)
     sub.add_parser("tips",   parents=[common]).set_defaults(func=cmd_tips)
     sub.add_parser("status", parents=[common]).set_defaults(func=cmd_status)
-    sub.add_parser("start",  parents=[common]).set_defaults(func=cmd_start)
-    sub.add_parser("stop",   parents=[common]).set_defaults(func=cmd_stop)
-    sub.add_parser("open",   parents=[common]).set_defaults(func=cmd_open)
+    s = sub.add_parser(
+        "start", parents=[common],
+        help="Start the daemon (background by default; --foreground for systemd/dev).",
+    )
+    s.add_argument("--foreground", action="store_true",
+                   help="Run the server in the foreground (logs visible, Ctrl+C to stop).")
+    s.add_argument("--no-scan", action="store_true",
+                   help="Skip the initial scan on startup. Foreground mode only.")
+    s.add_argument("--no-auto-sync", action="store_true",
+                   help="Skip the weekly pricing.json refresh from LiteLLM. Foreground mode only.")
+    s.set_defaults(func=cmd_start)
+    sub.add_parser("stop", parents=[common]).set_defaults(func=cmd_stop)
+    sub.add_parser("open", parents=[common]).set_defaults(func=cmd_open)
     integ = sub.add_parser(
         "integrations", parents=[common],
         help="Print the path to bundled integration files (Raycast, nushell)",
@@ -404,12 +412,6 @@ def main():
         "sync", parents=[common],
         help="Refresh pricing.json from LiteLLM's community model registry.",
     ).set_defaults(func=cmd_pricing_sync)
-    d = sub.add_parser("dashboard", parents=[common])
-    d.add_argument("--no-scan", action="store_true")
-    d.add_argument("--no-open", action="store_true")
-    d.add_argument("--no-auto-sync", action="store_true",
-                   help="Skip the weekly pricing.json refresh from LiteLLM.")
-    d.set_defaults(func=cmd_dashboard)
     args = p.parse_args()
     if not args.cmd:
         p.print_help()

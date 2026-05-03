@@ -103,7 +103,7 @@ class QuitCycleTest(unittest.TestCase):
         port = _free_port()
         env = {**os.environ, "PORT": str(port)}
         proc = subprocess.Popen(
-            [str(DASHBOARD_BIN), "dashboard", "--no-open"],
+            [str(DASHBOARD_BIN), "start", "--foreground"],
             env=env,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
@@ -153,7 +153,7 @@ class BashBackgroundQuitCycleTest(unittest.TestCase):
         subprocess.run(
             [
                 "bash", "-c",
-                f"nohup {DASHBOARD_BIN} dashboard --no-open "
+                f"nohup {DASHBOARD_BIN} start --foreground "
                 ">/dev/null 2>&1 &",
             ],
             env={**os.environ, "PORT": str(port)},

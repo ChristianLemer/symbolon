@@ -1,13 +1,12 @@
 # Raycast integration
 
-If you use [Raycast](https://www.raycast.com/), the dashboard ships with four script commands that put today's spend a hotkey away.
+If you use [Raycast](https://www.raycast.com/), Symbolon ships with one script command that puts the dashboard a hotkey away.
 
 ## What it gives you
 
-- **Symbolon Status** — today's cost and prompt count in a single line, without leaving the keyboard. Bind it to a hotkey for ambient awareness.
-- **Symbolon Open** — opens the dashboard in your browser. Starts the daemon if it's not running.
-- **Symbolon Start** — starts the daemon in the background (no browser).
-- **Symbolon Stop** — asks the running daemon to shut down.
+- **Symbolon Dashboard** — opens the dashboard in your browser. Starts the daemon if it's not running. The daemon shuts itself down 30 s after the browser tab is closed, so there's nothing to clean up.
+
+If you need finer-grained control (start without browser, explicit stop, status from a script), the CLI has it — see [the CLI reference](cli-reference.md).
 
 ## Setup
 
@@ -15,17 +14,17 @@ If you use [Raycast](https://www.raycast.com/), the dashboard ships with four sc
 symbolon integrations raycast --install
 ```
 
-That copies the scripts to `~/.raycast-scripts/`. The right variant for your platform is picked automatically — bash on macOS / Linux, PowerShell on Windows.
+That copies the script to `~/.raycast-scripts/`. The right variant for your platform is picked automatically — bash on macOS / Linux, PowerShell on Windows.
 
-Then in Raycast → **Settings** → **Extensions** → **Script Commands**, click **Add Directories** and pick `~/.raycast-scripts/`. The four commands appear under "Symbolon."
+Then in Raycast → **Settings** → **Extensions** → **Script Commands**, click **Add Directories** and pick `~/.raycast-scripts/`. The command appears under "Symbolon."
 
 ## Recommended hotkey
 
-Bind **Symbolon Status** to a hotkey you reach for often. The result is a one-line glance — "today: $0.84 across 24 prompts" — that doesn't pull you out of whatever you were doing.
+Bind **Symbolon Dashboard** to a hotkey you reach for often. One keystroke, browser tab opens with today's costs.
 
-## Where the scripts live
+## Where the script lives
 
-If you'd rather copy them somewhere else, you can find the source path:
+If you'd rather copy it somewhere else, you can find the source path:
 
 ```bash
 $ symbolon integrations raycast
@@ -36,4 +35,4 @@ The `--install` flag is the convenient path; the directory above is the source o
 
 ## Updates
 
-When you upgrade Symbolon (`uv tool upgrade symbolon`), the bundled scripts update with it. Re-run `symbolon integrations raycast --install` to pick up the new versions in `~/.raycast-scripts/`.
+When you upgrade Symbolon (`uv tool upgrade symbolon`), the bundled scripts update with it. Re-run `symbolon integrations raycast --install` to pick up the new version in `~/.raycast-scripts/`. The installer recognises older Symbolon scripts (by package marker) and removes them, so leftover `Symbolon Status`/`Open`/`Start`/`Stop` entries from earlier installs are cleaned up automatically.

@@ -10,17 +10,17 @@ Another program is on that port. Pick a different one:
 
 ```bash
 # macOS / Linux
-PORT=9000 symbolon dashboard
+PORT=9000 symbolon open
 ```
 
 ```powershell
 # Windows PowerShell
-$env:PORT=9000; symbolon dashboard
+$env:PORT=9000; symbolon open
 ```
 
 ```cmd
 :: Windows cmd.exe
-set PORT=9000 && symbolon dashboard
+set PORT=9000 && symbolon open
 ```
 
 ## Numbers look wrong, or stuck
@@ -48,7 +48,7 @@ Expected on heavy users (hundreds of sessions, tens of MB of JSONL). The scanner
 If you don't want to wait, start without scanning:
 
 ```bash
-symbolon dashboard --no-scan
+symbolon start --foreground --no-scan
 ```
 
 The dashboard runs against the existing cache. The scanner will catch up on the next 30-second cycle.
