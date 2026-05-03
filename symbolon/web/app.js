@@ -39,6 +39,7 @@ const ROUTES = {
   '/skills':   () => import('/web/routes/skills.js'),
   '/tips':     () => import('/web/routes/tips.js'),
   '/settings': () => import('/web/routes/settings.js'),
+  '/about':    () => import('/web/routes/about.js'),
 };
 
 function buildTopbar() {

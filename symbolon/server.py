@@ -13,6 +13,7 @@ import time
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
+from .about import build_info
 from .db import (
     daily_token_breakdown,
     expensive_prompts,
@@ -151,6 +152,8 @@ def build_handler(db_path: str, projects_dir: str):
                 return _send_json(self, all_tips(db_path, pricing=pricing))
             if path == "/api/plan":
                 return _send_json(self, {"plan": get_plan(db_path), "pricing": pricing})
+            if path == "/api/about":
+                return _send_json(self, build_info())
             if path == "/api/scan":
                 n = scan_dir(projects_dir, db_path)
                 return _send_json(self, n)
