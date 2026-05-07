@@ -7,13 +7,13 @@ dropped or double-counted tokens could pass CI because no test checked
 token totals against known-good values.
 """
 import json
-import os
 import sqlite3
 import tempfile
 import unittest
+from pathlib import Path
 
-from token_dashboard.db import init_db, overview_totals
-from token_dashboard.scanner import scan_dir
+from symbolon.db import init_db, overview_totals
+from symbolon.scanner import scan_dir
 
 
 def _user(uuid: str, ts: str, text: str) -> dict:
@@ -55,11 +55,11 @@ def _usage(inp: int, out: int, cr: int, c5: int, c1: int) -> dict:
 
 class EndToEndTotalsTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.mkdtemp()
-        self.db = os.path.join(self.tmp, "t.db")
-        self.proj_root = os.path.join(self.tmp, "projects")
-        self.proj_dir = os.path.join(self.proj_root, "C--work-sample")
-        os.makedirs(self.proj_dir)
+        self.tmp = Path(tempfile.mkdtemp())
+        self.db = self.tmp / "t.db"
+        self.proj_root = self.tmp / "projects"
+        self.proj_dir = self.proj_root / "C--work-sample"
+        self.proj_dir.mkdir(parents=True, exist_ok=True)
         init_db(self.db)
 
     def test_scan_totals_match_hand_computed_sums(self):
@@ -91,8 +91,8 @@ class EndToEndTotalsTests(unittest.TestCase):
                        _usage(inp=60, out=120, cr=350, c5=30, c1=0)),
         ]
 
-        path = os.path.join(self.proj_dir, "s1.jsonl")
-        with open(path, "w", encoding="utf-8") as f:
+        path = self.proj_dir / "s1.jsonl"
+        with path.open("w", encoding="utf-8") as f:
             for r in records:
                 f.write(json.dumps(r) + "\n")
 

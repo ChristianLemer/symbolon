@@ -1,15 +1,15 @@
 import http.server
 import json
-import os
 import socket
 import sqlite3
 import tempfile
 import threading
 import unittest
 import urllib.request
+from pathlib import Path
 
-from token_dashboard.db import init_db
-from token_dashboard.server import build_handler
+from symbolon.db import init_db
+from symbolon.server import build_handler
 
 
 def _free_port():
@@ -22,15 +22,15 @@ def _free_port():
 
 class ServerTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.mkdtemp()
-        self.db = os.path.join(self.tmp, "t.db")
+        self.tmp = Path(tempfile.mkdtemp())
+        self.db = self.tmp / "t.db"
         init_db(self.db)
         with sqlite3.connect(self.db) as c:
-            c.execute("INSERT INTO messages (uuid, parent_uuid, session_id, project_slug, type, timestamp, model, input_tokens, output_tokens, cache_read_tokens, cache_create_5m_tokens, cache_create_1h_tokens, prompt_text, prompt_chars) VALUES ('u',NULL,'s','p','user','2026-04-19T00:00:00Z',NULL,0,0,0,0,0,'hi',2)")
-            c.execute("INSERT INTO messages (uuid, parent_uuid, session_id, project_slug, type, timestamp, model, input_tokens, output_tokens, cache_read_tokens, cache_create_5m_tokens, cache_create_1h_tokens) VALUES ('a','u','s','p','assistant','2026-04-19T00:00:01Z','claude-haiku-4-5',1,1,0,0,0)")
+            c.execute("INSERT INTO messages (uuid, parent_uuid, session_id, project_slug, type, timestamp, model, input_tokens, output_tokens, cache_read_tokens, cache_create_5m_tokens, cache_create_1h_tokens, prompt_text, prompt_chars) VALUES ('u',NULL,'s','p','user','2026-04-19T00:00:00Z',NULL,0,0,0,0,0,'hi',2)")  # noqa: E501
+            c.execute("INSERT INTO messages (uuid, parent_uuid, session_id, project_slug, type, timestamp, model, input_tokens, output_tokens, cache_read_tokens, cache_create_5m_tokens, cache_create_1h_tokens) VALUES ('a','u','s','p','assistant','2026-04-19T00:00:01Z','claude-haiku-4-5',1,1,0,0,0)")  # noqa: E501
             c.commit()
         self.port = _free_port()
-        H = build_handler(self.db, projects_dir="/nonexistent")
+        H = build_handler(str(self.db), projects_dir="/nonexistent")
         self.httpd = http.server.HTTPServer(("127.0.0.1", self.port), H)
         threading.Thread(target=self.httpd.serve_forever, daemon=True).start()
 
@@ -42,7 +42,7 @@ class ServerTests(unittest.TestCase):
 
     def test_index_html(self):
         body = self._get("/")
-        self.assertIn(b"Token Dashboard", body)
+        self.assertIn(b"Symbolon", body)
 
     def test_overview_json(self):
         body = json.loads(self._get("/api/overview"))
@@ -74,6 +74,26 @@ class ServerTests(unittest.TestCase):
         with urllib.request.urlopen(req) as resp:
             self.assertEqual(resp.status, 200)
             self.assertEqual(resp.read(), b"")
+
+    def test_today_range_endpoint(self):
+        body = json.loads(self._get("/api/today/range"))
+        self.assertIn("since", body)
+        self.assertIn("until", body)
+        self.assertIn("day", body)
+        self.assertIn("day_starts_at_hour", body)
+        self.assertIsInstance(body["day_starts_at_hour"], int)
+        # Values are ISO-parseable timestamps in UTC
+        from datetime import datetime as _dt
+        s = _dt.fromisoformat(body["since"])
+        u = _dt.fromisoformat(body["until"])
+        self.assertEqual((u - s).total_seconds(), 86400)
+        self.assertRegex(body["day"], r"^\d{4}-\d{2}-\d{2}$")
+
+    # Note: /api/quit's source-IP guard is not unit-tested here.
+    # Testing it would require a request from a non-loopback interface,
+    # which depends on the host's network setup. The check is one line
+    # against an OS-provided address (self.client_address[0]) — the kernel
+    # is the source of truth and trusting it is the canonical pattern.
 
 
 if __name__ == "__main__":

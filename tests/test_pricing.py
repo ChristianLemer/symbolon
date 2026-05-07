@@ -1,9 +1,10 @@
-import os
 import unittest
+from pathlib import Path
 
-from token_dashboard.pricing import load_pricing, cost_for, format_for_user
+import symbolon
+from symbolon.pricing import cost_for, format_for_user, load_pricing
 
-PRICING = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "pricing.json"))
+PRICING = Path(symbolon.__file__).resolve().parent / "pricing.json"
 
 
 class CostTests(unittest.TestCase):
@@ -19,18 +20,37 @@ class CostTests(unittest.TestCase):
         return base
 
     def test_known_opus_input_cost(self):
+        # Opus 4.5+ pricing — $5/MTok input. (Pre-Nov-2025 rate was $15;
+        # if this assertion regresses to $15, pricing.json is back to the
+        # legacy Opus 4 / 4.1 / 3 schedule and Opus costs are 3× too high.)
         c = cost_for("claude-opus-4-7", self._u(input_tokens=1_000_000), self.p)
-        self.assertAlmostEqual(c["usd"], 15.00, places=4)
+        self.assertAlmostEqual(c["usd"], 5.00, places=4)
         self.assertFalse(c["estimated"])
 
     def test_known_sonnet_output_cost(self):
         c = cost_for("claude-sonnet-4-6", self._u(output_tokens=1_000_000), self.p)
         self.assertAlmostEqual(c["usd"], 15.00, places=4)
 
-    def test_unknown_opus_falls_back(self):
+    def test_known_haiku_input_cost(self):
+        c = cost_for("claude-haiku-4-5", self._u(input_tokens=1_000_000), self.p)
+        self.assertAlmostEqual(c["usd"], 1.00, places=4)
+
+    def test_unknown_opus_falls_back_to_current_tier(self):
+        # An unknown future Opus name must NOT inherit legacy rates. The
+        # tier_fallback for opus is the cheapest current Opus (4.5+ = $5).
         c = cost_for("claude-opus-9-9-experimental", self._u(input_tokens=1_000_000), self.p)
-        self.assertAlmostEqual(c["usd"], 15.00, places=4)
+        self.assertAlmostEqual(c["usd"], 5.00, places=4)
         self.assertTrue(c["estimated"])
+
+    def test_tier_fallback_opus_matches_current_rates(self):
+        # Direct fixture pin: tier_fallback.opus must be the post-Nov-2025
+        # rate, not the legacy schedule.
+        opus_fb = self.p["tier_fallback"]["opus"]
+        self.assertEqual(opus_fb["input"], 5.0)
+        self.assertEqual(opus_fb["output"], 25.0)
+        self.assertEqual(opus_fb["cache_read"], 0.5)
+        self.assertEqual(opus_fb["cache_create_5m"], 6.25)
+        self.assertEqual(opus_fb["cache_create_1h"], 10.0)
 
     def test_unknown_unparseable_returns_none(self):
         c = cost_for("custom-local-model", self._u(input_tokens=9999), self.p)

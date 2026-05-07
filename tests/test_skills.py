@@ -1,9 +1,8 @@
-import os
 import tempfile
 import unittest
 from pathlib import Path
 
-from token_dashboard.skills import scan_catalog, _slugs_for
+from symbolon.skills import _slugs_for, scan_catalog
 
 
 def _write(p: Path, body: str) -> None:
@@ -23,7 +22,7 @@ class CatalogTests(unittest.TestCase):
         self.assertEqual(cat["frontend-design"]["tokens"], 100)
 
     def test_plugin_skill_registers_both_slugs(self):
-        p = self.tmp / "plugins" / "marketplaces" / "official" / "plugins" / "superpowers" / "skills" / "brainstorming" / "SKILL.md"
+        p = self.tmp / "plugins" / "marketplaces" / "official" / "plugins" / "superpowers" / "skills" / "brainstorming" / "SKILL.md"  # noqa: E501
         _write(p, "y" * 800)
         cat = scan_catalog([self.tmp / "plugins"])
         self.assertIn("brainstorming", cat)
@@ -53,7 +52,7 @@ class CatalogTests(unittest.TestCase):
         self.assertIn("superpowers:brainstorming", slugs)
 
     def test_slugs_for_cache_versioned_path(self):
-        p = Path("plugins/cache/claude-plugins-official/superpowers/5.0.7/skills/brainstorming/SKILL.md")
+        p = Path("plugins/cache/claude-plugins-official/superpowers/5.0.7/skills/brainstorming/SKILL.md")  # noqa: E501
         slugs = set(_slugs_for(p))
         self.assertIn("brainstorming", slugs)
         self.assertIn("superpowers:brainstorming", slugs)

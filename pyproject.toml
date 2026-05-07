@@ -1,0 +1,56 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "symbolon"
+version = "0.1.0"
+description = "Local dashboard for tracking Claude Code token usage and costs"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+symbolon = "symbolon.cli:main"
+
+[dependency-groups]
+dev = [
+    "hatchling",
+    "pytest>=8",
+    "ruff>=0.9",
+    "ty>=0.0.1a1",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["symbolon"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"nu/td/mod.nu" = "symbolon/_resources/nu/td/mod.nu"
+"raycast" = "symbolon/_resources/raycast"
+
+[tool.hatch.build.targets.wheel.hooks.custom]
+path = "hatch_build.py"
+
+[tool.hatch.build.targets.sdist.hooks.custom]
+path = "hatch_build.py"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "UP", "B", "C4", "DTZ", "PTH"]
+ignore = [
+    "UP007",  # Optional[X]/Union[X,Y] → X|Y migration — do as a separate pass
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.ty.environment]
+python-version = "3.11"

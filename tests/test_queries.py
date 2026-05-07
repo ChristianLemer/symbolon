@@ -1,32 +1,41 @@
-import os
 import tempfile
 import unittest
+from pathlib import Path
 
-from token_dashboard.db import (
-    init_db, connect,
-    overview_totals, expensive_prompts, project_summary,
-    tool_token_breakdown, recent_sessions, session_turns,
-    daily_token_breakdown, model_breakdown, project_name_for,
+from symbolon.db import (
+    connect,
+    daily_token_breakdown,
+    expensive_prompts,
+    init_db,
+    model_breakdown,
+    overview_totals,
+    project_name_for,
+    project_summary,
+    recent_sessions,
+    session_turns,
     skill_breakdown,
+    tool_token_breakdown,
 )
 
 
 class QueryTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.mkdtemp()
-        self.db = os.path.join(self.tmp, "q.db")
+        self.tmp = Path(tempfile.mkdtemp())
+        self.db = self.tmp / "q.db"
         init_db(self.db)
         with connect(self.db) as c:
             c.executescript("""
-            INSERT INTO messages (uuid, parent_uuid, session_id, project_slug, type, timestamp, model,
-              input_tokens, output_tokens, cache_read_tokens, cache_create_5m_tokens, cache_create_1h_tokens,
-              prompt_text, prompt_chars)
+            INSERT INTO messages
+              (uuid, parent_uuid, session_id, project_slug, type, timestamp, model,
+               input_tokens, output_tokens, cache_read_tokens,
+               cache_create_5m_tokens, cache_create_1h_tokens, prompt_text, prompt_chars)
             VALUES
               ('u1',NULL,'s1','projA','user','2026-04-10T00:00:00Z',NULL,0,0,0,0,0,'big prompt',10),
               ('a1','u1','s1','projA','assistant','2026-04-10T00:00:01Z','claude-opus-4-7',100,200,300,0,0,NULL,NULL),
               ('u2',NULL,'s2','projB','user','2026-04-11T00:00:00Z',NULL,0,0,0,0,0,'small',5),
               ('a2','u2','s2','projB','assistant','2026-04-11T00:00:01Z','claude-sonnet-4-6',5,5,0,0,0,NULL,NULL);
-            INSERT INTO tool_calls (message_uuid, session_id, project_slug, tool_name, target, timestamp, is_error)
+            INSERT INTO tool_calls
+              (message_uuid, session_id, project_slug, tool_name, target, timestamp, is_error)
             VALUES ('a1','s1','projA','Read','foo.py','2026-04-10T00:00:01Z',0),
                    ('a1','s1','projA','Bash','npm test','2026-04-10T00:00:01Z',0);
             """)
@@ -97,8 +106,8 @@ class QueryTests(unittest.TestCase):
 
 class SkillBreakdownTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.mkdtemp()
-        self.db = os.path.join(self.tmp, "s.db")
+        self.tmp = Path(tempfile.mkdtemp())
+        self.db = self.tmp / "s.db"
         init_db(self.db)
         with connect(self.db) as c:
             c.executescript("""
@@ -109,7 +118,9 @@ class SkillBreakdownTests(unittest.TestCase):
               ('u2','s2','pA','user','2026-04-11T00:00:00Z'),
               ('a2','s2','pA','assistant','2026-04-11T00:00:01Z');
 
-            INSERT INTO tool_calls (message_uuid, session_id, project_slug, tool_name, target, result_tokens, timestamp, is_error)
+            INSERT INTO tool_calls
+              (message_uuid, session_id, project_slug, tool_name, target,
+               result_tokens, timestamp, is_error)
             VALUES
               ('a1','s1','pA','Skill','brainstorming',NULL,'2026-04-10T00:00:01Z',0),
               ('u1','s1','pA','_tool_result','use-123',500,'2026-04-10T00:00:05Z',0),
@@ -143,8 +154,8 @@ class ProjectNameTests(unittest.TestCase):
 
     def test_basename_of_windows_cwd(self):
         self.assertEqual(
-            project_name_for(r"C:\Users\alice\projects\Token Dashboard", "anything"),
-            "Token Dashboard",
+            project_name_for(r"C:\Users\alice\projects\Symbolon", "anything"),
+            "Symbolon",
         )
 
     def test_trailing_slash_stripped(self):
@@ -175,25 +186,29 @@ class ProjectNameTests(unittest.TestCase):
     def test_walks_up_preserves_spaces(self):
         self.assertEqual(
             project_name_for(
-                r"C:\Users\alice\projects\Token Dashboard\src\subdir",
-                "C--Users-alice-projects-Token-Dashboard",
+                r"C:\Users\alice\projects\My Project\src\subdir",
+                "C--Users-alice-projects-My-Project",
             ),
-            "Token Dashboard",
+            "My Project",
         )
 
 
 class ProjectNameInQueriesTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.mkdtemp()
-        self.db = os.path.join(self.tmp, "n.db")
+        self.tmp = Path(tempfile.mkdtemp())
+        self.db = self.tmp / "n.db"
         init_db(self.db)
         with connect(self.db) as c:
             c.executescript("""
-            INSERT INTO messages (uuid, session_id, project_slug, cwd, type, timestamp,
-              input_tokens, output_tokens, cache_read_tokens, cache_create_5m_tokens, cache_create_1h_tokens)
+            INSERT INTO messages
+              (uuid, session_id, project_slug, cwd, type, timestamp,
+               input_tokens, output_tokens, cache_read_tokens,
+               cache_create_5m_tokens, cache_create_1h_tokens)
             VALUES
-              ('u1','s1','C--Users-x-My-Repo','/Users/x/My Repo','user','2026-04-10T00:00:00Z',0,0,0,0,0),
-              ('a1','s1','C--Users-x-My-Repo','/Users/x/My Repo','assistant','2026-04-10T00:00:01Z',10,20,0,0,0),
+              ('u1','s1','C--Users-x-My-Repo','/Users/x/My Repo',
+               'user','2026-04-10T00:00:00Z',0,0,0,0,0),
+              ('a1','s1','C--Users-x-My-Repo','/Users/x/My Repo',
+               'assistant','2026-04-10T00:00:01Z',10,20,0,0,0),
               ('u2','s2','slugOnly',NULL,'user','2026-04-11T00:00:00Z',0,0,0,0,0),
               ('a2','s2','slugOnly',NULL,'assistant','2026-04-11T00:00:01Z',5,5,0,0,0);
             """)

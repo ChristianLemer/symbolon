@@ -1,25 +1,25 @@
-import os
 import shutil
 import sqlite3
 import tempfile
 import unittest
+from pathlib import Path
 
-from token_dashboard.db import init_db
-from token_dashboard.scanner import scan_dir
+from symbolon.db import init_db
+from symbolon.scanner import scan_dir
 
-FIXTURE_DIR = os.path.join(os.path.dirname(__file__), "fixtures")
+FIXTURE_DIR = Path(__file__).parent / "fixtures"
 
 
 class WalkTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.mkdtemp()
-        self.db = os.path.join(self.tmp, "t.db")
-        self.proj_root = os.path.join(self.tmp, "projects")
-        proj_dir = os.path.join(self.proj_root, "C--work-sample")
-        os.makedirs(proj_dir)
+        self.tmp = Path(tempfile.mkdtemp())
+        self.db = self.tmp / "t.db"
+        self.proj_root = self.tmp / "projects"
+        proj_dir = self.proj_root / "C--work-sample"
+        proj_dir.mkdir(parents=True, exist_ok=True)
         shutil.copy(
-            os.path.join(FIXTURE_DIR, "sample_session.jsonl"),
-            os.path.join(proj_dir, "s1.jsonl"),
+            FIXTURE_DIR / "sample_session.jsonl",
+            proj_dir / "s1.jsonl",
         )
         init_db(self.db)
 
@@ -39,8 +39,8 @@ class WalkTests(unittest.TestCase):
 
     def test_rescan_picks_up_appended_lines(self):
         scan_dir(self.proj_root, self.db)
-        path = os.path.join(self.proj_root, "C--work-sample", "s1.jsonl")
-        with open(path, "a", encoding="utf-8") as f:
+        path = self.proj_root / "C--work-sample" / "s1.jsonl"
+        with path.open("a", encoding="utf-8") as f:
             f.write('{"type":"assistant","uuid":"a2","sessionId":"s1","timestamp":"2026-04-10T00:00:03Z","isSidechain":false,"message":{"model":"claude-haiku-4-5","usage":{"input_tokens":1,"output_tokens":1}}}\n')
         n2 = scan_dir(self.proj_root, self.db)
         self.assertEqual(n2["messages"], 1)

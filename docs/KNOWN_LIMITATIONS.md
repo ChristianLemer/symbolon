@@ -2,6 +2,18 @@
 
 None of these are blockers — the dashboard still gives you useful information. They're the rough edges you'll notice if you look hard.
 
+## Claude Desktop, claude.ai web, and direct API calls are invisible
+
+This dashboard reads only what Claude Code writes to `~/.claude/projects/<project>/<session>.jsonl`. Three other surfaces stay untracked:
+
+- **Claude Desktop** — stores conversations locally in IndexedDB but does **not** expose token counts in the local store (verified April 2026: model identifiers are present, no `input_tokens` / `output_tokens` / `usage` keys anywhere). Anthropic counts them server-side and the desktop client doesn't need them client-side.
+- **claude.ai web** — pure server-side, nothing local to read.
+- **Direct API usage** (`anthropic-py` SDK, etc.) — the SDK doesn't log usage by default. Tools like Langfuse or Helicone exist for that lineage.
+
+For a complete picture across surfaces, cross-check with the Anthropic Console (console.anthropic.com → Settings → Usage). It shows aggregated totals only — no per-session breakdown — but it is the only source of truth for non-Code consumption.
+
+For long Desktop sessions especially, expect the totals here to **understate your real usage**. The dashboard's brand carries a "Claude Code only" badge in the topbar to keep that scope visible at a glance.
+
 ## Skills token counts are partial
 
 The Skills route shows every skill Claude Code invoked, how many times, across how many sessions, and when. The **tokens-per-call** column is populated only for skills whose `SKILL.md` lives under `~/.claude/skills/`, `~/.claude/scheduled-tasks/`, or `~/.claude/plugins/`. Skills registered elsewhere (project-local `.claude/skills/`, or invocations that go through the `Task` tool with a skill-shaped `subagent_type`) show invocation counts but leave the token column blank.

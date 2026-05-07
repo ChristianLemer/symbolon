@@ -1,14 +1,15 @@
-import os
 import sqlite3
 import tempfile
 import unittest
-from token_dashboard.db import init_db, connect
+from pathlib import Path
+
+from symbolon.db import connect, init_db
 
 
 class InitDbTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.mkdtemp()
-        self.db_path = os.path.join(self.tmp, "test.db")
+        self.tmp = Path(tempfile.mkdtemp())
+        self.db_path = self.tmp / "test.db"
 
     def test_init_creates_expected_tables(self):
         init_db(self.db_path)
